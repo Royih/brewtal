@@ -1,0 +1,77 @@
+<div class="card mt-4">
+  <div class="card-header">
+    {{name}}
+  </div>
+  <div class="card-body">
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon3">Actual temp</span>
+      </div>
+      <button class="btn btn-primary">
+        {{pidStat?.currentTemp | number: '1.2-2'}}°C
+      </button>
+      <div class="input-group-append">
+        <span class="input-group-text" id="basic-addon2">ºC</span>
+      </div>
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon3">Target temp</span>
+        <span class="input-group-text text-primary">{{pidStat?.targetTemp | number: '1.2-2'}}</span>
+
+        <div class="input-group-append">
+          <span class="input-group-text" id="basic-addon2">ºC</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="btn-group">
+        <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(-5)">
+          <i class="fa fa-fast-backward"></i>
+        </button>
+        <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(-1)">
+          <i class="fa fa-step-backward"></i>
+        </button>
+        <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(-.1)">
+          <i class="fa fa-backward"></i>
+        </button>
+        <span class="input-group-text" id="basic-addon2" style="width: 130px">
+          <span *ngIf="!targetTempChanging">Change target</span>
+          <span *ngIf="targetTempChanging">{{targetTemp | number: '1.2-2'}}ºC
+            <i class="fa fa fa-cog fa-spin fa-fw" *ngIf="targetTempChanging"></i>
+          </span>
+
+        </span>
+        <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(.1)">
+          <i class="fa fa-forward"></i>
+        </button>
+        <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(1)">
+          <i class="fa fa-step-forward"></i>
+        </button>
+        <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(5)">
+          <i class="fa fa-fast-forward"></i>
+        </button>
+      </div>
+    </div>
+
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon3">Ouput pin</span>
+      </div>
+      <button [class]="'btn ' +((pidStat?.output) ? 'btn-success' : 'btn-danger')">
+        {{(pidStat?.output || false) ? 'On' : 'Off' }}
+      </button>
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon3">Last update</span>
+      </div>
+      <span class="input-group-text text-secondary">{{pidStat?.computedTime | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
+    </div>
+
+  </div>
+</div>
