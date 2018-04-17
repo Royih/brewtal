@@ -77,7 +77,7 @@ export class PidComponent implements OnInit {
   }
 
   changeTargetTemp(): void {
-    this.http.post(environment.apiUrl + 'api/pid/update', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).toPromise().then(res => {
+    this.http.post('pid/update', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).toPromise().then(res => {
       console.log('Target temp changed to: ' + this.targetTemp + ' for pid: ' + this.pidId);
       this.targetTempChanging = false;
     });

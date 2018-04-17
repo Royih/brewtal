@@ -5,7 +5,7 @@
   },
   "apps": [{
     "root": "src",
-    "outDir": "../bin/Debug/netcoreapp2.0/linux-arm/publish/wwwroot",
+    "outDir": "../wwwroot",
     "assets": [
       "assets",
       "favicon.ico"
@@ -31,6 +31,7 @@
     "environmentSource": "environments/environment.ts",
     "environments": {
       "dev": "environments/environment.ts",
+      "dev2": "environments/environment.dev2.ts", 
       "prod": "environments/environment.prod.ts"
     }
   }],

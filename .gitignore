@@ -57,3 +57,7 @@ node_modules/
 bower_components/
 
 appsettings.Production.json
+
+#local build
+wwwroot
+publish

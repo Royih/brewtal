@@ -46,16 +46,16 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.http.get(environment.apiUrl + 'api/pins/get/26').toPromise().then((res: boolean) => {
+    this.http.get('pins/get/26').toPromise().then((res: boolean) => {
       this.gpio4 = res;
     });
-    this.http.get(environment.apiUrl + 'api/pins/get/6').toPromise().then((res: boolean) => {
+    this.http.get('pins/get/6').toPromise().then((res: boolean) => {
       this.gpio6 = res;
     });
-    this.http.get(environment.apiUrl + 'api/pins/get/22').toPromise().then((res: boolean) => {
+    this.http.get('pins/get/22').toPromise().then((res: boolean) => {
       this.gpio22 = res;
     });
-    this.http.get(environment.apiUrl + 'api/pins/get/4').toPromise().then((res: boolean) => {
+    this.http.get('pins/get/4').toPromise().then((res: boolean) => {
       this.gpio4 = res;
     });
 
@@ -77,7 +77,7 @@ export class AppComponent implements OnInit {
       myVal = this.gpio4;
     }
 
-    this.http.post(environment.apiUrl + 'api/pins/set', { PinId: pin, Status: myVal }).toPromise().then(res => {
+    this.http.post('pins/set', { PinId: pin, Status: myVal }).toPromise().then(res => {
       console.log('Did toggle pin ', pin, res);
     });
   }

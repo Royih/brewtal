@@ -39,17 +39,6 @@ namespace Brewtal
 
             services.AddSignalR();
 
-            services.AddCors(options =>
-            {
-
-                options.AddPolicy("AllowAllOrigins",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin();
-                        builder.AllowAnyMethod();
-                        builder.AllowAnyHeader();
-                    });
-            });
 
             services.AddMvc();
         }
@@ -63,7 +52,13 @@ namespace Brewtal
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("AllowAllOrigins");
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+                builder.AllowAnyOrigin();
+                builder.AllowCredentials();
+            });
 
             app.UseSignalR(routes =>
             {

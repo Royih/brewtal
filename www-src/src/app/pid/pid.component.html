@@ -18,8 +18,11 @@
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon3">Target temp</span>
-        <span class="input-group-text text-primary">{{pidStat?.targetTemp | number: '1.2-2'}}</span>
-
+        <span class="input-group-text text-primary">
+          <span *ngIf="!targetTempChanging">{{pidStat?.targetTemp | number: '1.2-2'}}</span>
+          <i class="fa fa fa-cog fa-spin fa-fw" *ngIf="targetTempChanging"></i>
+        </span>
+        
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">ºC</span>
         </div>
@@ -37,11 +40,8 @@
         <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(-.1)">
           <i class="fa fa-backward"></i>
         </button>
-        <span class="input-group-text" id="basic-addon2" style="width: 130px">
-          <span *ngIf="!targetTempChanging">Change target</span>
-          <span *ngIf="targetTempChanging">{{targetTemp | number: '1.2-2'}}ºC
-            <i class="fa fa fa-cog fa-spin fa-fw" *ngIf="targetTempChanging"></i>
-          </span>
+        <span class="input-group-text" id="basic-addon2" style="width: 75px">          
+          <span>{{targetTemp | number: '1.2-2'}}ºC </span>
 
         </span>
         <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(.1)">
