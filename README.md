@@ -1,13 +1,11 @@
 # brewtal
 
+*Raspberry PI
++Running Raspbian
++MAX31865 (easy-to-use resistance-to-digital converter optimized for platinum resistance temperature detectors (RTDs) )
++DotNet Core WebApi
++Angular web-app frontent served by dotnet core webapi (running on Kestrel)
++PID software to control
++Power relays to GPIO-pins to controll a Heater-elements
+=Beer
 
-Todo Logging: 
-Display correct time (not utc)
-Calculate total time (or time since started)
-Calculate time to target reach
-Calculate time to cutoff
-
-Support deleting sessions
-Support rename sessions
-Display session data (Created, Completed, Name, total LogRecords)
-    
