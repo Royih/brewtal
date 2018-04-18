@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Brewtal.BLL;
+using Brewtal.Database;
+using Microsoft.EntityFrameworkCore;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Brewtal
 {
@@ -25,6 +30,7 @@ namespace Brewtal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BrewtalContext>();
             if (IsDevelopment)
             {
                 services.AddSingleton(typeof(ITempReader), typeof(FakeTempReader));
@@ -39,8 +45,9 @@ namespace Brewtal
 
             services.AddSignalR();
 
-
             services.AddMvc();
+
+            services.AddMediatR(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,7 +69,7 @@ namespace Brewtal
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<TempHub>("temp");
+                routes.MapHub<BrewtalHub>("brewtal");
             });
 
             app.UseDefaultFiles();
@@ -71,8 +78,22 @@ namespace Brewtal
 
             app.UseMvc();
 
+            //handle client side routes
+            app.Run(async (context) =>
+           {
+               context.Response.ContentType = "text/html";
+               await context.Response.SendFileAsync(Path.Combine(env.WebRootPath, "index.html"));
+           });
+
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<BrewtalContext>().Database.Migrate();
+            }
+
             var pidWorker = serviceProvider.GetRequiredService<PidWorker>();
             pidWorker.Start();
+
+
 
         }
     }

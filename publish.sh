@@ -5,7 +5,7 @@ cd ..
 rm publish  -r -f
 dotnet publish -r linux-arm -o publish
 
-Robocopy.exe publish/ s:/brewtal -mir
+Robocopy.exe publish/ s:/brewtal -mir  -xf *.db
 echo 'Going to kill app if running and then restart it. Type password and Ctrl+C when app is running.'
 ssh pi@192.168.1.12 'sudo kill $(ps -A | pgrep -i brewtal) | (cd /share/brewtal/; sudo ./brewtal) &'
 

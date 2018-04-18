@@ -4,36 +4,46 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Brewtal.Dtos;
+using Brewtal.Database;
 
 namespace Brewtal.BLL
 {
     public class PidWorker
     {
 
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<PidWorker> _logger;
         private readonly ITempReader _tempReader;
-        private readonly IHubContext<TempHub> _hubContext;
+        private readonly IHubContext<BrewtalHub> _hubContext;
         private readonly IGPIO _gPIO;
+        private PID _pid0;
+        private PID _pid1;
 
-        private PID[] _pids;
+        private readonly IServiceProvider _serviceProvider;
 
-        public PidWorker(ILogger<Worker> logger, ITempReader tempReader, IHubContext<TempHub> hubContext, IGPIO gPIO)
+        public PidWorker(ILogger<PidWorker> logger, ITempReader tempReader, IHubContext<BrewtalHub> hubContext, IGPIO gPIO, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _tempReader = tempReader;
             _hubContext = hubContext;
             _gPIO = gPIO;
-            _pids = new[] {
-                 new PID(0, "Pid 1", _gPIO, 4),
-                 new PID(1, "Pid 2", _gPIO, 26)
-            };
+            _serviceProvider = serviceProvider;
+            _pid0 = new PID(0, "Pid 1", _gPIO, 4);
+            _pid1 = new PID(1, "Pid 2", _gPIO, 26);
         }
 
 
         public void UpdateTargetTemp(int pidId, double newTargetTemp)
         {
-            var pid = _pids.Single(x => x.Status.PidId == pidId);
-            pid.UpdateTargetTemp(newTargetTemp);
+            if (pidId == 0)
+            {
+                _pid0.UpdateTargetTemp(newTargetTemp);
+                _logger.LogDebug(20, $"Updated PID Target 1:{_pid0.Status.TargetTemp}");
+            }
+            else
+            {
+                _pid1.UpdateTargetTemp(newTargetTemp);
+                _logger.LogDebug(20, $"Updated PID Target 2:{_pid1.Status.TargetTemp}");
+            }
         }
 
 
@@ -42,16 +52,47 @@ namespace Brewtal.BLL
             _logger.LogDebug($"{DateTime.Now}: Starting Pid Worker");
             while (true)
             {
+                _logger.LogDebug(20, $"Reporting Current PID Status for pids. 1:{_pid0.Status.TargetTemp}, 2: {_pid1.Status.TargetTemp}");
                 //Task running not so often that updates PID-Output
                 await Task.Run(() =>
                 {
+
                     var newTemp = _tempReader.ReadTemp();
-                    foreach (var pid in _pids)
+                    _pid0.Calculate(newTemp);
+                    _pid1.Calculate(newTemp);
+
+
+                    using (var db = new BrewtalContext())
                     {
-                        pid.Calculate(newTemp);
+                        var loggingSession = db.Sessions.Where(x => !x.Completed.HasValue).SingleOrDefault();
+
+                        if (loggingSession != null)
+                        {
+                            var pid1Status = _pid0.Status;
+                            var pid2Status = _pid1.Status;
+                            var logRecord = new LogRecord
+                            {
+                                Session = loggingSession,
+                                TimeStamp = DateTime.Now,
+                                ActualTemp1 = pid1Status.CurrentTemp,
+                                TargetTemp1 = pid1Status.TargetTemp,
+                                Output1 = pid1Status.Output,
+                                ActualTemp2 = pid2Status.CurrentTemp,
+                                TargetTemp2 = pid2Status.TargetTemp,
+                                Output2 = pid2Status.Output
+                            };
+                            db.Add(logRecord);
+                            db.SaveChanges();
+                        }
+
+                        _hubContext.Clients.All.InvokeAsync("PIDUpdate", new PidStatusesDto
+                        {
+                            Pids = new[] { _pid0.Status, _pid1.Status }.ToArray(),
+                            ComputedTime = DateTime.Now,
+                            LoggingToName = loggingSession?.Name
+                        });
                     }
-                    _logger.LogDebug(20, $"Reporting Current PID Status for {_pids.Count()} pids.");
-                    _hubContext.Clients.All.InvokeAsync("PIDUpdate", new PidStatusesDto { Pids = _pids.Select(x => x.Status).ToArray() });
+
                     System.Threading.Thread.Sleep(1000);
                 });
             }

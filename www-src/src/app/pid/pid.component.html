@@ -8,7 +8,7 @@
         <span class="input-group-text" id="basic-addon3">Actual temp</span>
       </div>
       <button class="btn btn-primary">
-        {{pidStat?.currentTemp | number: '1.2-2'}}°C
+        {{pidStat?.currentTemp | number: '1.2-2'}}
       </button>
       <div class="input-group-append">
         <span class="input-group-text" id="basic-addon2">ºC</span>
@@ -19,8 +19,8 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon3">Target temp</span>
         <span class="input-group-text text-primary">
-          <span *ngIf="!targetTempChanging">{{pidStat?.targetTemp | number: '1.2-2'}}</span>
-          <i class="fa fa fa-cog fa-spin fa-fw" *ngIf="targetTempChanging"></i>
+          <span *ngIf="!targetTempChanging && targetTemp==pidStat?.targetTemp">{{pidStat?.targetTemp | number: '1.2-2'}}</span>
+          <i class="fa fa fa-cog fa-spin fa-fw" *ngIf="!(!targetTempChanging && targetTemp==pidStat?.targetTemp)"></i>
         </span>
         
         <div class="input-group-append">
@@ -64,13 +64,6 @@
       <button [class]="'btn ' +((pidStat?.output) ? 'btn-success' : 'btn-danger')">
         {{(pidStat?.output || false) ? 'On' : 'Off' }}
       </button>
-    </div>
-
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="basic-addon3">Last update</span>
-      </div>
-      <span class="input-group-text text-secondary">{{pidStat?.computedTime | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
     </div>
 
   </div>

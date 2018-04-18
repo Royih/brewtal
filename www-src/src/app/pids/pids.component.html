@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <app-pid name="Pid 1" [pidId]="0" [pidUpdateStatus]="pidUpdateStatus"></app-pid>
+    </div>
+    <div class="col-md-6">
+      <app-pid name="Pid 2" [pidId]="1" [pidUpdateStatus]="pidUpdateStatus"></app-pid>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      Remote
+    </div>
+    <div class="card-body">
+      <!-- <button [class]="'btn '+(gpio4 ? 'btn-success' : 'btn-danger')" (click)="togglePin(4)">Pid1 out</button> -->
+      <button [class]="'btn '+(gpio22 ? 'btn-success' : 'btn-danger')" (click)="togglePin(22)">Out 1</button>
+      <button [class]="'btn '+(gpio6 ? 'btn-success' : 'btn-danger')" (click)="togglePin(6)">Out 2</button>
+      <!-- <button [class]="'btn '+(gpio26 ? 'btn-success' : 'btn-danger')" (click)="togglePin(26)">Pid2 out</button> -->
+
+      <p>
+        {{pidUpdateStatus?.computedTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+      </p>
+
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      Logging
+    </div>
+    <div class="card-body">
+
+      <div class="input-group" *ngIf="pidUpdateStatus && !pidUpdateStatus.loggingToName">
+        <input type="text" class="form-control" [(ngModel)]="newLogName" placeholder="Add log name">
+        <button class="btn btn-primary" (click)="startLogging()" [disabled]="!newLogName || (!pidUpdateStatus.loggingToName && startingLogging)">Start logging</button>
+      </div>
+
+      <div *ngIf="pidUpdateStatus && pidUpdateStatus.loggingToName">
+        Logging in progress: {{pidUpdateStatus.loggingToName}}
+
+        <button class="btn btn-primary" (click)="stopLogging()" [disabled]="(pidUpdateStatus.loggingToName && stoppingLogging)">Stop logging</button>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

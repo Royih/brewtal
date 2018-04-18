@@ -10,12 +10,13 @@ namespace Brewtal.Dtos
         public double TargetTemp { get; set; }
         public double CurrentTemp { get; set; }
         public bool Output { get; set; }
-        public DateTime ComputedTime { get; set; }
     }
 
     public class PidStatusesDto
     {
         public PidSatusDto[] Pids { get; set; }
+        public DateTime ComputedTime { get; set; }
+        public string LoggingToName { get; set; }
 
     }
 
