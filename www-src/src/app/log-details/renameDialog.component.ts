@@ -5,7 +5,7 @@ import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     moduleId: module.id,
     selector: 'app-log-details-rename-dialog',
     template: ` <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{title}}</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Rename session</h5>
                     <button type="button" class="close" (click)="activeModal.dismiss('cancel')">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -22,7 +22,7 @@ import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class LogDetailsRenameDialogComponent {
 
-    name = '';
+    newName = '';
 
     constructor(public activeModal: NgbActiveModal) {
 
