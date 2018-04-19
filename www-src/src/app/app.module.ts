@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { PidComponent } from './pid/pid.component';
@@ -12,10 +13,13 @@ import { LogsComponent } from './logs/logs.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PidsComponent } from './pids/pids.component';
+import { ConfirmDialogComponent, ConfirmService } from './confirm';
 
 import { YesNoPipe, DateTimePipe, DateOnlyPipe, DateTimeSecPipe, NumberPipe } from './pipes';
 import { DatePipe } from '@angular/common';
 import { LogDetailsComponent } from './log-details/log-details.component';
+import { LogDetailsRenameDialogComponent } from './log-details/renameDialog.component';
+
 
 import { ChartsModule } from 'ng2-charts';
 
@@ -31,13 +35,14 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
+    ConfirmDialogComponent,
     PidComponent,
     LogsComponent,
     HeaderComponent,
     FooterComponent,
     PidsComponent,
     LogDetailsComponent,
-
+    LogDetailsRenameDialogComponent,
     YesNoPipe, DateTimePipe, DateOnlyPipe, DateTimeSecPipe, NumberPipe
   ],
   imports: [
@@ -45,13 +50,15 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
-    ChartsModule
+    ChartsModule,
+    NgbModule.forRoot(), NgbModalModule.forRoot()
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: CustomInterceptor,
     multi: true
-  }, DatePipe, DateTimeSecPipe],
-  bootstrap: [AppComponent]
+  }, DatePipe, DateTimeSecPipe, ConfirmService],
+  bootstrap: [AppComponent],
+  entryComponents: [ConfirmDialogComponent, LogDetailsRenameDialogComponent]
 })
 export class AppModule { }

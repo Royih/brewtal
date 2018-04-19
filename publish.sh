@@ -13,3 +13,9 @@ ssh pi@192.168.1.12 'sudo kill $(ps -A | pgrep -i brewtal) | (cd /share/brewtal/
 
 #rsync -avh -e ssh bin/Debug/netcoreapp2.0/linux-arm/publish/* pi@192.168.1.12:Apps/suvido
 #Remember: chmod u+x,o+x suvido
+
+#todo: 
+
+Display correct time (not utc)
+Calculate time to target reach
+Calculate time to cutoff

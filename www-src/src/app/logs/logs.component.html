@@ -1,12 +1,12 @@
-<table class="table table-striped" >
+<table class="table table-striped">
   <tr>
     <th>Name</th>
     <th>Created</th>
     <th>Completed</th>
   </tr>
   <tr *ngFor="let session of sessions; let i = index">
-    <td>      
-      <a routerLink="/logs/{{session.id}}">{{session.name}}</a>      
+    <td>
+      <a routerLink="/logs/{{session.id}}">{{session.name}}</a>
     </td>
     <td>
       {{session.created | dateTime }}

@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { LogRecordDto } from '../../models/logRecordDto';
+import { LogRecordDto, LogSessionDto } from '../../models';
 import { DateTimeSecPipe } from '../pipes';
+import { ConfirmService } from '../confirm';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LogDetailsRenameDialogComponent } from './renameDialog.component';
 
 @Component({
   selector: 'app-log-details',
@@ -13,10 +16,12 @@ export class LogDetailsComponent implements OnInit {
 
   sessionId: number;
   data: LogRecordDto[];
+  session: LogSessionDto;
   pid = 1;
   resolution = 15;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private datePipe: DateTimeSecPipe) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private datePipe: DateTimeSecPipe,
+    private confirm: ConfirmService, private router: Router, private modalService: NgbModal) { }
 
   public lineChartData: Array<any>;
   public lineChartLabels: Array<any>;
@@ -37,7 +42,12 @@ export class LogDetailsComponent implements OnInit {
   }
 
   refreshData(): void {
-    this.http.get<LogRecordDto[]>('logging/get/' + this.sessionId + '/' + this.resolution).toPromise().then(res => {
+    this.lineChartData = null;
+    this.http.get<LogSessionDto>('logging/get/' + this.sessionId).toPromise().then(res => {
+      this.session = res;
+    });
+
+    this.http.get<LogRecordDto[]>('logging/listLogRecords/' + this.sessionId + '/' + this.resolution).toPromise().then(res => {
       this.data = res;
       this.selectPid(this.pid);
     });
@@ -46,9 +56,36 @@ export class LogDetailsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.sessionId = params.sessionId;
+
+      this.refreshData();
+
     });
-    this.refreshData();
+
   }
+
+  delete(): void {
+    this.confirm.display('This log session and everything about it will be lost forever...', 'Are you sure?').then(res => {
+      if (res) {
+        this.http.post('logging/delete', { logSession: this.session }).toPromise().then(res2 => {
+          this.router.navigate(['../logs']);
+        });
+      }
+    });
+  }
+
+  rename(): void {
+    const renameComponent = this.modalService.open(LogDetailsRenameDialogComponent);
+    renameComponent.componentInstance.newName = this.session.name;
+
+    renameComponent.result.then((result) => {
+      this.http.post('logging/renameSession', { session: this.session, newName: result }).toPromise().then(res2 => {
+        this.refreshData();
+      });
+    }, (reason) => {
+
+    });
+  }
+
 
   selectPid(pid: number): void {
     this.pid = pid;

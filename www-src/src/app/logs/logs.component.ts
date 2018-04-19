@@ -14,11 +14,14 @@ export class LogsComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  private loadData() {
     this.http.get('logging/list').toPromise().then(res => {
       this.sessions = res;
     });
   }
 
+  ngOnInit(): void {
+    this.loadData();
+  }
 
 }

@@ -33,6 +33,21 @@ namespace Brewtal.Controllers
             await _mediator.Send(command);
         }
 
+
+        [HttpPost("renameSession")]
+        public async Task RenameLogSession([FromBody]RenameLogSessionCommand command)
+        {
+            await _mediator.Send(command);
+        }
+
+
+
+        [HttpPost("delete")]
+        public async Task DeleteSession([FromBody]DeleteLogSessionCommand command)
+        {
+            await _mediator.Send(command);
+        }
+
         [HttpGet("list")]
         public async Task<IActionResult> ListSessions()
         {
@@ -40,12 +55,12 @@ namespace Brewtal.Controllers
         }
 
         [HttpGet("get/{sessionId:int}")]
-        public async Task<IActionResult> GetRecords(int sessionId)
+        public async Task<IActionResult> GetLogSession(int sessionId)
         {
-            return Ok(await _mediator.Send(new ListLogRecordsQuery { SessionId = sessionId }));
+            return Ok(await _mediator.Send(new GetLogSessionQuery { SessionId = sessionId }));
         }
 
-        [HttpGet("get/{sessionId:int}/{numberOfSecondsInGroup:int}")]
+        [HttpGet("listLogRecords/{sessionId:int}/{numberOfSecondsInGroup:int}")]
         public async Task<IActionResult> GetRecordsBy10Seconds(int sessionId, int numberOfSecondsInGroup)
         {
             return Ok(await _mediator.Send(new ListLogRecordsQuery { SessionId = sessionId, NumberOfSecondsInGroup = numberOfSecondsInGroup }));
