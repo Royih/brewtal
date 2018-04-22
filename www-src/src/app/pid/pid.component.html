@@ -1,14 +1,17 @@
 <div class="card mt-4">
   <div class="card-header">
     {{name}}
+    <span class="pull-right">
+      <i class="fa fa-cog" (click)="showPidConfig()"></i>
+    </span>
   </div>
-  <div class="card-body">
+  <div class="card-body">    
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon3">Actual temp</span>
       </div>
       <button class="btn btn-primary">
-        {{pidStat?.currentTemp | number: '1.2-2'}}
+        {{pidStat?.currentTemp | twodigits}}
       </button>
       <div class="input-group-append">
         <span class="input-group-text" id="basic-addon2">ºC</span>
@@ -19,10 +22,10 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon3">Target temp</span>
         <span class="input-group-text text-primary">
-          <span *ngIf="!targetTempChanging && targetTemp==pidStat?.targetTemp">{{pidStat?.targetTemp | number: '1.2-2'}}</span>
+          <span *ngIf="!targetTempChanging && targetTemp==pidStat?.targetTemp">{{pidStat?.targetTemp | twodigits}}</span>
           <i class="fa fa fa-cog fa-spin fa-fw" *ngIf="!(!targetTempChanging && targetTemp==pidStat?.targetTemp)"></i>
         </span>
-        
+
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">ºC</span>
         </div>
@@ -40,8 +43,8 @@
         <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(-.1)">
           <i class="fa fa-backward"></i>
         </button>
-        <span class="input-group-text" id="basic-addon2" style="width: 75px">          
-          <span>{{targetTemp | number: '1.2-2'}}ºC </span>
+        <span class="input-group-text" id="basic-addon2" style="width: 75px">
+          <span>{{targetTemp | twodigits}}ºC </span>
 
         </span>
         <button class="btn btn-outline-primary" type="button" (click)="updateTargetTemp(.1)">
@@ -56,6 +59,14 @@
       </div>
     </div>
 
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon3">Ouput level</span>
+      </div>
+      <button [class]="'btn btn-primary'">
+        {{pidStat?.outputValue | twodigits }}%
+      </button>
+    </div>
 
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -65,6 +76,16 @@
         {{(pidStat?.output || false) ? 'On' : 'Off' }}
       </button>
     </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon3">Error sum</span>
+      </div>
+      <button [class]="'btn ' +((pidStat?.output) ? 'btn-success' : 'btn-danger')">
+        {{pidStat?.errorSum | twodigits }}
+      </button>
+    </div>
+
 
   </div>
 </div>

@@ -15,10 +15,11 @@ import { FooterComponent } from './footer/footer.component';
 import { PidsComponent } from './pids/pids.component';
 import { ConfirmDialogComponent, ConfirmService } from './confirm';
 
-import { YesNoPipe, DateTimePipe, DateOnlyPipe, DateTimeSecPipe, NumberPipe } from './pipes';
+import { YesNoPipe, DateTimePipe, DateOnlyPipe, DateTimeSecPipe, TwoDigitsPipe } from './pipes';
 import { DatePipe } from '@angular/common';
 import { LogDetailsComponent } from './log-details/log-details.component';
 import { LogDetailsRenameDialogComponent } from './log-details/renameDialog.component';
+import { PidConfigDialogComponent } from './pid/pidConfig.component';
 
 
 import { ChartsModule } from 'ng2-charts';
@@ -29,7 +30,9 @@ const routes: Routes = [
   { 'path': '', 'redirectTo': '/home', 'pathMatch': 'full' },
   { 'path': 'home', 'component': PidsComponent },
   { 'path': 'logs', 'component': LogsComponent },
-  { 'path': 'logs/:sessionId', 'component': LogDetailsComponent }
+  { 'path': 'logs/:sessionId', 'component': LogDetailsComponent },
+
+
 ];
 
 @NgModule({
@@ -43,7 +46,8 @@ const routes: Routes = [
     PidsComponent,
     LogDetailsComponent,
     LogDetailsRenameDialogComponent,
-    YesNoPipe, DateTimePipe, DateOnlyPipe, DateTimeSecPipe, NumberPipe
+    PidConfigDialogComponent,
+    YesNoPipe, DateTimePipe, DateOnlyPipe, DateTimeSecPipe, TwoDigitsPipe
   ],
   imports: [
     BrowserModule,
@@ -57,8 +61,8 @@ const routes: Routes = [
     provide: HTTP_INTERCEPTORS,
     useClass: CustomInterceptor,
     multi: true
-  }, DatePipe, DateTimeSecPipe, ConfirmService],
+  }, DatePipe, DateTimeSecPipe, TwoDigitsPipe, ConfirmService],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmDialogComponent, LogDetailsRenameDialogComponent]
+  entryComponents: [ConfirmDialogComponent, LogDetailsRenameDialogComponent, PidConfigDialogComponent]
 })
 export class AppModule { }

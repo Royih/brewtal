@@ -10,6 +10,8 @@ namespace Brewtal.Dtos
         public double TargetTemp { get; set; }
         public double CurrentTemp { get; set; }
         public bool Output { get; set; }
+        public double OutputValue { get; set; }
+        public double ErrorSum { get; set; }
     }
 
     public class PidStatusesDto

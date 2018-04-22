@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Brewtal.Database;
 using Brewtal.Dtos;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Brewtal.Database
+namespace Brewtal.CQRS
 {
     public class GetLogSessionQuery : IRequest<LogSessionDto>
     {

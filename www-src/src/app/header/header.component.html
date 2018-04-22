@@ -1,5 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" routerLink="/home"><i class="fa fa-beer"></i> Brewtal</a>
+  <a class="navbar-brand" routerLink="/home">
+    <i class="fa fa-beer"></i> Brewtal</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -14,6 +15,12 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/logs">Logs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="reboot()">Reboot</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" (click)="shutdown()">Shutdown</a>
       </li>
     </ul>
   </div>

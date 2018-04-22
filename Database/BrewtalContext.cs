@@ -6,6 +6,8 @@ namespace Brewtal.Database
     {
         public DbSet<LogSession> Sessions { get; set; }
         public DbSet<LogRecord> Records { get; set; }
+        public DbSet<PidConfig> PidConfigs { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

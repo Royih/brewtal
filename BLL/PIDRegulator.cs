@@ -6,7 +6,7 @@ namespace Brewtal.BLL
     public class PIDRegulator
     {
         private double LastPprocessVal;
-        private double ErrorSum;
+        public double ErrorSum { get; private set; }
 
         public double ProportionalCoef { get; set; }
         public double IntegralCoef { get; set; }
@@ -55,7 +55,7 @@ namespace Brewtal.BLL
             ErrorSum = 0.0f;
         }
 
-        public bool Compute(double processVal, double setPoint, TimeSpan deltaTime)
+        public double Compute(double processVal, double setPoint, TimeSpan deltaTime)
         {
             processVal = Clamp(processVal, PprocessValMin, PprocessValMax);
             processVal = ScaleValue(processVal, PprocessValMin, PprocessValMax, -1.0, 1.0);
@@ -81,7 +81,7 @@ namespace Brewtal.BLL
             outReal = Clamp(outReal, -1.0, 1.0);
             outReal = ScaleValue(outReal, -1.0, 1.0, OutMin, OutMax);
 
-            return Convert.ToInt32(outReal) == 1;
+            return outReal;
         }
     }
 }

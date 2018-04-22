@@ -14,5 +14,4 @@ namespace Brewtal.BLL
         bool Set(int pinId, bool status);
         bool Get(int pinId);
     }
-
 }

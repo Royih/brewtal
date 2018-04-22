@@ -11,6 +11,12 @@ namespace Brewtal.BLL
             Clients.All.InvokeAsync("PIDUpdate", pidUpdateStatus);
         }
 
+        public void PIDSimulatorUpdate(dynamic pidSimulatorStatus)
+        {
+            // Call the broadcastMessage method to update clients.
+            Clients.All.InvokeAsync("PIDSimulatorUpdate", pidSimulatorStatus);
+        }
+
     }
 
 }

@@ -15,6 +15,9 @@ namespace Brewtal.BLL
         private readonly ITempReader _tempReader;
         private readonly IHubContext<BrewtalHub> _hubContext;
         private readonly IGPIO _gPIO;
+
+        private const int Pid1OutputPin = 4;
+        private const int Pid2OutputPin = 26;
         private PID _pid0;
         private PID _pid1;
 
@@ -27,8 +30,8 @@ namespace Brewtal.BLL
             _hubContext = hubContext;
             _gPIO = gPIO;
             _serviceProvider = serviceProvider;
-            _pid0 = new PID(0, "Pid 1", _gPIO, 4);
-            _pid1 = new PID(1, "Pid 2", _gPIO, 26);
+            _pid0 = new PID(0, "Pid 1", _gPIO, Pid1OutputPin);
+            _pid1 = new PID(1, "Pid 2", _gPIO, Pid2OutputPin);
         }
 
 
@@ -46,6 +49,34 @@ namespace Brewtal.BLL
             }
         }
 
+        public PidConfig GetConfig(int pidId)
+        {
+            if (pidId == 0)
+            {
+                return _pid0.PidConfig;
+            }
+            return _pid1.PidConfig;
+        }
+
+        public void UpdatePidConfig(int pidId, double newPIDKp, double newPIDKi, double newPIDKd)
+        {
+            using (var db = new BrewtalContext())
+            {
+                var pidConfig = db.PidConfigs.Single(x => x.PidId == pidId);
+                pidConfig.PIDKp = newPIDKp;
+                pidConfig.PIDKi = newPIDKi;
+                pidConfig.PIDKd = newPIDKd;
+                db.SaveChanges();
+            }
+            if (pidId == 0)
+            {
+                _pid0 = new PID(0, "Pid 1", _gPIO, Pid1OutputPin);
+            }
+            else
+            {
+                _pid1 = new PID(1, "Pid 2", _gPIO, Pid2OutputPin);
+            }
+        }
 
         public async void Start()
         {
@@ -61,41 +92,47 @@ namespace Brewtal.BLL
                     _pid0.Calculate(newTemp);
                     _pid1.Calculate(newTemp);
 
+                    var loggingSession = LogToDb();
 
-                    using (var db = new BrewtalContext())
+                    _hubContext.Clients.All.InvokeAsync("PIDUpdate", new PidStatusesDto
                     {
-                        var loggingSession = db.Sessions.Where(x => !x.Completed.HasValue).SingleOrDefault();
-
-                        if (loggingSession != null)
-                        {
-                            var pid1Status = _pid0.Status;
-                            var pid2Status = _pid1.Status;
-                            var logRecord = new LogRecord
-                            {
-                                Session = loggingSession,
-                                TimeStamp = DateTime.Now,
-                                ActualTemp1 = pid1Status.CurrentTemp,
-                                TargetTemp1 = pid1Status.TargetTemp,
-                                Output1 = pid1Status.Output,
-                                ActualTemp2 = pid2Status.CurrentTemp,
-                                TargetTemp2 = pid2Status.TargetTemp,
-                                Output2 = pid2Status.Output
-                            };
-                            db.Add(logRecord);
-                            db.SaveChanges();
-                        }
-
-                        _hubContext.Clients.All.InvokeAsync("PIDUpdate", new PidStatusesDto
-                        {
-                            Pids = new[] { _pid0.Status, _pid1.Status }.ToArray(),
-                            ComputedTime = DateTime.Now,
-                            LoggingToName = loggingSession?.Name
-                        });
-                    }
+                        Pids = new[] { _pid0.Status, _pid1.Status }.ToArray(),
+                        ComputedTime = DateTime.Now,
+                        LoggingToName = loggingSession?.Name
+                    });
 
                     System.Threading.Thread.Sleep(1000);
                 });
             }
+        }
+
+        private LogSession LogToDb()
+        {
+            using (var db = new BrewtalContext())
+            {
+                var loggingSession = db.Sessions.Where(x => !x.Completed.HasValue).SingleOrDefault();
+
+                if (loggingSession != null)
+                {
+                    var pid1Status = _pid0.Status;
+                    var pid2Status = _pid1.Status;
+                    var logRecord = new LogRecord
+                    {
+                        Session = loggingSession,
+                        TimeStamp = DateTime.Now,
+                        ActualTemp1 = pid1Status.CurrentTemp,
+                        TargetTemp1 = pid1Status.TargetTemp,
+                        Output1 = pid1Status.Output,
+                        ActualTemp2 = pid2Status.CurrentTemp,
+                        TargetTemp2 = pid2Status.TargetTemp,
+                        Output2 = pid2Status.Output
+                    };
+                    db.Add(logRecord);
+                    db.SaveChanges();
+                    return loggingSession;
+                }
+            }
+            return null;
         }
 
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Brewtal.BLL;
 using Brewtal.Database;
 using MediatR;
+using Brewtal.CQRS;
 
 namespace Brewtal.Controllers
 {

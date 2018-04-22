@@ -4,6 +4,8 @@ import { HubConnection } from '@aspnet/signalr-client';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
+import { PidConfigDialogComponent } from './pidConfig.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-pid',
@@ -50,7 +52,7 @@ export class PidComponent implements OnInit {
   targetChanges = new Subject<number>();
   targetTempChanging = false;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
 
   }
 
@@ -77,11 +79,30 @@ export class PidComponent implements OnInit {
   }
 
   changeTargetTemp(): void {
-    this.http.post('pid/update', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).toPromise().then(res => {
+    this.http.post('pid/updateTarget', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).toPromise().then(res => {
       console.log('Target temp changed to: ' + this.targetTemp + ' for pid: ' + this.pidId);
       this.targetTempChanging = false;
     });
 
+  }
+
+  showPidConfig(): void {
+    const configDialog = this.modalService.open(PidConfigDialogComponent);
+    configDialog.componentInstance.pidName = this.name;
+    configDialog.componentInstance.pidId = this.pidId;
+
+    configDialog.result.then((result) => {
+      this.http.post('pid/updatePidConfig', {
+        PIDId: this.pidId,
+        PIDKp: result.pidKp,
+        PIDKi: result.pidKi,
+        PIDKd: result.pidKd
+      }).toPromise().then(res2 => {
+
+      });
+    }, (reason) => {
+
+    });
   }
 
 }

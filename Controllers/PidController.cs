@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Brewtal.BLL;
+using MediatR;
+using Brewtal.CQRS;
 
 namespace Brewtal.Controllers
 {
@@ -12,24 +14,29 @@ namespace Brewtal.Controllers
     [Route("api/[controller]")]
     public class PidController : Controller
     {
-        private PidWorker _pidWorker;
+        private readonly IMediator _meditor;
 
-        public PidController(PidWorker pidWorker)
+        public PidController(IMediator meditor)
         {
-            _pidWorker = pidWorker;
+            _meditor = meditor;
         }
 
-        public class ChangeTargetCommand
+        [HttpPost("updateTarget")]
+        public async Task PostSet([FromBody]UpdatePidTargetCommand command)
         {
-            public int PIDId { get; set; }
-            public double NewTargetTemp { get; set; }
+            await _meditor.Send(command);
         }
 
-
-        [HttpPost("update")]
-        public void PostSet([FromBody]ChangeTargetCommand command)
+        [HttpGet("{pidId:int}")]
+        public async Task<IActionResult> GetPidConfig(int pidId)
         {
-            _pidWorker.UpdateTargetTemp(command.PIDId, command.NewTargetTemp);
+            return Ok(await _meditor.Send(new GetPidConfigQuery { PidId = pidId }));
+        }
+
+        [HttpPost("updatePidConfig")]
+        public async Task UpdatePidConfig([FromBody]UpdatePidConfigCommand command)
+        {
+            await _meditor.Send(command);
         }
 
     }
