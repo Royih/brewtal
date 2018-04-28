@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LogRecordDto, LogSessionDto } from '../../models';
-import { DateTimeSecPipe } from '../pipes';
+import { DateTimeSecPipe } from '../pipes/dateTimeSecPipe';
 import { ConfirmService } from '../confirm';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LogDetailsRenameDialogComponent } from './renameDialog.component';

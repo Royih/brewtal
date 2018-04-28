@@ -7,7 +7,13 @@ namespace Brewtal.Database
         public DbSet<LogSession> Sessions { get; set; }
         public DbSet<LogRecord> Records { get; set; }
         public DbSet<PidConfig> PidConfigs { get; set; }
-
+        public DbSet<Brew> Brews { get; set; }
+        public DbSet<BrewStep> BrewSteps { get; set; }
+        public DbSet<BrewStepTemplate> BrewStepTemplates { get; set; }
+        public DbSet<DataCaptureDefinition> DataCaptureDefinitions { get; set; }
+        public DbSet<DataCaptureFloatValue> DataCaptureFloatValues { get; set; }
+        public DbSet<DataCaptureStringValue> DataCaptureStringValues { get; set; }
+        public DbSet<DataCaptureIntValue> DataCaptureIntValues { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -21,5 +27,7 @@ namespace Brewtal.Database
                 .WithMany(b => b.LogRecords);
 
         }
+
     }
+
 }

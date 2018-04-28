@@ -16,7 +16,7 @@ namespace Brewtal.CQRS
         public int SessionId { get; set; }
     }
 
-    public class GetLogSessionQueryHandler : IRequestHandler<GetLogSessionQuery, LogSessionDto>
+    public class GetLogSessionQueryHandler : RequestHandler<GetLogSessionQuery, LogSessionDto>
     {
         private readonly BrewtalContext _db;
 
@@ -25,9 +25,9 @@ namespace Brewtal.CQRS
             _db = db;
         }
 
-        public async Task<LogSessionDto> Handle(GetLogSessionQuery query, CancellationToken cancellationToken)
+        protected override LogSessionDto HandleCore(GetLogSessionQuery query)
         {
-            var session = (await _db.Sessions.SingleAsync(x => x.Id == query.SessionId));
+            var session = _db.Sessions.Single(x => x.Id == query.SessionId);
             return new LogSessionDto { Id = session.Id, Name = session.Name, Created = session.Created, Completed = session.Completed, LogPoints = _db.Records.Count(x => x.SessionId == query.SessionId) };
         }
     }

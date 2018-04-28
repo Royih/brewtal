@@ -19,6 +19,186 @@ namespace brewtal.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011");
 
+            modelBuilder.Entity("Brewtal.Database.Brew", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BatchNumber");
+
+                    b.Property<int>("BatchSize");
+
+                    b.Property<DateTime>("BeginMash");
+
+                    b.Property<int>("BoilTimeInMinutes");
+
+                    b.Property<DateTime>("Initiated");
+
+                    b.Property<float>("MashOutTemp");
+
+                    b.Property<float>("MashTemp");
+
+                    b.Property<int>("MashTimeInMinutes");
+
+                    b.Property<float>("MashWaterAmount");
+
+                    b.Property<string>("Name");
+
+                    b.Property<float>("SpargeTemp");
+
+                    b.Property<float>("SpargeWaterAmount");
+
+                    b.Property<float>("StrikeTemp");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Brews");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.BrewStep", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrewId");
+
+                    b.Property<string>("CompleteButtonText");
+
+                    b.Property<DateTime?>("CompleteTime");
+
+                    b.Property<string>("Instructions");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Order");
+
+                    b.Property<bool>("ShowTimer");
+
+                    b.Property<DateTime>("StartTime");
+
+                    b.Property<float>("TargetMashTemp");
+
+                    b.Property<float>("TargetSpargeTemp");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrewId");
+
+                    b.ToTable("BrewSteps");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.BrewStepTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CompleteButtonText");
+
+                    b.Property<string>("CompleteTimeAdd");
+
+                    b.Property<string>("Instructions");
+
+                    b.Property<string>("Name");
+
+                    b.Property<bool>("ShowTimer");
+
+                    b.Property<string>("Target1TempFrom");
+
+                    b.Property<string>("Target2TempFrom");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BrewStepTemplates");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureDefinition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrewStepTemplateId");
+
+                    b.Property<string>("Label");
+
+                    b.Property<bool>("Optional");
+
+                    b.Property<string>("Units");
+
+                    b.Property<string>("ValueType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrewStepTemplateId");
+
+                    b.ToTable("DataCaptureDefinitions");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureFloatValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrewStepId");
+
+                    b.Property<string>("Label");
+
+                    b.Property<bool>("Optional");
+
+                    b.Property<string>("Units");
+
+                    b.Property<float?>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrewStepId");
+
+                    b.ToTable("DataCaptureFloatValues");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureIntValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrewStepId");
+
+                    b.Property<string>("Label");
+
+                    b.Property<bool>("Optional");
+
+                    b.Property<string>("Units");
+
+                    b.Property<int?>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrewStepId");
+
+                    b.ToTable("DataCaptureIntValues");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureStringValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BrewStepId");
+
+                    b.Property<string>("Label");
+
+                    b.Property<bool>("Optional");
+
+                    b.Property<string>("Units");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrewStepId");
+
+                    b.ToTable("DataCaptureStringValues");
+                });
+
             modelBuilder.Entity("Brewtal.Database.LogRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -79,6 +259,46 @@ namespace brewtal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PidConfigs");
+                });
+
+            modelBuilder.Entity("Brewtal.Database.BrewStep", b =>
+                {
+                    b.HasOne("Brewtal.Database.Brew", "Brew")
+                        .WithMany()
+                        .HasForeignKey("BrewId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureDefinition", b =>
+                {
+                    b.HasOne("Brewtal.Database.BrewStepTemplate", "BrewStepTemplate")
+                        .WithMany()
+                        .HasForeignKey("BrewStepTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureFloatValue", b =>
+                {
+                    b.HasOne("Brewtal.Database.BrewStep", "BrewStep")
+                        .WithMany()
+                        .HasForeignKey("BrewStepId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureIntValue", b =>
+                {
+                    b.HasOne("Brewtal.Database.BrewStep", "BrewStep")
+                        .WithMany()
+                        .HasForeignKey("BrewStepId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Brewtal.Database.DataCaptureStringValue", b =>
+                {
+                    b.HasOne("Brewtal.Database.BrewStep", "BrewStep")
+                        .WithMany()
+                        .HasForeignKey("BrewStepId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Brewtal.Database.LogRecord", b =>

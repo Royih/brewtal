@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using AutoMapper;
+using Brewtal.CQRS;
 
 namespace Brewtal
 {
@@ -43,6 +45,8 @@ namespace Brewtal
             }
             services.AddSingleton<PidWorker>();
 
+            services.AddScoped(typeof(IAggregateRootFactory), typeof(AggregateRootFactory));
+
             services.AddSignalR();
 
             services.AddMvc();
@@ -72,6 +76,12 @@ namespace Brewtal
                 routes.MapHub<BrewtalHub>("brewtal");
             });
 
+            Mapper.Initialize(cfg =>
+           {
+               cfg.AddProfile<AutoMapperProfileConfiguration>();
+           });
+
+
             app.UseDefaultFiles();
 
             app.UseStaticFiles();
@@ -87,7 +97,9 @@ namespace Brewtal
 
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                scope.ServiceProvider.GetRequiredService<BrewtalContext>().Database.Migrate();
+                var db = scope.ServiceProvider.GetRequiredService<BrewtalContext>();
+                db.Database.Migrate();
+                db.Seed();
             }
 
             var pidWorker = serviceProvider.GetRequiredService<PidWorker>();

@@ -1,0 +1,12 @@
+a.nav-link {
+    color: #fff !important;
+    border-bottom: 3px solid black;
+}
+
+a.nav-link:hover {
+    color: #bbb !important;
+}
+
+a.nav-link.active {
+    border-bottom: 3px solid yellow;
+}

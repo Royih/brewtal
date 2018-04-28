@@ -1,0 +1,218 @@
+<div class="container" *ngIf="brew">
+  <div class="row mt-3">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{brew.setup.name}}
+            <div class="pull-right align-middle">
+              <i class="fa fa-cog" routerLink="/brew/edit/{{id}}" [routerLinkActive]="['active']"></i>
+            </div>
+          </h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Batch #:</label>
+            <label class="col-form-label">{{brew.setup.batchNumber}}</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Mash start:</label>
+            <label class="col-form-label">{{brew.setup.beginMash | date: 'dd MMM yyyy HH:mm:ss'}}</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Mash temp:</label>
+            <label class="col-form-label">{{brew.setup.mashTemp}} ºC</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Strike temp:</label>
+            <label class="col-form-label">{{brew.setup.strikeTemp}} ºC</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Sparge temp:</label>
+            <label class="col-form-label">{{brew.setup.spargeTemp}} ºC</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Mash out temp:</label>
+            <label class="col-form-label">{{brew.setup.mashOutTemp}} ºC</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Mash time:</label>
+            <label class="col-form-label">{{brew.setup.mashTimeInMinutes}} min</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Boil time:</label>
+            <label class="col-form-label">{{brew.setup.boilTimeInMinutes}} min</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Batch size:</label>
+            <label class="col-form-label">{{brew.setup.batchSize}} l</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Ms water amount:</label>
+            <label class="col-form-label">{{brew.setup.mashWaterAmount}} l</label>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-6 col-form-label">Sp water amount:</label>
+            <label class="col-form-label">{{brew.setup.spargeWaterAmount}} l</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-3" *ngIf="brewHistory && brewHistory.length>0">
+        <div class="card-header">History</div>
+        <div class="card-body">
+          <table class="table table-condensed table-striped">
+            <tr>
+              <th>Step</th>
+              <th>Duration</th>
+            </tr>
+            <tr *ngFor="let log of brewHistory">
+              <td title="Started: {{log.started | date: 'dd MMM yyyy HH:mm:ss'}} Completed: {{log.completed | date: 'dd MMM yyyy HH:mm:ss'}}">
+                {{log.name}}
+              </td>
+              <td>
+                {{log.timeUsed}}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card mt-3" *ngIf="definedDataCaptureValues">
+        <div class="card-header">Captured values</div>
+        <div class="card-body">
+
+          <label *ngIf="!definedDataCaptureValues || definedDataCaptureValues.length == 0">No captured values</label>
+          <table class="table table-condensed table-striped" *ngIf="definedDataCaptureValues && definedDataCaptureValues.length >0">
+            <tr>
+              <th>Label</th>
+              <th>Value</th>
+            </tr>
+            <tr *ngFor="let val of definedDataCaptureValues; let i=index">
+              <td>
+                {{val.label}}
+              </td>
+              <td>
+                <!--{{val.valueAsString}} {{val.units}}-->
+                <div class="col-sm-12 input-group">
+                  <input type="text" name="dcd_{{i}}" [(ngModel)]="definedDataCaptureValues[i].valueAsString" (keyup)="saveDataCaptureValues2()"
+                    class="form-control" required />
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">{{val.units}}</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card mt-3">
+            <div class="card-header card-primary card-inverse">
+              <div class="btn-group align-middle pull-right" *ngIf="brew.currentStep.completeButtonText">
+                <button class="btn btn-danger" *ngIf="brew.currentStep.order>1" (click)="goBackOneStep()">Abort this step</button>
+                <button class="btn btn-success" (click)="goToNextStep()" [disabled]="saving">{{brew.currentStep.completeButtonText}}</button>
+              </div>
+              <span class="h4">
+                Brew step: {{brew.currentStep.name}}
+              </span>
+            </div>
+            <div class="card-body">
+              <div class="form-group row">
+                <label class="col-3 col-form-label">Started time:</label>
+                <label class="col-form-label">
+                  {{brew.currentStep.startTime | date: 'dd MMM yyyy HH:mm:ss'}}
+                </label>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Msh:</label>
+                <label class="col-form-label">
+                  <span class="badge badge-primary" title="Planned Target">{{brew.currentStep.targetMashTemp | number: '1.1-1'}}ºC</span>
+                  <span class="badge badge-success" title="Current Target">{{pid1Status?.targetTemp | number:'1.1-1'}}ºC</span>
+                  <span class="badge badge-danger" title="Actual">{{pid1Status?.currentTemp | number:'1.2-2'}}ºC</span>
+                  <span class="badge badge-danger">{{pid1Status?.output | onOff}}</span>
+                </label>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Spge:</label>
+                <label class="col-form-label">
+                  <span class="badge badge-primary" title="Planned Target">{{brew.currentStep.targetSpargeTemp | number: '1.1-1'}}ºC</span>
+                  <span class="badge badge-success" title="Current Target">{{pid2Status?.targetTemp | number:'1.1-1'}}ºC</span>
+                  <span class="badge badge-danger" title="Actual">{{pid2Status?.currentTemp | number:'1.2-2'}}ºC</span>
+                  <span class="badge badge-danger">{{pid2Status?.output | onOff}}</span>
+                </label>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Pumps:</label>
+                <label class="col-form-label">
+                  <app-common-output></app-common-output>
+                </label>
+
+              </div>
+              <div class="alert alert-info">
+                <strong>Instructions</strong>
+                <span [innerHTML]="brew.currentStep.instructions | splitInLines"></span>
+              </div>
+
+              <!-- <div style="vertical-align: middle;">
+                                SignalR:
+                                <div [className]="brewStatusConnection.signalrROk ? 'badge badge-success' : 'badge badge-warning' " [title]="brewStatusConnection.signalrRConnectionName">
+                                    <i class="fa" [className]="brewStatusConnection.signalrROk ? 'fa fa-check' : 'fa fa-warning' " style="vertical-align: top;"></i>
+                                    <em *ngIf="!brewStatusConnection.signalrROk">{{brewStatusConnection.signalrRConnectionName}}</em>
+                                </div>
+                                | <em *ngIf="brewStatusConnection.brewHWStatus">{{brewStatusConnection.statusReceived | date: 'dd MMM yyyy HH:mm:ss'}}</em>                                | <span (click)="displayDebug = !displayDebug" style="cursor: pointer"> Dbg: <i class="fa fa-code"></i></span>
+                            </div>
+                            <pre *ngIf="displayDebug" class="code">
+                                {{brewStatusConnection.brewHWStatus | json}}
+                            </pre> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mt-3" *ngIf="dataCaptureValues && dataCaptureValues.length>0">
+            <div class="card-header">Data capture</div>
+            <div class="card-body">
+              <form class="form-horizontal" name="form">
+
+                <div class="form-group row" *ngFor="let value of dataCaptureValues; let i=index">
+                  <label class="col-sm-6 col-form-label">{{value.label}}: </label>
+                  <div class="col-sm-5 input-group">
+                    <input type="text" name="dc_{{i}}" [(ngModel)]="dataCaptureValues[i].valueAsString" (keyup)="saveDataCaptureValues()" class="form-control"
+                      required />
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">{{value.units}}</span>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+              <div class="alert alert-info" *ngIf="!dataCaptureValues">
+                There are no values to be captured at this step</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mt-3" *ngIf="brew.currentStep.completeButtonText && brew.currentStep.showTimer===true">
+            <div class="card-header">Step time</div>
+            <div class="card-body">
+              <h1>{{stepTime}}</h1>
+            </div>
+          </div>
+          <div class="card mt-3" *ngIf="countDown">
+            <div class="card-header">Remaining time</div>
+            <div class="card-body">
+              <h1>{{countDown}}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
