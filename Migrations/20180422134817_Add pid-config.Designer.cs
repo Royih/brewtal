@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace brewtal.Migrations
+namespace Brewtal.Migrations
 {
     [DbContext(typeof(BrewtalContext))]
     [Migration("20180422134817_Add pid-config")]

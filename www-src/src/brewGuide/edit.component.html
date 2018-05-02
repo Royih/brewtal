@@ -1,9 +1,9 @@
-<div class="container mt-4" *ngIf="brewlog">
+<div class="container mt-4" *ngIf="brew">
   <form class="form-horizontal" #myForm="ngForm" (ngSubmit)="save();">
     <div class="form-group row">
       <label for="name" class="col-sm-3 col-form-label">Name</label>
       <div class="col-sm-5">
-        <input type="text" class="form-control" id="name" placeholder="Name" required minlength="1" maxlength="100" name="name" [(ngModel)]="brewlog.name"
+        <input type="text" class="form-control" id="name" placeholder="Name" required minlength="1" maxlength="100" name="name" [(ngModel)]="brew.name"
           #name="ngModel">
         <div *ngIf="name.errors && (name.dirty || name.touched)" class="alert alert-danger">
           <div [hidden]="!name.errors.required">
@@ -16,7 +16,7 @@
       <label for="batchNumber" class="col-sm-3 col-form-label">Batch number</label>
       <div class="col-sm-3">
         <input type="number" class="form-control" id="batchNumber" placeholder="Batch number" required pattern="[1-9][0-9]{0,2}"
-          name="batchNumber" [(ngModel)]="brewlog.batchNumber" #batchNumber="ngModel">
+          name="batchNumber" [(ngModel)]="brew.batchNumber" #batchNumber="ngModel">
         <div *ngIf="batchNumber.errors && (batchNumber.dirty || batchNumber.touched)" class="alert alert-danger">
           <div [hidden]="!batchNumber.errors.required">
             Batch number is required
@@ -30,19 +30,27 @@
     <div class="form-group row">
       <label for="beginMash" class="col-sm-3 col-form-label">Brew time (mash)</label>
       <div class="col-sm-3">
-        <input ngui-datetime-picker class="form-control" id="beginMash" placeholder="Brew date" required name="beginMash" [(ngModel)]="brewlog.beginMash"
-          #beginMash="ngModel">
-        <div *ngIf="beginMash.errors && (beginMash.dirty || beginMash.touched)" class="alert alert-danger">
+
+
+        <!-- <input ngui-datetime-picker class="form-control" id="beginMash" placeholder="Brew date" required name="beginMash" [(ngModel)]="brew.beginMash"
+          #beginMash="ngModel" date-format="YYYY-MM-DD HH:mm"> -->
+
+        <input [id]="beginMash" name="beginMash" required=true placeholder="yyyy-mm-dd" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="brew.beginMash"
+          class="form-control">
+        <owl-date-time #dt1></owl-date-time>
+
+
+        <!-- <div *ngIf="beginMash.errors && (beginMash.dirty || beginMash.touched)" class="alert alert-danger">
           <div [hidden]="!beginMash.errors.required">
             Brew time is required
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="form-group row">
       <label for="mashTemp" class="col-sm-3 col-form-label">Mash temp</label>
       <div class="col-sm-2 input-group">
-        <input type="number" step="0.1" class="form-control" id="mashTemp" placeholder="Mash temp" required name="mashTemp" [(ngModel)]="brewlog.mashTemp"
+        <input type="number" step="0.1" class="form-control" id="mashTemp" placeholder="Mash temp" required name="mashTemp" [(ngModel)]="brew.mashTemp"
           #mashTemp="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">ºC</span>
@@ -58,7 +66,7 @@
       <label for="strikeTemp" class="col-sm-3 col-form-label">Strike temp</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="0.1" class="form-control" id="strikeTemp" placeholder="Strike temp" required name="strikeTemp"
-          [(ngModel)]="brewlog.strikeTemp" #strikeTemp="ngModel" />
+          [(ngModel)]="brew.strikeTemp" #strikeTemp="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">ºC</span>
         </div>
@@ -74,7 +82,7 @@
       <label for="spargeTemp" class="col-sm-3 col-form-label">Sparge temp</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="0.1" class="form-control" id="spargeTemp" placeholder="Sparge temp" required name="spargeTemp"
-          [(ngModel)]="brewlog.spargeTemp" #spargeTemp="ngModel" />
+          [(ngModel)]="brew.spargeTemp" #spargeTemp="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">ºC</span>
         </div>
@@ -90,7 +98,7 @@
       <label for="mashOutTemp" class="col-sm-3 col-form-label">Mash out temp</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="0.1" class="form-control" id="mashOutTemp" placeholder="Mash out temp" required name="mashOutTemp"
-          [(ngModel)]="brewlog.mashOutTemp" #mashOutTemp="ngModel" />
+          [(ngModel)]="brew.mashOutTemp" #mashOutTemp="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">ºC</span>
         </div>
@@ -106,7 +114,7 @@
       <label for="mashTimeInMinutes" class="col-sm-3 col-form-label">Mash time</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="1" class="form-control" id="mashTimeInMinutes" placeholder="Mash time" required name="mashTimeInMinutes"
-          [(ngModel)]="brewlog.mashTimeInMinutes" #mashTimeInMinutes="ngModel" />
+          [(ngModel)]="brew.mashTimeInMinutes" #mashTimeInMinutes="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">mins</span>
         </div>
@@ -122,7 +130,7 @@
       <label for="boilTimeInMinutes" class="col-sm-3 col-form-label">Boile time</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="1" class="form-control" id="boilTimeInMinutes" placeholder="Boil time" required name="boilTimeInMinutes"
-          [(ngModel)]="brewlog.boilTimeInMinutes" #boilTimeInMinutes="ngModel" />
+          [(ngModel)]="brew.boilTimeInMinutes" #boilTimeInMinutes="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">mins</span>
         </div>
@@ -137,7 +145,7 @@
     <div class="form-group row">
       <label for="batchSize" class="col-sm-3 col-form-label">Batch size</label>
       <div class="col-sm-2 input-group">
-        <input type="number" step="1" class="form-control" id="batchSize" placeholder="Batch size" required name="batchSize" [(ngModel)]="brewlog.batchSize"
+        <input type="number" step="1" class="form-control" id="batchSize" placeholder="Batch size" required name="batchSize" [(ngModel)]="brew.batchSize"
           #batchSize="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">l</span>
@@ -154,7 +162,7 @@
       <label for="mashWaterAmount" class="col-sm-3 col-form-label">Mash water amount</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="1" class="form-control" id="mashWaterAmount" placeholder="Mash water amount" required name="mashWaterAmount"
-          [(ngModel)]="brewlog.mashWaterAmount" #mashWaterAmount="ngModel" />
+          [(ngModel)]="brew.mashWaterAmount" #mashWaterAmount="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">l</span>
         </div>
@@ -170,7 +178,7 @@
       <label for="spargeWaterAmount" class="col-sm-3 col-form-label">Sparge water amount</label>
       <div class="col-sm-2 input-group">
         <input type="number" step="1" class="form-control" id="spargeWaterAmount" placeholder="Sparge water amount" required name="spargeWaterAmount"
-          [(ngModel)]="brewlog.spargeWaterAmount" #spargeWaterAmount="ngModel" />
+          [(ngModel)]="brew.spargeWaterAmount" #spargeWaterAmount="ngModel" />
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon2">l</span>
         </div>
@@ -185,9 +193,10 @@
       <label for="spargeWaterAmount" class="col-sm-3">&nbsp;</label>
       <div class="col-sm-9">
         <button class="btn btn-primary" type="submit" [disabled]="!myForm.valid">Save brew</button>
-        <button class="btn btn-danger" type="button" *ngIf="brewlog.id>0" (click)="delete()">Delete</button>
+        <button class="btn btn-danger" type="button" *ngIf="brew.id>0" (click)="delete()">Delete</button>
         <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
       </div>
     </div>
   </form>
 </div>
+<pre>{{brew | json}}</pre>

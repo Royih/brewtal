@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using Brewtal.Database;
 using Brewtal.Dtos;
+using Brewtal.Extensions;
 using MediatR;
 
 namespace Brewtal.CQRS
@@ -32,10 +33,10 @@ namespace Brewtal.CQRS
             else
             {
                 var maxBrew = _db.Brews.Select(x => x.BatchNumber).OrderByDescending(x => x).FirstOrDefault();
-                return new BrewDto
+                return Mapper.Map<BrewDto>(new Brew
                 {
                     BatchNumber = maxBrew + 1,
-                    BeginMash = DateTime.UtcNow,
+                    BeginMash = DateTime.Now,
                     MashTemp = 67.0f,
                     StrikeTemp = 73.6f,
                     SpargeTemp = 75.6f,
@@ -45,7 +46,7 @@ namespace Brewtal.CQRS
                     BatchSize = 40,
                     MashWaterAmount = 30,
                     SpargeWaterAmount = 20
-                };
+                });
             }
         }
     }

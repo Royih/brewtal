@@ -66,6 +66,7 @@ const routes: Routes = [
     BrewGuideModule,
     BrewtalModule.forRoot(),
     PipeModule.forRoot()
+
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

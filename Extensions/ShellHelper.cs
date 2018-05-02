@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace brewtal.Extensions
+namespace Brewtal.Extensions
 {
     public static class ShellHelper
     {

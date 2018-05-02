@@ -5,7 +5,7 @@ using Brewtal.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Brewmatic.Controllers
+namespace Brewtal.Controllers
 {
     [Route("api/[controller]")]
     public class DataCaptureController : Controller

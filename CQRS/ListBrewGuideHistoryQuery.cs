@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using brewtal.Extensions;
+using Brewtal.Extensions;
 using Brewtal.Database;
 using Brewtal.Dtos;
 using MediatR;

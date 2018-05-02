@@ -6,7 +6,7 @@ using Brewtal.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace brewtal.Controllers
+namespace Brewtal.Controllers
 {
     [Route("api/[controller]")]
     public class BrewGuideController : Controller

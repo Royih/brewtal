@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using AutoMapper;
 using Brewtal.CQRS;
+using Brewtal.BLL.ScheduledWarmup;
+using Quartz.Spi;
 
 namespace Brewtal
 {
@@ -45,6 +47,8 @@ namespace Brewtal
             }
             services.AddSingleton<BrewIO>();
             services.AddSingleton<BackgroundWorker>();
+            services.AddSingleton<ScheduledWarmup>();
+            services.AddSingleton(typeof(IJobFactory), typeof(JobFactory));
 
             services.AddScoped(typeof(IAggregateRootFactory), typeof(AggregateRootFactory));
 
@@ -106,11 +110,8 @@ namespace Brewtal
             var worker = serviceProvider.GetRequiredService<BackgroundWorker>();
             worker.Start();
 
-
-
-
-
-
+            var schduledWarmup = serviceProvider.GetRequiredService<ScheduledWarmup>();
+            schduledWarmup.Schedule();
         }
     }
 }

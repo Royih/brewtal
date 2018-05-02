@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Brewtal.BLL;
+using Brewtal.BLL.ScheduledWarmup;
 using Brewtal.Database;
 using Brewtal.Dtos;
 using Microsoft.EntityFrameworkCore;
@@ -12,26 +13,31 @@ namespace Brewtal.CQRS
         private readonly BrewtalContext _db;
         private readonly BackgroundWorker _worker;
         private readonly BrewIO _brewIO;
+        private readonly ScheduledWarmup _warmupScheduler;
         private readonly int _brewId;
 
-        public BrewAR(BrewtalContext db, BackgroundWorker worker, BrewIO brewIO, int brewId)
+        public BrewAR(BrewtalContext db, BackgroundWorker worker, BrewIO brewIO, ScheduledWarmup warmupScheduler, int brewId)
         {
             _db = db;
             _brewId = brewId;
             _worker = worker;
             _brewIO = brewIO;
+            _warmupScheduler = warmupScheduler;
         }
 
         public Brew SaveBrew(BrewDto value)
-        {
+        {            
+            var beginMashHasChanged = false;
             Brew brew = null;
             if (value.Id > 0)
             {
                 brew = _db.Brews.Single(x => x.Id == value.Id);
+                beginMashHasChanged = brew.BeginMash != value.BeginMash;
             }
             else
             {
                 brew = new Brew();
+                beginMashHasChanged = true;
                 _db.Add(brew);
 
                 var firstStep = GetFirstStep(brew);
@@ -39,7 +45,7 @@ namespace Brewtal.CQRS
                 var brewStep = AddStep(brew, firstStep);
             }
             brew.Initiated = DateTime.UtcNow;
-            brew.BeginMash = value.BeginMash.ToUniversalTime();
+            brew.BeginMash = value.BeginMash;
             brew.BatchNumber = value.BatchNumber;
             brew.Name = value.Name;
             brew.MashTemp = value.MashTemp;
@@ -52,6 +58,12 @@ namespace Brewtal.CQRS
             brew.MashWaterAmount = value.MashWaterAmount;
             brew.SpargeWaterAmount = value.SpargeWaterAmount;
             _db.SaveChanges();
+
+            if (beginMashHasChanged)
+            {
+                _warmupScheduler.Schedule();
+            }
+
             return brew;
         }
 

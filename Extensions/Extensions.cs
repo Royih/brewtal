@@ -1,6 +1,6 @@
 using System;
 
-namespace brewtal.Extensions
+namespace Brewtal.Extensions
 {
     public static class Extensions
     {

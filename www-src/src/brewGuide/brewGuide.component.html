@@ -171,6 +171,9 @@
             <label class="col-form-label">{{brew.setup.spargeWaterAmount}} l</label>
           </div>
         </div>
+        <pre>
+          {{brew.setup | json}}
+        </pre>
       </div>
 
       <div class="card mb-3" *ngIf="brewHistory && brewHistory.length>0">

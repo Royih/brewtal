@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Brewtal.BLL;
-using brewtal.Extensions;
+using Brewtal.Extensions;
 
 namespace Brewtal.Controllers
 {

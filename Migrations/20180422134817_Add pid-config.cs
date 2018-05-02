@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace brewtal.Migrations
+namespace Brewtal.Migrations
 {
     public partial class Addpidconfig : Migration
     {

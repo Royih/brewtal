@@ -13,7 +13,7 @@ import { ConfirmService } from '../app/confirm';
 })
 export class EditBrewlogComponent implements OnInit {
 
-    brewlog: any;
+    brew: any;
     private sub: Subscription;
     private id: number;
     initializeResult: any;
@@ -25,7 +25,7 @@ export class EditBrewlogComponent implements OnInit {
 
     private load() {
         this.http.get('brewguide/setup/' + this.id).toPromise().then(res => {
-            this.brewlog = res;
+            this.brew = res;
         });
     }
 
@@ -37,7 +37,7 @@ export class EditBrewlogComponent implements OnInit {
     }
 
     save() {
-        this.http.post('brewguide/saveSetup', this.brewlog).toPromise().then((res: any) => {
+        this.http.post('brewguide/saveSetup', this.brew).toPromise().then((res: any) => {
             this.toaster.displayBriefMessage('Saved', 'Your changes has been saved', false);
             this.router.navigate(['brew', res.id]);
 
@@ -47,7 +47,7 @@ export class EditBrewlogComponent implements OnInit {
     delete() {
         this.confirm.display('Are you sure you want to delete this brew completly?', 'Are you sure?').then(res => {
             if (res) {
-                this.http.post('brewguide/delete', this.brewlog)
+                this.http.post('brewguide/delete', this.brew)
                     // .map(response => response.json())
                     .subscribe(
                         data => {
