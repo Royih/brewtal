@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { OutputComponent } from './output/output.component';
 
 @NgModule({
-    imports: [],
+    imports: [CommonModule],
     declarations: [OutputComponent],
     exports: [OutputComponent]
 })

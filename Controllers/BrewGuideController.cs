@@ -72,6 +72,20 @@ namespace brewtal.Controllers
             return Ok(true);
         }
 
+        [HttpPost("saveNotes")]
+        public async Task<IActionResult> SaveNotes([FromBody]SaveBrewNotesCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok(true);
+        }
+
+        [HttpPost("saveShoppingList")]
+        public async Task<IActionResult> SaveShoppingList([FromBody]SaveBrewShoppingListCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok(true);
+        }
+
         [HttpGet]
         [Route("getLatest")]
         public async Task<IActionResult> GetLatestBrew()

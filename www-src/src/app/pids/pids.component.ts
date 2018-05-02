@@ -4,6 +4,8 @@ import { HubConnection } from '@aspnet/signalr-client';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
+import { HardwareStatusDto } from '../../models';
+import { SignalRService } from '../../infrastructure/signalRService';
 
 @Component({
   selector: 'app-pids',
@@ -16,25 +18,13 @@ export class PidsComponent implements OnInit {
   startingLogging = false;
   stoppingLogging = false;
 
-  private _hubConnection: HubConnection;
+  hwStatus: HardwareStatusDto;
 
-  pidUpdateStatus: any;
+  constructor(private http: HttpClient, private signalR: SignalRService) {
 
-  constructor(private http: HttpClient) {
-
-    this._hubConnection = new HubConnection(environment.apiUrl + 'brewtal');
-
-    this._hubConnection.on('PIDUpdate', (data: any) => {
-      this.pidUpdateStatus = data;
+    this.signalR.hwStatus.subscribe(res => {
+      this.hwStatus = res;
     });
-
-    this._hubConnection.start()
-      .then(() => {
-        console.log('Hub connection started');
-      })
-      .catch(() => {
-        console.log('Error while establishing connection');
-      });
   }
 
   ngOnInit(): void {

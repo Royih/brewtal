@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ToastMaster } from '../infrastructure/toastMaster';
 import { Subscription } from 'rxjs/Subscription';
 import { HttpClient } from '@angular/common/http';
+import { ConfirmService } from '../app/confirm';
 
 @Component({
     moduleId: module.id,
@@ -17,7 +18,8 @@ export class EditBrewlogComponent implements OnInit {
     private id: number;
     initializeResult: any;
 
-    constructor(private route: ActivatedRoute, private http: HttpClient, private toaster: ToastMaster, private router: Router) {
+    constructor(private route: ActivatedRoute, private http: HttpClient,
+        private toaster: ToastMaster, private router: Router, private confirm: ConfirmService) {
 
     }
 
@@ -43,16 +45,18 @@ export class EditBrewlogComponent implements OnInit {
     }
 
     delete() {
-        if (confirm('Are your sure?')) {
-            this.http.post('brewguide/delete', this.brewlog)
-                // .map(response => response.json())
-                .subscribe(
-                    data => {
-                        this.router.navigate(['brews']);
-                    },
-                    () => console.log('brewlog deleted.')
-                );
-        }
+        this.confirm.display('Are you sure you want to delete this brew completly?', 'Are you sure?').then(res => {
+            if (res) {
+                this.http.post('brewguide/delete', this.brewlog)
+                    // .map(response => response.json())
+                    .subscribe(
+                        data => {
+                            this.router.navigate(['brew']);
+                        },
+                        () => console.log('brewlog deleted.')
+                    );
+            }
+        });
     }
 
     cancel() {

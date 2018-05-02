@@ -21,11 +21,11 @@ namespace Brewtal.Controllers
             _meditor = meditor;
         }
 
-        [HttpPost("updateTarget")]
+        /*[HttpPost("updateTarget")]
         public async Task PostSet([FromBody]UpdatePidTargetCommand command)
         {
             await _meditor.Send(command);
-        }
+        }*/
 
         [HttpGet("{pidId:int}")]
         public async Task<IActionResult> GetPidConfig(int pidId)

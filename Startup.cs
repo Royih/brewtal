@@ -43,7 +43,8 @@ namespace Brewtal
                 services.AddSingleton(typeof(ITempReader), typeof(TempReader));
                 services.AddSingleton(typeof(IGPIO), typeof(GPIO));
             }
-            services.AddSingleton<PidWorker>();
+            services.AddSingleton<BrewIO>();
+            services.AddSingleton<BackgroundWorker>();
 
             services.AddScoped(typeof(IAggregateRootFactory), typeof(AggregateRootFactory));
 
@@ -102,8 +103,8 @@ namespace Brewtal
                 db.Seed();
             }
 
-            var pidWorker = serviceProvider.GetRequiredService<PidWorker>();
-            pidWorker.Start();
+            var worker = serviceProvider.GetRequiredService<BackgroundWorker>();
+            worker.Start();
 
 
 

@@ -6,6 +6,8 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import { PidConfigDialogComponent } from './pidConfig.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { HardwareStatusDto } from '../../models';
+import { SignalRService } from '../../infrastructure/signalRService';
 
 @Component({
   selector: 'app-pid',
@@ -14,31 +16,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class PidComponent implements OnInit {
 
-  _pidUpdateStatus: any;
-  pidStat: any;
   @Input() name = '';
   @Input() pidId = 0;
 
-  @Input()
-  set pidUpdateStatus(pidUpdateStatus: any) {
-    if (pidUpdateStatus) {
-      this._pidUpdateStatus = pidUpdateStatus;
-      this.pidStat = pidUpdateStatus.pids.filter(x => x.pidId === this.pidId)[0];
-      if (!this.targetTempChanging) {
-        this.targetTemp = this.pidStat.targetTemp;
-      }
-
-    }
-
-  }
-  get pidUpdateStatus() { return this._pidUpdateStatus; }
-
+  pidStat: any;
 
   message = '';
   messages: string[] = [];
   targetTemp = 0;
-
-
 
   freeValuePin = 0;
   freeValue = false;
@@ -52,8 +37,13 @@ export class PidComponent implements OnInit {
   targetChanges = new Subject<number>();
   targetTempChanging = false;
 
-  constructor(private http: HttpClient, private modalService: NgbModal) {
-
+  constructor(private http: HttpClient, private modalService: NgbModal, private signalR: SignalRService) {
+    this.signalR.hwStatus.subscribe(res => {
+      this.pidStat = res.pids.filter(x => x.pidId === this.pidId)[0];
+      if (!this.targetTempChanging) {
+        this.targetTemp = this.pidStat.targetTemp;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -79,10 +69,15 @@ export class PidComponent implements OnInit {
   }
 
   changeTargetTemp(): void {
-    this.http.post('pid/updateTarget', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).toPromise().then(res => {
+
+    this.signalR.invoke('UpdateTarget', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).then(res => {
       console.log('Target temp changed to: ' + this.targetTemp + ' for pid: ' + this.pidId);
       this.targetTempChanging = false;
     });
+
+    /*this.http.post('pid/updateTarget', { PidId: this.pidId, NewTargetTemp: this.targetTemp }).toPromise().then(res => {
+
+    });*/
 
   }
 

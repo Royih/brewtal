@@ -18,9 +18,9 @@ namespace Brewtal.CQRS
 
     public class UpdatePidConfigCommandHandler : RequestHandler<UpdatePidConfigCommand>
     {
-        private readonly PidWorker _pidWorker;
+        private readonly BackgroundWorker _pidWorker;
 
-        public UpdatePidConfigCommandHandler(PidWorker pidWorker)
+        public UpdatePidConfigCommandHandler(BackgroundWorker pidWorker)
         {
             _pidWorker = pidWorker;
         }

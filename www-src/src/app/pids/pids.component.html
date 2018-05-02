@@ -1,10 +1,15 @@
 <div class="container">
+
+  <div class="button-group d-lg-none mt-3">
+    <button class="btn btn-outline-primary" routerLink="/brew/resume">Resume</button>
+  </div>
+
   <div class="row">
     <div class="col-md-6">
-      <app-pid name="Pid 1" [pidId]="0" [pidUpdateStatus]="pidUpdateStatus"></app-pid>
+      <app-pid name="Pid 1" [pidId]="0"></app-pid>
     </div>
     <div class="col-md-6">
-      <app-pid name="Pid 2" [pidId]="1" [pidUpdateStatus]="pidUpdateStatus"></app-pid>
+      <app-pid name="Pid 2" [pidId]="1"></app-pid>
     </div>
   </div>
 
@@ -17,7 +22,7 @@
       <app-common-output></app-common-output>
 
       <p>
-        {{pidUpdateStatus?.computedTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+        {{hwStatus?.computedTime | date: 'yyyy-MM-dd HH:mm:ss' }}
       </p>
 
     </div>
@@ -29,15 +34,15 @@
     </div>
     <div class="card-body">
 
-      <div class="input-group" *ngIf="pidUpdateStatus && !pidUpdateStatus.loggingToName">
+      <div class="input-group" *ngIf="hwStatus && !hwStatus.loggingToName">
         <input type="text" class="form-control" [(ngModel)]="newLogName" placeholder="Add log name">
-        <button class="btn btn-primary" (click)="startLogging()" [disabled]="!newLogName || (!pidUpdateStatus.loggingToName && startingLogging)">Start logging</button>
+        <button class="btn btn-primary" (click)="startLogging()" [disabled]="!newLogName || (!hwStatus.loggingToName && startingLogging)">Start logging</button>
       </div>
 
-      <div *ngIf="pidUpdateStatus && pidUpdateStatus.loggingToName">
-        Logging in progress: {{pidUpdateStatus.loggingToName}}
+      <div *ngIf="hwStatus && hwStatus.loggingToName">
+        Logging in progress: {{hwStatus.loggingToName}}
 
-        <button class="btn btn-primary" (click)="stopLogging()" [disabled]="(pidUpdateStatus.loggingToName && stoppingLogging)">Stop logging</button>
+        <button class="btn btn-primary" (click)="stopLogging()" [disabled]="(hwStatus.loggingToName && stoppingLogging)">Stop logging</button>
 
       </div>
 

@@ -6,9 +6,3 @@ export interface PidStatusDto {
     output: boolean;
     outputValue: number;
 }
-
-export interface PidStatusesDto {
-    pids: PidStatusDto[];
-    computedTime: Date;
-    loggingToName: string;
-}

@@ -21,5 +21,7 @@ namespace Brewtal.Database
         public int BatchSize { get; set; }
         public float MashWaterAmount { get; set; }
         public float SpargeWaterAmount { get; set; }
+        public string Notes { get; set; }
+        public string ShoppingList { get; set; }
     }
 }

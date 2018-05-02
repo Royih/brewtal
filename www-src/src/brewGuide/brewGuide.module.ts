@@ -11,10 +11,12 @@ import { MomentModule } from 'angular2-moment';
 import { ResumeComponent } from './resume.component';
 import { PipeModule } from '../app/pipes/pipe.module';
 import { BrewtalModule } from '../common/brewtal.module';
+import { EditNotesComponent } from './editNotes.component';
 
 @NgModule({
   imports: [CommonModule, FormsModule, RouterModule, BrewGuideRoutingModule, NguiDatetimePickerModule, MomentModule,
     PipeModule.forRoot(), BrewtalModule.forRoot()],
-  declarations: [EditBrewlogComponent, ListBrewlogComponent, BrewGuideComponent, ResumeComponent],
+  declarations: [EditBrewlogComponent, ListBrewlogComponent, BrewGuideComponent, ResumeComponent, EditNotesComponent],
+  entryComponents: [EditNotesComponent]
 })
 export class BrewGuideModule { }

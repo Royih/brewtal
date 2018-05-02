@@ -2,3 +2,7 @@
     background-color: #333;
     border-color: "#fff;";
 }
+
+.addLineBreaks {
+    white-space: pre-line;
+}

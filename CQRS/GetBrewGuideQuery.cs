@@ -46,7 +46,9 @@ namespace Brewtal.CQRS
                     BoilTimeInMinutes = brew.Brew.BoilTimeInMinutes,
                     BatchSize = brew.Brew.BatchSize,
                     MashWaterAmount = brew.Brew.MashWaterAmount,
-                    SpargeWaterAmount = brew.Brew.SpargeWaterAmount
+                    SpargeWaterAmount = brew.Brew.SpargeWaterAmount,
+                    Notes = brew.Brew.Notes,
+                    ShoppingList = brew.Brew.ShoppingList
                 },
                 CurrentStep = new StepDto
                 {

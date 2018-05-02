@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Brewtal.Dtos;
 
 namespace Brewtal.BLL
 {
@@ -7,13 +8,13 @@ namespace Brewtal.BLL
     {
         private TimeSpan _cycleTime = TimeSpan.FromSeconds(10);
         private double _percentage = 0;
-        private readonly IGPIO _gpio;
-        private readonly int _outputPin;
+        private readonly BrewIO _brewIO;
+        private readonly Outputs _output;
 
-        public HeaterController(IGPIO gpio, int outputPin)
+        public HeaterController(BrewIO brewIO, Outputs output)
         {
-            _gpio = gpio;
-            _outputPin = outputPin;
+            _brewIO = brewIO;
+            _output = output;
         }
 
         public void UpdateNextCyclePercentage(double percentage)
@@ -34,18 +35,23 @@ namespace Brewtal.BLL
                     var timeOff = _cycleTime.TotalMilliseconds - timeOn;
                     if (timeOn > 0)
                     {
-                        _gpio.Set(_outputPin, true);
+                        SetPidValue(true);
                         CurrentStatus = true;
                         System.Threading.Thread.Sleep((int)timeOn);
                     }
                     if (timeOff > 0)
                     {
-                        _gpio.Set(_outputPin, false);
+                        SetPidValue(false);
                         CurrentStatus = false;
                         System.Threading.Thread.Sleep((int)timeOff);
                     }
                 });
             }
+        }
+
+        private void SetPidValue(bool value)
+        {
+            _brewIO.Set(_output,value);
         }
 
     }

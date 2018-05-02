@@ -19,9 +19,9 @@ namespace Brewtal.CQRS
 
     public class GetPidConfigQueryHandler : RequestHandler<GetPidConfigQuery, PidConfig>
     {
-        private readonly PidWorker _pidWorker;
+        private readonly BackgroundWorker _pidWorker;
 
-        public GetPidConfigQueryHandler(PidWorker pidWorker)
+        public GetPidConfigQueryHandler(BackgroundWorker pidWorker)
         {
             _pidWorker = pidWorker;
         }

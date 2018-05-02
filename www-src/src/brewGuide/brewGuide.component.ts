@@ -6,7 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import * as moment from 'moment';
 import { HubConnection } from '@aspnet/signalr-client';
-import { PidStatusesDto, PidStatusDto } from '../models';
+import { PidStatusDto } from '../models';
+import { HardwareStatusDto } from '../models/HardwareStatusDto';
+import { SignalRService } from '../infrastructure/signalRService';
+import { ConfirmService } from '../app/confirm';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EditNotesComponent } from './editNotes.component';
 
 @Component({
     moduleId: module.id,
@@ -29,28 +34,21 @@ export class BrewGuideComponent implements OnInit {
     saving: boolean;
     private sub: Subscription;
     private id: number;
-    pidStatuses: PidStatusesDto;
+    pidStatuses: HardwareStatusDto;
     pid1Status: PidStatusDto;
     pid2Status: PidStatusDto;
 
-    private _hubConnection: HubConnection;
 
+    constructor(private route: ActivatedRoute, private http: HttpClient, private confirm: ConfirmService,
+        private toaster: ToastMaster, private router: Router, private signalR: SignalRService,
+        private modalService: NgbModal
+    ) {
 
-    constructor(private route: ActivatedRoute, private http: HttpClient, private toaster: ToastMaster, private router: Router) {
-        this._hubConnection = new HubConnection(environment.apiUrl + 'brewtal');
-        this._hubConnection.on('PIDUpdate', (data: PidStatusesDto) => {
-            this.pidStatuses = data;
-            this.pid1Status = data.pids[0];
-            this.pid2Status = data.pids[1];
+        signalR.hwStatus.subscribe(res => {
+            this.pidStatuses = res;
+            this.pid1Status = res.pids[0];
+            this.pid2Status = res.pids[1];
         });
-
-        this._hubConnection.start()
-            .then(() => {
-                console.log('Hub connection started');
-            })
-            .catch(() => {
-                console.log('Error while establishing connection');
-            });
     }
 
 
@@ -58,12 +56,11 @@ export class BrewGuideComponent implements OnInit {
         this.http.get('brewGuide/' + this.id).toPromise().then(res => {
             this.brew = res;
             this.startTime = this.brew.currentStep.startTime;
+            this.completeTime = this.brew.currentStep.completeTime;
 
             this.updateStepTime();
-            if (this.brew.currentStep.completeTime) {
-                this.completeTime = this.brew.currentStep.completeTime;
-                this.updateCountdown();
-            }
+            this.updateCountdown();
+
             this.http.get('datacapture/' + this.brew.currentStep.id).toPromise().then(dataCaptureValues => {
                 this.dataCaptureValues = dataCaptureValues;
             });
@@ -102,11 +99,16 @@ export class BrewGuideComponent implements OnInit {
 
     private updateCountdown() {
         const self = this;
-        setTimeout(function () {
-            const endTime = moment.utc(self.completeTime);
-            self.countDown = moment.utc(endTime.diff(moment())).format('HH:mm:ss');
-            self.updateCountdown();
-        }, 1000);
+        if (self.completeTime) {
+            setTimeout(function () {
+                const endTime = moment.utc(self.completeTime);
+                self.countDown = moment.utc(endTime.diff(moment())).format('HH:mm:ss');
+                self.updateCountdown();
+            }, 1000);
+        } else {
+            self.countDown = null;
+        }
+
     }
 
     goToNextStep() {
@@ -117,12 +119,14 @@ export class BrewGuideComponent implements OnInit {
     }
 
     goBackOneStep() {
-        if (confirm('Are you sure you want to abort the current step and return to the previous?')) {
-            this.http.post('brewGuide/goBackOneStep', { brewId: this.id })
-                .subscribe(
-                    () => this.load()
-                );
-        }
+        this.confirm.display('Are you sure you want to abort the current step and return to the previous?', 'Are you sure?').then(res => {
+            if (res) {
+                this.http.post('brewGuide/goBackOneStep', { brewId: this.id })
+                    .subscribe(
+                        () => this.load()
+                    );
+            }
+        });
     }
 
     saveDataCaptureValues() {
@@ -159,6 +163,30 @@ export class BrewGuideComponent implements OnInit {
                 self.getDefinedDataCaptureValues();
             });
         }, seconds * 1000); // delay n seconds
+    }
+
+    editNotes() {
+        const editNotesComponent = this.modalService.open(EditNotesComponent);
+        editNotesComponent.componentInstance.notes = this.brew.setup.notes;
+        return editNotesComponent.result.then(newNotes => {
+            this.http.post('brewGuide/saveNotes', { brewId: this.id, Notes: newNotes }).toPromise().then(res => {
+                this.brew.setup.notes = newNotes;
+            });
+        }, (reason) => {
+            return false;
+        });
+    }
+
+    editShoppingList() {
+        const editNotesComponent = this.modalService.open(EditNotesComponent);
+        editNotesComponent.componentInstance.notes = this.brew.setup.shoppingList;
+        return editNotesComponent.result.then(shoppingList => {
+            this.http.post('brewGuide/saveShoppingList', { brewId: this.id, ShoppingList: shoppingList }).toPromise().then(res => {
+                this.brew.setup.shoppingList = shoppingList;
+            });
+        }, (reason) => {
+            return false;
+        });
     }
 
 }

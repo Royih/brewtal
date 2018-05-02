@@ -1,3 +1,19 @@
-<footer class="container-fluid">
-  <p>&copy; Roy  2018</p>
+<footer class="footer">
+  <div class="container">
+    <span class="text-muted">&copy; Brewtal</span> |
+    <span class="text-muted">
+      <i class="fa fa-heartbeat" *ngIf="!signalR.heartbeat"></i>
+      <i class="fa fa-heartbeat" style="color: red" *ngIf="signalR.heartbeat"></i>
+      <span *ngIf="signalR.dataReceivedDate">
+        | {{signalR.dataReceivedDate | date: 'HH:mm:ss'}}
+      </span>
+      | {{signalR.status}}
+      <span *ngIf="signalR.allowReconnect">
+        |
+        <button class="btn btn-sm btn-danger" (click)="signalR.start()">
+          <i class="fa fa-link"></i>
+        </button>
+      </span>
+    </span>
+  </div>
 </footer>

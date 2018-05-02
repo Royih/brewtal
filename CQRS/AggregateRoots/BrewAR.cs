@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Brewtal.BLL;
 using Brewtal.Database;
 using Brewtal.Dtos;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,16 @@ namespace Brewtal.CQRS
     public class BrewAR
     {
         private readonly BrewtalContext _db;
+        private readonly BackgroundWorker _worker;
+        private readonly BrewIO _brewIO;
         private readonly int _brewId;
 
-        public BrewAR(BrewtalContext db, int brewId)
+        public BrewAR(BrewtalContext db, BackgroundWorker worker, BrewIO brewIO, int brewId)
         {
             _db = db;
             _brewId = brewId;
+            _worker = worker;
+            _brewIO = brewIO;
         }
 
         public Brew SaveBrew(BrewDto value)
@@ -50,6 +55,19 @@ namespace Brewtal.CQRS
             return brew;
         }
 
+        public void SaveBrewNotes(string notes)
+        {
+            var brew = _db.Brews.Single(x => x.Id == _brewId);
+            brew.Notes = notes;
+            _db.SaveChanges();
+        }
+
+        public void SaveShoppingList(string shoppingList)
+        {
+            var brew = _db.Brews.Single(x => x.Id == _brewId);
+            brew.ShoppingList = shoppingList;
+            _db.SaveChanges();
+        }
 
         public void GoToNextStep()
         {
@@ -136,7 +154,16 @@ namespace Brewtal.CQRS
 
         private void ApplyStepTemperature(BrewStep brewStep)
         {
-            //TODO: 
+            _worker.UpdateTargetTemp(0, brewStep.TargetMashTemp);
+            if (brewStep.TargetMashTemp > 0)
+            {
+                _brewIO.Set(Outputs.Output1, true);
+            }
+            _worker.UpdateTargetTemp(1, brewStep.TargetSpargeTemp);
+            if (brewStep.TargetSpargeTemp > 0)
+            {
+                _brewIO.Set(Outputs.Output2, true);
+            }
         }
 
         private StepDto GetFirstStep(Brew brew)

@@ -25,18 +25,18 @@ namespace Brewtal.BLL
         private double target = 0;
 
         private readonly PIDRegulator _pidRegulator;
-        private readonly IGPIO _gPIO;
-        private readonly int _outPin;
+        private readonly BrewIO _brewIO;
+        private readonly Outputs _output;
         private readonly HeaterController _heater;
 
 
-        public PID(int pidId, string pidName, IGPIO gPIO, int outPin)
+        public PID(int pidId, string pidName, BrewIO brewIO, Outputs output)
         {
             _pidId = pidId;
             _pidName = pidName;
-            _gPIO = gPIO;
-            _outPin = outPin;
-            _heater = new HeaterController(gPIO, outPin);
+            _brewIO = brewIO;
+            _output = output;
+            _heater = new HeaterController(_brewIO, output);
             _heater.Start();
 
             using (var db = new BrewtalContext())
@@ -61,7 +61,7 @@ namespace Brewtal.BLL
                 PidId = _pidId,
                 PidName = _pidName,
             };
-            
+
         }
 
         public void Calculate(TempReaderResultDto currentTempResult)
@@ -69,7 +69,7 @@ namespace Brewtal.BLL
             var currentTemp = _pidId == 0 ? currentTempResult.Temp1 : currentTempResult.Temp2;
             var outputValue = _pidRegulator.Compute(currentTemp, Status.TargetTemp, DateTime.Now.Subtract(_previousComputeTime));
             _heater.UpdateNextCyclePercentage(outputValue);
-            _previousComputeTime = DateTime.Now;            
+            _previousComputeTime = DateTime.Now;
 
             Status.CurrentTemp = currentTemp;
             Status.OutputValue = outputValue;

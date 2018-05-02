@@ -44,6 +44,10 @@ namespace brewtal.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Notes");
+
+                    b.Property<string>("ShoppingList");
+
                     b.Property<float>("SpargeTemp");
 
                     b.Property<float>("SpargeWaterAmount");

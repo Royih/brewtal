@@ -31,6 +31,7 @@ import { PipeModule } from './pipes/pipe.module';
 import { DateTimePipe } from './pipes/dateTimePipe';
 import { DatePipe } from '@angular/common';
 import { DateTimeSecPipe } from './pipes/dateTimeSecPipe';
+import { SignalRService } from '../infrastructure/signalRService';
 
 
 const routes: Routes = [
@@ -70,7 +71,7 @@ const routes: Routes = [
     provide: HTTP_INTERCEPTORS,
     useClass: CustomInterceptor,
     multi: true
-  }, ConfirmService, ToastMaster, DatePipe, DateTimePipe, DateTimeSecPipe],
+  }, ConfirmService, ToastMaster, DatePipe, DateTimePipe, DateTimeSecPipe, SignalRService],
   bootstrap: [AppComponent],
   entryComponents: [ConfirmDialogComponent, LogDetailsRenameDialogComponent, PidConfigDialogComponent]
 })

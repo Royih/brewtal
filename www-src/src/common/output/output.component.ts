@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HubConnection } from '@aspnet/signalr-client';
+import { HardwareStatusDto, ManualOutputDto } from '../../models';
+import { SignalRService } from '../../infrastructure/signalRService';
 
 @Component({
   selector: 'app-common-output',
@@ -8,52 +11,34 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OutputComponent implements OnInit {
 
-  gpio26 = false;
-  gpio6 = false;
-  gpio22 = false;
-  gpio4 = false;
+  manualOutputs: ManualOutputDto[];
 
-  constructor(private http: HttpClient) {
+  constructor(private signalR: SignalRService) {
 
   }
 
   ngOnInit(): void {
 
-    this.http.get('pins/get/26').toPromise().then((res: boolean) => {
-      this.gpio4 = res;
-    });
-    this.http.get('pins/get/6').toPromise().then((res: boolean) => {
-      this.gpio6 = res;
-    });
-    this.http.get('pins/get/22').toPromise().then((res: boolean) => {
-      this.gpio22 = res;
-    });
-    this.http.get('pins/get/4').toPromise().then((res: boolean) => {
-      this.gpio4 = res;
+    this.signalR.hwStatus.subscribe(res => {
+      if (!this.manualOutputs) {
+        this.manualOutputs = res.manualOutputs;
+      } else {
+        // Only update own copy if there is a changed value on one of the outputs
+        for (let i = 0; i < res.manualOutputs.length; i++) {
+          const existingOutput = this.manualOutputs.find(x => x.output === res.manualOutputs[i].output);
+          if (existingOutput.value !== res.manualOutputs[i].value) {
+            existingOutput.value = res.manualOutputs[i].value;
+          }
+        }
+      }
     });
 
   }
 
-  togglePin(pin: number): void {
-    let myVal = false;
-    if (pin === 26) {
-      this.gpio26 = !this.gpio26;
-      myVal = this.gpio26;
-    } else if (pin === 6) {
-      this.gpio6 = !this.gpio6;
-      myVal = this.gpio6;
-    } else if (pin === 22) {
-      this.gpio22 = !this.gpio22;
-      myVal = this.gpio22;
-    } else if (pin === 4) {
-      this.gpio4 = !this.gpio4;
-      myVal = this.gpio4;
-    }
-
-    this.http.post('pins/set', { PinId: pin, Status: myVal }).toPromise().then(res => {
-      console.log('Did toggle pin ', pin, res);
+  toggleOutput(output: ManualOutputDto) {
+    output.value = !output.value;
+    this.signalR.invoke('SetOutput', { Output: output.output, Value: output.value }).then(res => {
     });
   }
-
 
 }

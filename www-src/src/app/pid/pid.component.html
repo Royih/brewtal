@@ -72,19 +72,19 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon3">Ouput pin</span>
       </div>
-      <button [class]="'btn ' +((pidStat?.output) ? 'btn-success' : 'btn-danger')">
+      <button [class]="'btn ' +((pidStat?.output) ? 'btn-danger' : 'btn-success')">
         {{(pidStat?.output || false) ? 'On' : 'Off' }}
       </button>
     </div>
 
-    <div class="input-group mb-3">
+    <!-- <div class="input-group mb-3">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon3">Error sum</span>
       </div>
       <button [class]="'btn ' +((pidStat?.output) ? 'btn-success' : 'btn-danger')">
         {{pidStat?.errorSum | twodigits }}
       </button>
-    </div>
+    </div> -->
 
 
   </div>

@@ -14,12 +14,4 @@ namespace Brewtal.Dtos
         public double ErrorSum { get; set; }
     }
 
-    public class PidStatusesDto
-    {
-        public PidSatusDto[] Pids { get; set; }
-        public DateTime ComputedTime { get; set; }
-        public string LoggingToName { get; set; }
-
-    }
-
 }
