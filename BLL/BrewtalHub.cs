@@ -31,6 +31,11 @@ namespace Brewtal.BLL
             _mediator.Send(command);
         }
 
+        public void NotifyBrewUpdated(int brewId)
+        {
+            Clients.All.InvokeAsync("BrewUpdated", brewId);
+        }
+
 
 
     }

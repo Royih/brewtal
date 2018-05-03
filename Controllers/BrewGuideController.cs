@@ -75,15 +75,13 @@ namespace Brewtal.Controllers
         [HttpPost("saveNotes")]
         public async Task<IActionResult> SaveNotes([FromBody]SaveBrewNotesCommand command)
         {
-            await _mediator.Send(command);
-            return Ok(true);
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPost("saveShoppingList")]
         public async Task<IActionResult> SaveShoppingList([FromBody]SaveBrewShoppingListCommand command)
         {
-            await _mediator.Send(command);
-            return Ok(true);
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpGet]

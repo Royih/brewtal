@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace Brewtal.Migrations
@@ -43,6 +45,8 @@ namespace Brewtal.Migrations
                     b.Property<string>("Name");
 
                     b.Property<string>("Notes");
+
+                    b.Property<string>("OptimisticConcurrencyKey");
 
                     b.Property<string>("ShoppingList");
 

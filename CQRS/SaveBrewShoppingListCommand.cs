@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
+using AutoMapper;
 using Brewtal.Database;
 using Brewtal.Dtos;
 using MediatR;
@@ -11,13 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Brewtal.CQRS
 {
 
-    public class SaveBrewShoppingListCommand : IRequest<CommandResultDto>
+    public class SaveBrewShoppingListCommand : IRequest<BrewDto>
     {
         public int BrewId { get; set; }
         public string ShoppingList { get; set; }
     }
 
-    public class SaveBrewShoppingListCommandHandler : RequestHandler<SaveBrewShoppingListCommand, CommandResultDto>
+    public class SaveBrewShoppingListCommandHandler : RequestHandler<SaveBrewShoppingListCommand, BrewDto>
     {
         private readonly IAggregateRootFactory _arFactory;
 
@@ -26,11 +27,11 @@ namespace Brewtal.CQRS
             _arFactory = arFactory;
         }
 
-        protected override CommandResultDto HandleCore(SaveBrewShoppingListCommand command)
+        protected override BrewDto HandleCore(SaveBrewShoppingListCommand command)
         {
             var brew = _arFactory.GetBrewById(command.BrewId);
-            brew.SaveShoppingList(command.ShoppingList);
-            return new CommandResultDto { Success = true };
+            var savedBrew = brew.SaveShoppingList(command.ShoppingList);
+            return Mapper.Map<BrewDto>(savedBrew);
         }
     }
 }

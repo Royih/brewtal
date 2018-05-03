@@ -10,6 +10,7 @@ export class SignalRService {
 
     hubConnection: HubConnection;
     hwStatus = new Subject<HardwareStatusDto>();
+    brewUpdated = new Subject<number>();
     status = 'Pending';
     dataReceivedDate: Date;
     allowReconnect = false;
@@ -18,6 +19,7 @@ export class SignalRService {
     start() {
         this.allowReconnect = false;
         this.heartbeat = false;
+
         this.hubConnection = new HubConnection(environment.apiUrl + 'brewtal');
 
         this.hubConnection.on('HarwareStatus', (data: HardwareStatusDto) => {
@@ -25,6 +27,11 @@ export class SignalRService {
             this.dataReceivedDate = new Date();
             this.status = 'Ok';
             this.heartbeat = !this.heartbeat;
+        });
+
+        this.hubConnection.on('BrewUpdated', (brewId: number) => {
+            console.log(`Brew with id ${brewId} was updated`);
+            this.brewUpdated.next(brewId);
         });
 
         this.hubConnection.onclose(res => {

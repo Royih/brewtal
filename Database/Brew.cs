@@ -23,6 +23,6 @@ namespace Brewtal.Database
         public float SpargeWaterAmount { get; set; }
         public string Notes { get; set; }
         public string ShoppingList { get; set; }
-        public Guid? OptimisticConcurrencyKey { get; set; }
+        public string OptimisticConcurrencyKey { get; set; }
     }
 }

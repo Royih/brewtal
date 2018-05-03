@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using Brewtal.BLL;
 using Brewtal.BLL.ScheduledWarmup;
 using Brewtal.Database;
 using Brewtal.Dtos;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brewtal.CQRS
@@ -14,6 +16,7 @@ namespace Brewtal.CQRS
         private readonly BackgroundWorker _worker;
         private readonly BrewIO _brewIO;
         private readonly ScheduledWarmup _warmupScheduler;
+
         private readonly int _brewId;
 
         public BrewAR(BrewtalContext db, BackgroundWorker worker, BrewIO brewIO, ScheduledWarmup warmupScheduler, int brewId)
@@ -26,12 +29,21 @@ namespace Brewtal.CQRS
         }
 
         public Brew SaveBrew(BrewDto value)
-        {            
+        {
             var beginMashHasChanged = false;
             Brew brew = null;
             if (value.Id > 0)
             {
                 brew = _db.Brews.Single(x => x.Id == value.Id);
+
+                if (!string.IsNullOrEmpty(brew.OptimisticConcurrencyKey))
+                {
+                    if (value.OptimisticConcurrencyKey != brew.OptimisticConcurrencyKey)
+                    {
+                        throw new ApplicationException("Concurrency error. Brew has been saved after you loaded it.");
+                    }
+                }
+
                 beginMashHasChanged = brew.BeginMash != value.BeginMash;
             }
             else
@@ -45,7 +57,7 @@ namespace Brewtal.CQRS
                 var brewStep = AddStep(brew, firstStep);
             }
             brew.Initiated = DateTime.UtcNow;
-            brew.BeginMash = value.BeginMash;
+            brew.BeginMash = value.BeginMash.AddSeconds((-1) * value.BeginMash.Second);
             brew.BatchNumber = value.BatchNumber;
             brew.Name = value.Name;
             brew.MashTemp = value.MashTemp;
@@ -57,6 +69,10 @@ namespace Brewtal.CQRS
             brew.BatchSize = value.BatchSize;
             brew.MashWaterAmount = value.MashWaterAmount;
             brew.SpargeWaterAmount = value.SpargeWaterAmount;
+            brew.Notes = value.Notes;
+            brew.ShoppingList = value.ShoppingList;
+            brew.OptimisticConcurrencyKey = Guid.NewGuid().ToString();
+
             _db.SaveChanges();
 
             if (beginMashHasChanged)
@@ -67,18 +83,19 @@ namespace Brewtal.CQRS
             return brew;
         }
 
-        public void SaveBrewNotes(string notes)
+        public Brew SaveBrewNotes(string notes)
         {
-            var brew = _db.Brews.Single(x => x.Id == _brewId);
+            var brew = Mapper.Map<BrewDto>(_db.Brews.Single(x => x.Id == _brewId));
             brew.Notes = notes;
-            _db.SaveChanges();
+            return SaveBrew(brew);
+
         }
 
-        public void SaveShoppingList(string shoppingList)
+        public Brew SaveShoppingList(string shoppingList)
         {
-            var brew = _db.Brews.Single(x => x.Id == _brewId);
+            var brew = Mapper.Map<BrewDto>(_db.Brews.Single(x => x.Id == _brewId));
             brew.ShoppingList = shoppingList;
-            _db.SaveChanges();
+            return SaveBrew(brew);
         }
 
         public void GoToNextStep()

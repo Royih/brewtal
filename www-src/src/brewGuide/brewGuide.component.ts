@@ -41,14 +41,20 @@ export class BrewGuideComponent implements OnInit {
 
     constructor(private route: ActivatedRoute, private http: HttpClient, private confirm: ConfirmService,
         private toaster: ToastMaster, private router: Router, private signalR: SignalRService,
-        private modalService: NgbModal
-    ) {
+        private modalService: NgbModal) {
 
         signalR.hwStatus.subscribe(res => {
             this.pidStatuses = res;
             this.pid1Status = res.pids[0];
             this.pid2Status = res.pids[1];
         });
+
+        signalR.brewUpdated.subscribe((res: number) => {
+            if (+this.id === res) {
+                this.load();
+            }
+        });
+
     }
 
 
