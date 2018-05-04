@@ -20,7 +20,7 @@ namespace Brewtal.BLL
 
         private DateTime _previousComputeTime = DateTime.Now.AddSeconds(-1);
 
-        public PidSatusDto Status { get; private set; }
+        public PidStatusDto Status { get; private set; }
 
         private double target = 0;
 
@@ -56,7 +56,7 @@ namespace Brewtal.BLL
                 }
             }
             _pidRegulator = new PIDRegulator(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd, 100, 0, 100, 0);
-            Status = new PidSatusDto
+            Status = new PidStatusDto
             {
                 PidId = _pidId,
                 PidName = _pidName,

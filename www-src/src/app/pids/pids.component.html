@@ -1,7 +1,9 @@
 <div class="container">
 
   <div class="button-group d-lg-none mt-3">
-    <button class="btn btn-outline-primary" routerLink="/brew/resume">Resume</button>
+    <button class="btn btn-primary" routerLink="/brew/resume">Resume</button>
+    <button class="btn btn-secondary" routerLink="/brew">Brews</button>
+    <button class="btn btn-secondary" routerLink="/brew/edit/0"><i class="fa fa-plus-circle"></i> New brew</button>
   </div>
 
   <div class="row">
@@ -21,32 +23,7 @@
 
       <app-common-output></app-common-output>
 
-      <p>
-        {{hwStatus?.computedTime | date: 'yyyy-MM-dd HH:mm:ss' }}
-      </p>
-
     </div>
   </div>
 
-  <div class="card mt-4">
-    <div class="card-header">
-      Logging
-    </div>
-    <div class="card-body">
-
-      <div class="input-group" *ngIf="hwStatus && !hwStatus.loggingToName">
-        <input type="text" class="form-control" [(ngModel)]="newLogName" placeholder="Add log name">
-        <button class="btn btn-primary" (click)="startLogging()" [disabled]="!newLogName || (!hwStatus.loggingToName && startingLogging)">Start logging</button>
-      </div>
-
-      <div *ngIf="hwStatus && hwStatus.loggingToName">
-        Logging in progress: {{hwStatus.loggingToName}}
-
-        <button class="btn btn-primary" (click)="stopLogging()" [disabled]="(hwStatus.loggingToName && stoppingLogging)">Stop logging</button>
-
-      </div>
-
-    </div>
-
-  </div>
 </div>

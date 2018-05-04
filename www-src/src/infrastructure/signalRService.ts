@@ -55,6 +55,7 @@ export class SignalRService {
     constructor() {
         this.start();
     }
+
     invoke(methodName: string, args: any): Promise<any> {
         console.log('Invoking', methodName, 'with arguments: ', args);
         return this.hubConnection.invoke(methodName, args);

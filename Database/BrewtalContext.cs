@@ -26,6 +26,7 @@ namespace Brewtal.Database
                 .HasOne(p => p.Session)
                 .WithMany(b => b.LogRecords);
 
+
         }
 
     }

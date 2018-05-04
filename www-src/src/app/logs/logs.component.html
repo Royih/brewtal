@@ -1,19 +1,27 @@
-<table class="table table-striped">
-  <tr>
-    <th>Name</th>
-    <th>Created</th>
-    <th>Completed</th>
-  </tr>
-  <tr *ngFor="let session of sessions; let i = index">
-    <td>
-      <a routerLink="/logs/{{session.id}}">{{session.name}}</a>
-    </td>
-    <td>
-      {{session.created | dateTime }}
-    </td>
-    <td>
-      {{session.completed | dateTime}}
-    </td>
-  </tr>
+<div class="container-fluid">
+  <div class="btn-group mt-4">
+    <button class="btn btn-primary" (click)="start()" *ngIf="!currentLogSession">
+      <i class="fa fa-play-circle"></i> Start</button>
+    <button class="btn btn-primary" (click)="stop()" *ngIf="currentLogSession">
+      <i class="fa fa-stop"></i> Stop logging "{{currentLogSession.name}}"</button>
+  </div>
+  <table class="table table-striped mt-4">
+    <tr>
+      <th>Name</th>
+      <th>Created</th>
+      <th>Completed</th>
+    </tr>
+    <tr *ngFor="let session of sessions; let i = index">
+      <td>
+        <a routerLink="/logs/{{session.id}}">{{session.name}}</a>
+      </td>
+      <td>
+        {{session.created | dateTime }}
+      </td>
+      <td>
+        {{session.completed | dateTime}}
+      </td>
+    </tr>
 
-</table>
+  </table>
+</div>

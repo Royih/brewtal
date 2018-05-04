@@ -5,6 +5,7 @@ using Brewtal.CQRS;
 using Brewtal.Database;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
@@ -31,15 +32,19 @@ namespace Brewtal.BLL.ScheduledWarmup
                 var name = context.JobDetail.Key.Name;
                 var brewStepId = int.Parse(name.Replace("job_", ""));
 
-                var brewStep = db.BrewSteps.SingleOrDefault(x => x.Id == brewStepId && x.Name == "Initial");
+                var brewStep = db.BrewSteps.Include(x => x.Brew).SingleOrDefault(x => x.Id == brewStepId && x.Name == "Initial");
                 if (brewStep != null)
                 {
                     await mediator.Send(new GoToNextStepCommand
                     {
                         BrewId = brewStep.BrewId
                     });
+                    await mediator.Send(new StartLoggingCommand
+                    {
+                        Name = brewStep.Brew.Name
+                    });
                     await hubContext.Clients.All.InvokeAsync("BrewUpdated", brewStep.BrewId);
-                    await Console.Out.WriteLineAsync($"{DateTime.Now}: Warmup of brew with id {brewStep.BrewId} was initiated.");
+                    await Console.Out.WriteLineAsync($"{DateTime.Now}: Warmup of brew with name \"{brewStep.Brew.Name}\" and Id={brewStep.BrewId} was initiated.");
                 }
 
 

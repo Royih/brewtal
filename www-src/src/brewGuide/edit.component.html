@@ -1,4 +1,13 @@
 <div class="container mt-4" *ngIf="brew">
+
+  <div class="form-group row">
+    <div class="col-sm-9">
+      <button class="btn btn-primary" type="button" (click)="save()" [disabled]="!myForm.valid">Save brew</button>
+      <button class="btn btn-danger" type="button" *ngIf="brew.id>0" (click)="delete()">Delete</button>
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+
   <form class="form-horizontal" #myForm="ngForm" (ngSubmit)="save();">
     <div class="form-group row">
       <label for="name" class="col-sm-3 col-form-label">Name</label>
@@ -35,8 +44,8 @@
         <!-- <input ngui-datetime-picker class="form-control" id="beginMash" placeholder="Brew date" required name="beginMash" [(ngModel)]="brew.beginMash"
           #beginMash="ngModel" date-format="YYYY-MM-DD HH:mm"> -->
 
-        <input [id]="beginMash" name="beginMash" required=true placeholder="yyyy-mm-dd" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="brew.beginMash"
-          class="form-control">
+        <input [id]="beginMash" name="beginMash" required=true placeholder="yyyy-mm-dd" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1"
+          [(ngModel)]="brew.beginMash" class="form-control">
         <owl-date-time #dt1></owl-date-time>
 
 
@@ -189,13 +198,6 @@
         </div>
       </div>
     </div>
-    <div class="form-group row">
-      <label for="spargeWaterAmount" class="col-sm-3">&nbsp;</label>
-      <div class="col-sm-9">
-        <button class="btn btn-primary" type="submit" [disabled]="!myForm.valid">Save brew</button>
-        <button class="btn btn-danger" type="button" *ngIf="brew.id>0" (click)="delete()">Delete</button>
-        <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
-      </div>
-    </div>
+
   </form>
 </div>

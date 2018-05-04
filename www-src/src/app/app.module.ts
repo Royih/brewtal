@@ -32,6 +32,7 @@ import { DateTimePipe } from './pipes/dateTimePipe';
 import { DatePipe } from '@angular/common';
 import { DateTimeSecPipe } from './pipes/dateTimeSecPipe';
 import { SignalRService } from '../infrastructure/signalRService';
+import { StartLoggingComponent } from './logs/startLogging.component';
 
 
 const routes: Routes = [
@@ -52,7 +53,8 @@ const routes: Routes = [
     PidsComponent,
     LogDetailsComponent,
     LogDetailsRenameDialogComponent,
-    PidConfigDialogComponent
+    PidConfigDialogComponent,
+    StartLoggingComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +76,6 @@ const routes: Routes = [
     multi: true
   }, ConfirmService, ToastMaster, DatePipe, DateTimePipe, DateTimeSecPipe, SignalRService],
   bootstrap: [AppComponent],
-  entryComponents: [ConfirmDialogComponent, LogDetailsRenameDialogComponent, PidConfigDialogComponent]
+  entryComponents: [ConfirmDialogComponent, LogDetailsRenameDialogComponent, PidConfigDialogComponent, StartLoggingComponent]
 })
 export class AppModule { }

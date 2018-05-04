@@ -48,6 +48,7 @@ namespace Brewtal
             services.AddSingleton<BrewIO>();
             services.AddSingleton<BackgroundWorker>();
             services.AddSingleton<ScheduledWarmup>();
+            services.AddSingleton<TempLogger>();
             services.AddSingleton(typeof(IJobFactory), typeof(JobFactory));
 
             services.AddScoped(typeof(IAggregateRootFactory), typeof(AggregateRootFactory));
@@ -112,6 +113,9 @@ namespace Brewtal
 
             var schduledWarmup = serviceProvider.GetRequiredService<ScheduledWarmup>();
             schduledWarmup.Schedule();
+
+            var tempLogger = serviceProvider.GetRequiredService<TempLogger>();
+            tempLogger.Start();
         }
     }
 }

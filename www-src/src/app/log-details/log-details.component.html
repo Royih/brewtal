@@ -20,8 +20,6 @@
             Select resolution: {{resolution}} seconds
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" (click)="changeResolution(1);" [class.active]="resolution===1">1 second</a>
-            <a class="dropdown-item" (click)="changeResolution(10);" [class.active]="resolution===10">10 seconds</a>
             <a class="dropdown-item" (click)="changeResolution(15);" [class.active]="resolution===15">15 seconds</a>
             <a class="dropdown-item" (click)="changeResolution(30);" [class.active]="resolution===30">30 seconds</a>
             <a class="dropdown-item" (click)="changeResolution(45);" [class.active]="resolution===45">45 seconds</a>

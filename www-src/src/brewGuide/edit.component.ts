@@ -61,7 +61,7 @@ export class EditBrewlogComponent implements OnInit {
 
     cancel() {
         if (this.id === 0) {
-            this.router.navigate(['brews']);
+            this.router.navigate(['brew']);
         } else {
             this.router.navigate(['brew', this.id]);
         }

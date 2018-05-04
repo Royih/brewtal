@@ -31,19 +31,4 @@ export class PidsComponent implements OnInit {
 
   }
 
-  startLogging(): void {
-    this.startingLogging = true;
-    this.http.post('logging/start', { name: this.newLogName }).toPromise().then(res => {
-      this.stoppingLogging = false;
-      console.log('Logging started');
-    });
-  }
-
-  stopLogging(): void {
-    this.stoppingLogging = true;
-    this.http.post('logging/stop', {}).toPromise().then(res => {
-      this.startingLogging = false;
-      console.log('Logging stopped');
-    });
-  }
 }

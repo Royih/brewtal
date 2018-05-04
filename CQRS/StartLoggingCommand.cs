@@ -24,9 +24,10 @@ namespace Brewtal.CQRS
 
         public async Task<bool> Handle(StartLoggingCommand command, CancellationToken cancellationToken)
         {
-            if (_db.Sessions.Any(x => !x.Completed.HasValue))
+            var currentSession = _db.Sessions.FirstOrDefault(x => !x.Completed.HasValue);
+            if (currentSession != null)
             {
-                throw new Exception("Logging session already started!");
+                currentSession.Completed = DateTime.Now;
             }
             var session = new LogSession
             {

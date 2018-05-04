@@ -24,5 +24,6 @@ namespace Brewtal.Database
         public string Notes { get; set; }
         public string ShoppingList { get; set; }
         public string OptimisticConcurrencyKey { get; set; }
+        
     }
 }

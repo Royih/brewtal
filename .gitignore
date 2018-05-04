@@ -61,3 +61,4 @@ appsettings.Production.json
 #local build
 wwwroot
 publish
+brewtal.db

@@ -3,7 +3,7 @@ using System;
 namespace Brewtal.Dtos
 {
 
-    public class PidSatusDto
+    public class PidStatusDto
     {
         public int PidId { get; set; }
         public string PidName { get; set; }
