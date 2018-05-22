@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HubConnection } from '@aspnet/signalr-client';
 import { HardwareStatusDto, ManualOutputDto } from '../../models';
 import { SignalRService } from '../../infrastructure/signalRService';
 

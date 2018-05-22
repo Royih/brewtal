@@ -43,7 +43,7 @@ namespace Brewtal.BLL.ScheduledWarmup
                     {
                         Name = brewStep.Brew.Name
                     });
-                    await hubContext.Clients.All.InvokeAsync("BrewUpdated", brewStep.BrewId);
+                    await hubContext.Clients.All.SendAsync("BrewUpdated", brewStep.BrewId);
                     await Console.Out.WriteLineAsync($"{DateTime.Now}: Warmup of brew with name \"{brewStep.Brew.Name}\" and Id={brewStep.BrewId} was initiated.");
                 }
 

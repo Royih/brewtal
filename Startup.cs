@@ -79,7 +79,7 @@ namespace Brewtal
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<BrewtalHub>("brewtal");
+                routes.MapHub<BrewtalHub>("/brewtal");
             });
 
             Mapper.Initialize(cfg =>

@@ -62,7 +62,7 @@ namespace Brewtal.Controllers
         }
 
         [HttpGet("listLogRecords/{sessionId:int}/{numberOfSecondsInGroup:int}")]
-        public async Task<IActionResult> GetRecordsBy10Seconds(int sessionId, int numberOfSecondsInGroup)
+        public async Task<IActionResult> GetRecordsByNSeconds(int sessionId, int numberOfSecondsInGroup)
         {
             return Ok(await _mediator.Send(new ListLogRecordsQuery { SessionId = sessionId, NumberOfSecondsInGroup = numberOfSecondsInGroup }));
         }

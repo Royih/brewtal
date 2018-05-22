@@ -18,7 +18,7 @@ namespace Brewtal.BLL
         public void SendHardwareStatus(dynamic hwStatus)
         {
             // Call the broadcastMessage method to update clients.
-            Clients.All.InvokeAsync("HarwareStatus", hwStatus);
+            Clients.All.SendAsync("HarwareStatus", (object)hwStatus);
         }
 
         public void UpdateTarget(UpdatePidTargetCommand command)
@@ -33,7 +33,7 @@ namespace Brewtal.BLL
 
         public void NotifyBrewUpdated(int brewId)
         {
-            Clients.All.InvokeAsync("BrewUpdated", brewId);
+            Clients.All.SendAsync("BrewUpdated", brewId);
         }
 
 

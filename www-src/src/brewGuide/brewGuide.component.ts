@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import * as moment from 'moment';
-import { HubConnection } from '@aspnet/signalr-client';
 import { PidStatusDto } from '../models';
 import { HardwareStatusDto } from '../models/HardwareStatusDto';
 import { SignalRService } from '../infrastructure/signalRService';

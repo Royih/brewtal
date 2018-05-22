@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { HubConnection } from '@aspnet/signalr-client';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { environment } from '../environments/environment';
 import { HardwareStatusDto } from '../models';
 import { Subject } from 'rxjs/Subject';
@@ -20,7 +20,9 @@ export class SignalRService {
         this.allowReconnect = false;
         this.heartbeat = false;
 
-        this.hubConnection = new HubConnection(environment.apiUrl + 'brewtal');
+        this.hubConnection = new HubConnectionBuilder()
+            .withUrl(environment.apiUrl + 'brewtal')
+            .build();
 
         this.hubConnection.on('HarwareStatus', (data: HardwareStatusDto) => {
             this.hwStatus.next(data);

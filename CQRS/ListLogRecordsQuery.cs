@@ -32,7 +32,9 @@ namespace Brewtal.CQRS
             .GroupBy(x => new
             {
                 TimeStamp = x.TimeStamp.Date.AddHours(x.TimeStamp.Hour).AddMinutes(x.TimeStamp.Minute).AddSeconds((x.TimeStamp.Second.RoundOff(query.NumberOfSecondsInGroup)))
-            }).Select(x => new LogRecord
+            })
+            .ToList() //need this to avoid a runtime exception
+            .Select(x => new LogRecord
             {
                 TimeStamp = x.Key.TimeStamp,
                 ActualTemp1 = x.Average(y => y.ActualTemp1),

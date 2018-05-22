@@ -27,7 +27,7 @@
       "../node_modules/jquery/dist/jquery.slim.min.js",
       "../node_modules/popper.js/dist/umd/popper.min.js",
       "../node_modules/bootstrap/dist/js/bootstrap.js",
-      "../node_modules/@aspnet/signalr-client/dist/browser/signalr-client-1.0.0-alpha2-final.js",
+      "../node_modules/@aspnet/signalr/dist/browser/signalr.min.js",
       "../node_modules/chart.js/src/chart.js",
       "../node_modules/moment/min/moment.min.js"
     ],

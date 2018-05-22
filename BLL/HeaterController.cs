@@ -7,7 +7,7 @@ namespace Brewtal.BLL
     public class HeaterController
     {
         private TimeSpan _cycleTime = TimeSpan.FromSeconds(10);
-        private double _percentage = 0;
+        public double Percentage { get; private set; } = 0;
         private readonly BrewIO _brewIO;
         private readonly Outputs _output;
 
@@ -19,7 +19,7 @@ namespace Brewtal.BLL
 
         public void UpdateNextCyclePercentage(double percentage)
         {
-            _percentage = percentage;
+            Percentage = percentage;
         }
 
 
@@ -31,7 +31,7 @@ namespace Brewtal.BLL
             {
                 await Task.Run(() =>
                 {
-                    var timeOn = (_cycleTime.TotalMilliseconds * _percentage / 100);
+                    var timeOn = (_cycleTime.TotalMilliseconds * Percentage / 100);
                     var timeOff = _cycleTime.TotalMilliseconds - timeOn;
                     if (timeOn > 0)
                     {
@@ -51,7 +51,7 @@ namespace Brewtal.BLL
 
         private void SetPidValue(bool value)
         {
-            _brewIO.Set(_output,value);
+            _brewIO.Set(_output, value);
         }
 
     }

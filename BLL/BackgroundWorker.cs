@@ -92,7 +92,7 @@ namespace Brewtal.BLL
                     _pid0.Calculate(newTemp);
                     _pid1.Calculate(newTemp);
 
-                    _hubContext.Clients.All.InvokeAsync("HarwareStatus", new HardwareStatusDto
+                    _hubContext.Clients.All.SendAsync("HarwareStatus", new HardwareStatusDto
                     {
                         Pids = new[] { _pid0.Status, _pid1.Status }.ToArray(),
                         ComputedTime = DateTime.Now,
