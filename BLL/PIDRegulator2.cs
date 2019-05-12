@@ -7,7 +7,7 @@ namespace Brewtal.BLL
     //public delegate double GetDouble();
     //public delegate void SetDouble(double value);
 
-    public class PIDRegulator2
+    public class PIDRegulator2 : IPIDRegulator
     {
         #region Fields
 
@@ -19,14 +19,15 @@ namespace Brewtal.BLL
         //Running Values
         private DateTime lastUpdate;
         private double lastPV;
-        private double errSum;
+        private double lastErr = 0;
+        public double ErrorSum { get; private set; }
 
         //Max/Min Calculation
         private double pvMax;
         private double pvMin;
         private double outMax;
         private double outMin;
-        
+
         #endregion
 
         #region Properties
@@ -93,10 +94,10 @@ namespace Brewtal.BLL
         #endregion
 
         #region Public Methods
-     
+
         public void Reset()
         {
-            errSum = 0.0f;
+            ErrorSum = 0.0f;
             lastUpdate = DateTime.Now;
         }
 
@@ -152,16 +153,20 @@ namespace Brewtal.BLL
                 //Compute the integral if we have to...
                 if (pv >= pvMin && pv <= pvMax)
                 {
-                    partialSum = errSum + dT * err;
+                    partialSum = ErrorSum + dT * err;
                     iTerm = ki * partialSum;
                 }
 
                 if (dT != 0.0f)
-                    dTerm = kd * (pv - lastPV) / dT;
+                {
+                    //dTerm = kd * (pv - lastPV) / dT;
+                    dTerm = kd * (err - lastErr) / dT;
+                }
+
             }
 
             lastUpdate = nowTime;
-            errSum = partialSum;
+            ErrorSum = partialSum;
             lastPV = pv;
 
             //Now we have to scale the output value to match the requested scale
@@ -169,8 +174,9 @@ namespace Brewtal.BLL
 
             outReal = Clamp(outReal, -1.0f, 1.0f);
             outReal = ScaleValue(outReal, -1.0f, 1.0f, outMin, outMax);
+            lastErr = err;
 
-            //Return it to the world
+            //Return it to the world            
             return outReal;
         }
 

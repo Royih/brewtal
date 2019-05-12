@@ -12,17 +12,17 @@ namespace Brewtal.BLL
         private readonly int _pidId;
         private readonly string _pidName;
         public readonly PidConfig PidConfig;
-        public const double PIDKp = 5f; // 
+        private const double DefaultPIDKp = 200;
 
-        public const double PIDKi = 0.01f; // 
+        private const double DefaultPIDKi = 200;
 
-        public const double PIDKd = 75.0f; //
+        private const double DefaultPIDKd = 10;
 
         public PidStatusDto Status { get; private set; }
 
         private double target = 0;
 
-        private readonly PIDRegulator2 _pidRegulator;
+        private readonly PIDRegulator3 _pidRegulator;
         private readonly BrewIO _brewIO;
         private readonly Outputs _output;
         private readonly HeaterController _heater;
@@ -44,19 +44,19 @@ namespace Brewtal.BLL
                     PidConfig = new PidConfig
                     {
                         PidId = pidId,
-                        PIDKp = PIDKp,
-                        PIDKi = PIDKi,
-                        PIDKd = PIDKd
+                        PIDKp = DefaultPIDKp,
+                        PIDKi = DefaultPIDKi,
+                        PIDKd = DefaultPIDKd
                     };
                     db.Add(PidConfig);
                     db.SaveChanges();
                 }
             }
-            _pidRegulator = new PIDRegulator2(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd, 100, 0, 100, 0);
+            _pidRegulator = new PIDRegulator3(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd);
             Status = new PidStatusDto
             {
                 PidId = _pidId,
-                PidName = _pidName,
+                PidName = _pidName
             };
 
         }
@@ -64,14 +64,13 @@ namespace Brewtal.BLL
         public void Calculate(TempReaderResultDto currentTempResult)
         {
             var currentTemp = _pidId == 0 ? currentTempResult.Temp1 : currentTempResult.Temp2;
-            var outputValue = _pidRegulator.Compute(currentTemp, Status.TargetTemp);
+            var outputValue = _pidRegulator.Calculate(currentTemp, Status.TargetTemp);
             _heater.UpdateNextCyclePercentage(outputValue);
 
             Status.CurrentTemp = currentTemp;
             Status.OutputValue = outputValue;
             Status.Output = _heater.CurrentStatus;
-
-            //_gPIO.Set(_outPin, Status.Output);
+            Status.ErrorSum = _pidRegulator.ErrorSum;
         }
 
         public void UpdateTargetTemp(double newTargetTemp)

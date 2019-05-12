@@ -38,7 +38,7 @@ export class PidComponent implements OnInit {
 
   constructor(private http: HttpClient, private modalService: NgbModal, private signalR: SignalRService) {
     this.signalR.hwStatus.subscribe(res => {
-      this.pidStat = res.pids.filter(x => x.pidId === this.pidId)[0];
+      this.pidStat = res.pids.find(x => x.pidId === this.pidId);
       if (!this.targetTempChanging) {
         this.targetTemp = this.pidStat.targetTemp;
       }

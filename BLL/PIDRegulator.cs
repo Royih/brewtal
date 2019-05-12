@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Brewtal.BLL
 {
-    public class PIDRegulator
+    public class PIDRegulator : IPIDRegulator
     {
         private double LastPprocessVal;
         public double ErrorSum { get; private set; }
@@ -16,6 +16,8 @@ namespace Brewtal.BLL
         public double OutMin { get; set; }
         public double OutMax { get; set; }
 
+        private DateTime _lastUpdate;
+
 
         public PIDRegulator(double proportionalCoef, double integralCoef, double differentialCoef,
             double inputMax, double inputMin, double outputMax, double outputMin)
@@ -27,6 +29,7 @@ namespace Brewtal.BLL
             PprocessValMin = inputMin;
             OutMax = outputMax;
             OutMin = outputMin;
+            _lastUpdate = DateTime.Now;
         }
 
         private double ScaleValue(double value, double valuemin, double valuemax, double scalemin, double scalemax)
@@ -55,8 +58,11 @@ namespace Brewtal.BLL
             ErrorSum = 0.0f;
         }
 
-        public double Compute(double processVal, double setPoint, TimeSpan deltaTime)
+        public double Compute(double processVal, double setPoint)
         {
+            DateTime nowTime = DateTime.Now;
+            var deltaTime = nowTime.Subtract(_lastUpdate);
+
             processVal = Clamp(processVal, PprocessValMin, PprocessValMax);
             processVal = ScaleValue(processVal, PprocessValMin, PprocessValMax, -1.0, 1.0);
 
@@ -80,7 +86,7 @@ namespace Brewtal.BLL
 
             outReal = Clamp(outReal, -1.0, 1.0);
             outReal = ScaleValue(outReal, -1.0, 1.0, OutMin, OutMax);
-
+            _lastUpdate = nowTime;
             return outReal;
         }
     }
