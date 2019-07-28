@@ -71,10 +71,7 @@ namespace Brewtal
 
             app.UseCors(builder =>
             {
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-                builder.AllowAnyOrigin();
-                builder.AllowCredentials();
+                builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200","http://localhost:5000");
             });
 
             app.UseSignalR(routes =>

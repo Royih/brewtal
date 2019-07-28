@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import 'rxjs/add/operator/debounceTime';
+
 import { LogSessionDto } from '../../models';
 import { StartLoggingComponent } from './startLogging.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';

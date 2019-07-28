@@ -24,12 +24,8 @@ namespace Brewtal.BLL.ScheduledWarmup
         {
             // Grab the Scheduler instance from the Factory
             NameValueCollection props = new NameValueCollection
-                {
-                    { "quartz.serializer.type", "binary" },
-                    { "quartz.scheduler.instanceName", "MyScheduler" },
-                    { "quartz.jobStore.type", "Quartz.Simpl.RAMJobStore, Quartz" },
-                    { "quartz.threadPool.threadCount", "3" }
-                };
+            { { "quartz.serializer.type", "binary" }, { "quartz.scheduler.instanceName", "MyScheduler" }, { "quartz.jobStore.type", "Quartz.Simpl.RAMJobStore, Quartz" }, { "quartz.threadPool.threadCount", "3" }
+            };
 
             StdSchedulerFactory factory = new StdSchedulerFactory(props);
 
@@ -37,7 +33,7 @@ namespace Brewtal.BLL.ScheduledWarmup
             scheduler.JobFactory = _jobFactory;
             await scheduler.Clear();
             var futureBrewsSteps = new List<BrewStep>();
-            using (var db = new BrewtalContext())
+            using(var db = new BrewtalContext())
             {
                 futureBrewsSteps = db.BrewSteps.Include(x => x.Brew).Where(x => x.Name == "Initial" && x.Brew.BeginMash.AddHours(1) > DateTime.Now).ToList();
             }
@@ -58,7 +54,7 @@ namespace Brewtal.BLL.ScheduledWarmup
 
                     // Trigger the job to run now, and then repeat every 10 seconds
                     ITrigger trigger = TriggerBuilder.Create()
-                        .WithIdentity("trigger1", "group1")
+                        .WithIdentity("trigger" + brewStep.Id, "group1")
                         .StartAt(startTime)
                         /*.WithSimpleSchedule(x => x
                             .WithIntervalInSeconds(10)
@@ -75,8 +71,6 @@ namespace Brewtal.BLL.ScheduledWarmup
             {
                 await scheduler.Shutdown();
             }
-
-
 
             // some sleep to show what's happening
             //await Task.Delay(TimeSpan.FromMinutes(3));

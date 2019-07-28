@@ -35,6 +35,7 @@ import { SignalRService } from '../infrastructure/signalRService';
 import { StartLoggingComponent } from './logs/startLogging.component';
 
 
+
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: PidsComponent },

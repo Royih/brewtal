@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { environment } from '../environments/environment';
 import { HardwareStatusDto } from '../models';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
+import { ToastMaster } from './toastMaster';
+import { timeout } from 'q';
 
 @Injectable()
 export class SignalRService {
@@ -16,7 +18,7 @@ export class SignalRService {
     allowReconnect = false;
     heartbeat = false;
 
-    start() {
+    start(): Promise<boolean> {
         this.allowReconnect = false;
         this.heartbeat = false;
 
@@ -40,22 +42,35 @@ export class SignalRService {
             this.status = 'Closed';
             this.allowReconnect = true;
             this.heartbeat = false;
+            console.log('Initiating reconnecto');
+            this.reconnecto();
         });
 
-        this.hubConnection.start()
+        return this.hubConnection.start()
             .then(() => {
                 console.log('Hub connection started');
                 this.status = 'Connected';
+                return true;
             })
             .catch(() => {
                 this.status = 'Conn.err';
                 this.allowReconnect = true;
                 console.log('Error while establishing connection');
+                return false;
             });
     }
 
-    constructor() {
+    constructor(private toastMasta: ToastMaster) {
         this.start();
+    }
+
+    reconnecto() {
+        this.toastMasta.displayBriefMessage('Reconnecting..', 'Reconnecting SignalR', false);
+        this.start().then(res => {
+            if (!res) {
+                setTimeout(this.reconnecto, 4000);
+            }
+        });
     }
 
     invoke(methodName: string, args: any): Promise<any> {

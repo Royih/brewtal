@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/debounceTime';
+import { Subject } from 'rxjs';
+
 import { HardwareStatusDto } from '../../models';
 import { SignalRService } from '../../infrastructure/signalRService';
 

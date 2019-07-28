@@ -1,12 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/debounceTime';
+import { Subject } from 'rxjs';
+
 import { PidConfigDialogComponent } from './pidConfig.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HardwareStatusDto } from '../../models';
 import { SignalRService } from '../../infrastructure/signalRService';
+import { debounceTime, distinctUntilChanged, tap, switchMap, merge, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pid',
@@ -47,7 +48,7 @@ export class PidComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.targetChanges.debounceTime(1000).subscribe(res => {
+    this.targetChanges.pipe(debounceTime(1000)).subscribe(res => {
       this.changeTargetTemp();
     });
     this.targetChanges.subscribe(res => {

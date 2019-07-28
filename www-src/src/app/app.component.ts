@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../environments/environment';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/debounceTime';
 import { ToasterConfig, ToasterService } from 'angular2-toaster';
+import { ToastMaster } from '../infrastructure/toastMaster';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +20,7 @@ export class AppComponent implements OnInit {
       // positionClass: 'toast-bottom-full-width'
     });
 
-  constructor(private toasterService: ToasterService) {
+  constructor() {
 
   }
 
