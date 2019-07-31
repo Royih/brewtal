@@ -1,0 +1,10 @@
+<mat-form-field [ngClass]="{'no-padding': noPadding}">
+  <mat-select [placeholder]="placeholder" [required]="required" [formControl]="formControl" (openedChange)="loadOptions($event)"
+    [compareWith]="isSelected">
+    <mat-option *ngIf="!required" (click)="select(null)" [value]="null">None</mat-option>
+    <mat-option *ngFor="let opt of options" [value]="opt" (click)="select(opt)">
+      {{opt[labelField]}}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+</mat-form-field>

@@ -1,0 +1,35 @@
+<mat-form-field [ngClass]="{'no-padding': noPadding}" appearance="outline" *ngIf="tech==='Material'">
+  <mat-label>{{label}} {{postfix ? '('+postfix+')': ''}}</mat-label>
+  <input matInput [placeholder]="placeholder" [formControl]="formControl" *ngIf="!multiLine" [type]="type"
+    [required]="required" [step]="(properties && properties.step) ? properties.step : 1" [autocomplete]="autocomplete"
+    [readonly]="disabled">
+  <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="2" cdkAutosizeMaxRows="5"
+    [placeholder]="placeholder" [formControl]="formControl" *ngIf="multiLine" [type]="type" [required]="required"
+    [readonly]="disabled"></textarea>
+  <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+</mat-form-field>
+
+
+<div class="form-group row" *ngIf="tech === 'Bootstrap'">
+  <label [for]="name" class="col-sm-4 col-form-label">{{label}}</label>
+  <div class="col-sm">
+    <div class="row">
+      <div class="col-sm techBootstrap input-group">
+        <input [id]="name" [type]="type" class="form-control" [placeholder]="placeholder" [required]="required"
+          [formControl]="formControl" [step]="(properties && properties.step) ? properties.step : 1"
+          [autocomplete]="autocomplete" [readonly]="disabled">
+        <div class="input-group-append" *ngIf="postfix">
+          <span class="input-group-text" id="basic-addon2">{{postfix}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm text-danger" *ngIf="formControl.invalid && (formControl.touched || formControl.dirty)"
+        style="break-before: always">
+        {{getErrorMessage()}}
+      </div>
+    </div>
+  </div>
+
+
+</div>

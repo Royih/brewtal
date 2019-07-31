@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToastMaster } from '../infrastructure/toastMaster';
+import { ToastMaster } from '../../infrastructure/toastMaster';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 import * as moment from 'moment';
-import { PidStatusDto } from '../models';
-import { HardwareStatusDto } from '../models/HardwareStatusDto';
-import { SignalRService } from '../infrastructure/signalRService';
-import { ConfirmService } from '../app/confirm';
+import { PidStatusDto } from '../../models';
+import { HardwareStatusDto } from '../../models/HardwareStatusDto';
+import { SignalRService } from '../../infrastructure/signalRService';
+import { ConfirmService } from '../confirm';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EditNotesComponent } from './editNotes.component';
 

@@ -1,0 +1,20 @@
+<mat-form-field [ngClass]="{'no-padding': noPadding}" *ngIf="tech==='Material'">
+  <input matInput [placeholder]="placeholder" [formControl]="formControl" *ngIf="!multiLine" [type]="text"
+    [required]="required" [step]="(properties && properties.step) ? properties.step : 1" [autocomplete]="autocomplete"
+    [readonly]="disabled" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1">
+  <owl-date-time #dt1></owl-date-time>
+  <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+</mat-form-field>
+
+
+<div class="form-group row" *ngIf="tech === 'Bootstrap'">
+  <label [for]="name" class="col-sm-4 col-form-label">{{label}}</label>
+  <div class="col-sm techBootstrap">
+    <input [id]="name" [required]="required" placeholder="yyyy-mm-dd" [owlDateTime]="dt1"
+      [owlDateTimeTrigger]="dt1" [formControl]="formControl" class="form-control">
+    <owl-date-time #dt1></owl-date-time>
+    <div *ngIf="formControl.invalid && formControl.touched" class="text-danger">
+      {{getErrorMessage()}}
+    </div>
+  </div>
+</div>

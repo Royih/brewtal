@@ -1,31 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToastMaster } from '../infrastructure/toastMaster';
-import { Subscription } from 'rxjs';
+import { ToastMaster } from '../../../infrastructure/toastMaster';
+import { Subscription, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ConfirmService } from '../app/confirm';
+import { ConfirmService } from '../../confirm';
+import { FormGroup } from '@angular/forms';
+import { XFullFormInterface, XCanComponentDeactivate } from '../../../infrastructure/xComponents/utils';
+import { BrewDto } from '../../../models';
 
 @Component({
     moduleId: module.id,
-    selector: 'app-edit-brew',
+    selector: 'app-edit2-brew',
     templateUrl: 'edit.component.html',
     styleUrls: ['edit.component.css']
 })
-export class EditBrewlogComponent implements OnInit {
+export class Edit2BrewlogComponent implements OnInit, OnDestroy, XCanComponentDeactivate, XFullFormInterface {
 
-    brew: any;
     private sub: Subscription;
     private id: number;
     initializeResult: any;
 
+    brew: BrewDto;
+    myFormGroup: FormGroup = new FormGroup({});
+
     constructor(private route: ActivatedRoute, private http: HttpClient,
         private toaster: ToastMaster, private router: Router, private confirm: ConfirmService) {
 
+
+
+    }
+
+    canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
+        return !this.myFormGroup.dirty;
+    }
+
+    saveData(): Promise<boolean> {
+        throw new Error('Method not implemented.');
+    }
+
+    loadData(): Promise<boolean> {
+        throw new Error('Method not implemented.');
     }
 
     private load() {
-        this.http.get('brewguide/setup/' + this.id).toPromise().then(res => {
-            this.brew = res;
+        this.http.get<BrewDto>('brewguide/setup/' + this.id).toPromise().then(brew => {
+            this.brew = brew;
         });
     }
 
@@ -34,6 +53,12 @@ export class EditBrewlogComponent implements OnInit {
             this.id = +params['id']; // (+) converts string 'id' to a number
             this.load();
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub) {
+            this.sub.unsubscribe();
+        }
     }
 
     save() {

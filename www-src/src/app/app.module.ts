@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -26,13 +27,15 @@ import { ToastMaster } from '../infrastructure/toastMaster';
 
 import { ChartsModule } from 'ng2-charts';
 
-import { BrewGuideModule } from '../brewGuide/brewGuide.module';
+import { BrewGuideModule } from './brewGuide/brewGuide.module';
 import { PipeModule } from './pipes/pipe.module';
 import { DateTimePipe } from './pipes/dateTimePipe';
 import { DatePipe } from '@angular/common';
 import { DateTimeSecPipe } from './pipes/dateTimeSecPipe';
 import { SignalRService } from '../infrastructure/signalRService';
 import { StartLoggingComponent } from './logs/startLogging.component';
+import { XComponentsModule } from '../infrastructure/xComponents/x-components.module';
+import { DemoComponent } from '../infrastructure/xComponents/demo/demo.component';
 
 
 
@@ -41,6 +44,7 @@ const routes: Routes = [
   { path: 'home', component: PidsComponent },
   { path: 'logs', component: LogsComponent },
   { path: 'logs/:sessionId', component: LogDetailsComponent },
+  { path: 'demo', component: DemoComponent },
 ];
 
 @NgModule({
@@ -55,11 +59,13 @@ const routes: Routes = [
     LogDetailsComponent,
     LogDetailsRenameDialogComponent,
     PidConfigDialogComponent,
-    StartLoggingComponent
+    StartLoggingComponent,
+    DemoComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
@@ -68,7 +74,8 @@ const routes: Routes = [
     NgbModule.forRoot(), NgbModalModule.forRoot(),
     BrewGuideModule,
     BrewtalModule.forRoot(),
-    PipeModule.forRoot()
+    PipeModule.forRoot(),
+    XComponentsModule
 
   ],
   providers: [{

@@ -1,0 +1,65 @@
+<div class="container mt-4" *ngIf="brew">
+
+  <div class="form-group row">
+    <div class="col-sm-9">
+      <button class="btn btn-primary" type="button" (click)="save()" [disabled]="!myFormGroup.valid">Save brew</button>
+      <button class="btn btn-danger" type="button" *ngIf="brew.id>0" (click)="delete()">Delete</button>
+      <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
+      <button class="btn btn-secondary" type="button"
+        (click)="tech = tech === 'Bootstrap' ? 'Material' : 'Bootstrap';">Tech: {{tech}}</button>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-6">
+      <form [formGroup]="myFormGroup">
+
+        <app-x-input name="name" [formGroup]="myFormGroup" [value]="brew" label="Name of brew" required=true
+          [properties]="{minLength: 3, maxLength: 100}" [tech]="tech">
+        </app-x-input>
+
+        <app-x-input name="batchNumber" [formGroup]="myFormGroup" [value]="brew" label="Batch #" type="number"
+          required=true [properties]="{min: 1, max: 10000}" [tech]="tech"></app-x-input>
+
+        <app-x-date name="beginMash" [formGroup]="myFormGroup" [value]="brew" label="Brew time (mash)" type="date"
+          required=true [tech]="tech"></app-x-date>
+
+        <app-x-input name="mashTemp" [formGroup]="myFormGroup" [value]="brew" label="Mash temp" type="number"
+          required=true [properties]="{step: 0.1, min: 50, max: 80}" [tech]="tech" postfix="ºC"></app-x-input>
+
+        <app-x-input name="strikeTemp" [formGroup]="myFormGroup" [value]="brew" label="Strike temp" type="number"
+          required=true [properties]="{step: 0.1, min: 20, max: 100}" [tech]="tech" postfix="ºC"></app-x-input>
+
+        <app-x-input name="spargeTemp" [formGroup]="myFormGroup" [value]="brew" label="Sparge temp" type="number"
+          required=true [properties]="{step: 0.1, min: 20, max: 100}" [tech]="tech" postfix="ºC"></app-x-input>
+
+        <app-x-input name="mashOutTemp" [formGroup]="myFormGroup" [value]="brew" label="Mash out temp"
+          type="number" required=true [properties]="{step: 0.1, min: 20, max: 100}" [tech]="tech"  postfix="ºC"></app-x-input>
+
+        <app-x-input name="mashTimeInMinutes" [formGroup]="myFormGroup" [value]="brew" label="Mash time"
+          type="number" required=true [properties]="{min: 1, max: 360}" [tech]="tech" postfix="min"></app-x-input>
+
+        <app-x-input name="boilTimeInMinutes" [formGroup]="myFormGroup" [value]="brew" label="Boil time"
+          type="number" required=true [properties]="{min: 1, max: 360}" [tech]="tech" postfix="min"></app-x-input>
+
+        <app-x-input name="batchSize" [formGroup]="myFormGroup" [value]="brew" label="Batch size" type="number"
+          required=true [properties]="{min: 10, max: 5000}" [tech]="tech" postfix="l"></app-x-input>
+
+        <app-x-input name="mashWaterAmount" [formGroup]="myFormGroup" [value]="brew" label="Mash water amount"
+          type="number" required=true [properties]="{step: 0.1, min: 1, max: 5000}" [tech]="tech" postfix="l">
+        </app-x-input>
+
+        <app-x-input name="spargeWaterAmount" [formGroup]="myFormGroup" [value]="brew" label="Sparge water amount"
+          type="number" required=true [properties]="{step: 0.1, min: 1, max: 5000}" [tech]="tech" postfix="l">
+        </app-x-input>
+
+      </form>
+    </div>
+    <div class="col-6">
+      <pre>{{brew | json}}</pre>
+    </div>
+  </div>
+
+
+</div>

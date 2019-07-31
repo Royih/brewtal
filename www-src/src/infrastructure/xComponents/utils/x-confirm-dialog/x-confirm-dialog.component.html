@@ -1,0 +1,6 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content [innerHTML]="data.message"></div>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">{{data.optionTrueLabelNotDefault}}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="false" cdkFocusInitial>{{data.optionFalseLabelDefault}}</button>
+</div>

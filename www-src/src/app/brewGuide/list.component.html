@@ -1,0 +1,32 @@
+<div class="container-fluid mt-4">
+  <div class="btn-group">
+    <button class="btn btn-primary" routerLink="/brew/edit/0">New <i class="fa fa-plus-circle"></i></button>
+    <button class="btn btn-primary" routerLink="/brew/edit2/0">New 2 <i class="fa fa-plus-circle"></i></button>
+  </div>
+  <table class="table table-striped mt-4">
+    <tr>
+      <th>Batch #</th>
+      <th>Name</th>
+      <th>Brew date</th>
+      <th>Batch size</th>
+      <th>Current step</th>
+    </tr>
+    <tr *ngFor="let log of brewlogs">
+      <td>
+        {{log.batchNumber}}
+      </td>
+      <td>
+        <a routerLink="/brew/{{log.id}}" [routerLinkActive]="['active']">{{log.name}}</a>
+      </td>
+      <td>
+        {{log.brewDate | date: 'dd MMM yyyy HH:mm:ss'}}
+      </td>
+      <td>
+        {{log.batchSize}} L
+      </td>
+      <td>
+        {{log.currentStep}}
+      </td>
+    </tr>
+  </table>
+</div>
