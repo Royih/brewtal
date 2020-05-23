@@ -1,6 +1,5 @@
 import React from "react";
-import { Container, Typography, Card, CardContent, Grid, Paper, makeStyles, createStyles, Theme } from "@material-ui/core";
-import Beer from "@material-ui/icons/LocalDrink";
+import { Grid, makeStyles, createStyles, Theme } from "@material-ui/core";
 
 import { Pid } from "./Pid";
 

@@ -96,66 +96,13 @@ export const Footer = (props: any) => {
     useEffect(() => {
         const fetchData = async () => {};
         fetchData();
-        //Figure out why api, currentUser cannot be added as dependenvy. Seems to be reset when toggle between dark and light mode.
     }, []);
 
     useEffect(() => {
-        setBeat(!beat);
+        setBeat((currentBeat: any) => !currentBeat);
     }, [signalr.hwStatus]);
 
     let location = useLocation();
-
-    const menuId = "primary-search-account-menu";
-    const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem
-                onClick={() => {
-                    window.location.reload();
-                    handleMenuClose();
-                }}
-            >
-                Update app
-            </MenuItem>
-            <MenuItem
-                onClick={() => {
-                    handleMenuClose();
-                    currentUser.logout();
-                }}
-            >
-                Sign out
-            </MenuItem>
-        </Menu>
-    );
-
-    const mobileMenuId = "primary-search-account-menu-mobile";
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <ListItemIcon>
-                    <IconButton aria-label="account of current user" aria-controls="primary-search-account-menu" aria-haspopup="true" color="inherit">
-                        <AccountCircle />
-                    </IconButton>
-                </ListItemIcon>
-                <Typography variant="inherit">Profile</Typography>
-            </MenuItem>
-        </Menu>
-    );
 
     const Displayheart = () => {
         if (beat) {
@@ -181,21 +128,8 @@ export const Footer = (props: any) => {
                         {theme.palette.type === "light" && <LightModeIcon />}
                         {theme.palette.type === "dark" && <DarkModeIcon />}
                     </IconButton>
-
-                    <div className={classes.sectionDesktop}>
-                        <IconButton edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="inherit">
-                            <AccountCircle />
-                        </IconButton>
-                    </div>
-                    <div className={classes.sectionMobile}>
-                        <IconButton aria-label="show more" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} color="inherit">
-                            <MoreIcon />
-                        </IconButton>
-                    </div>
                 </Toolbar>
             </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
         </div>
     );
 };

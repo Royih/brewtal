@@ -16,6 +16,7 @@ import { EditUserProfile } from "./components/users/EditUserProfile";
 import { ThrowExceptions } from "./components/functionDemo/TestExceptions";
 import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider";
 import { TestSignalR } from "./components/functionDemo/TestSignalR";
+import { Brews } from "./components/brews/Brews";
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function App() {
                                     <Route path="/user/create" component={EditUserProfile} />
                                     <Route path="/users/:id" component={EditUserProfile} />
                                     <Route path="/test-signalr" component={TestSignalR} />
+                                    <Route exact path="/brews" component={Brews} />
                                 </Layout>
                                 <Footer />
                             </div>

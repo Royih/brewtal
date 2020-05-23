@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Typography, Card, CardContent, TextField, ButtonGroup, Button, CircularProgress, IconButton } from "@material-ui/core";
+import { Container, Typography, Card, CardContent, ButtonGroup, Button, CircularProgress } from "@material-ui/core";
 import SkipPrevIcon from "@material-ui/icons/SkipPrevious";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import FastForwardIcon from "@material-ui/icons/FastForward";
@@ -84,21 +84,6 @@ export const Pid = (props: PidInput) => {
                             <LastPageIcon />
                         </Button>
                     </ButtonGroup>
-                    {/* <TextField id="details-nu" label="Name" value={targetPid1} disabled={false} required={true} autoComplete="nu" onChange={(event) => setTargetPid1(+event.target.value)} />
-                    <ButtonGroup>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="button"
-                            id="sendlogin"
-                            onClick={() => {
-                                signalr.invoke("UpdateTarget", { PidId: 0, NewTargetTemp: targetPid1 });
-                            }}
-                        >
-                            Update
-                        </Button>
-                    </ButtonGroup>
-                    <div style={{ whiteSpace: "pre", display: "block" }}>{JSON.stringify(signalr.hwStatus, null, 2)}</div> */}
                 </CardContent>
             </Card>
         </Container>

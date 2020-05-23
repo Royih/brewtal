@@ -10,10 +10,8 @@ namespace Brewtal2.DataAccess
     {
         IMongoClient Client { get; }
         UserManager<ApplicationUser> UserManager { get; }
-
         IMongoCollection<RefreshToken> RefreshTokens { get; }
         IMongoCollection<ApplicationUser> Users { get; }
-
         IMongoCollection<Brew> Brews { get; }
         IMongoCollection<BrewStepTemplate> BrewStepTemplates { get; }
         IMongoCollection<LogSession> LogSessions { get; }
