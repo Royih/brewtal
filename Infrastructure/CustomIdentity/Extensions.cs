@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using AspNetCore.Identity.MongoDbCore.Models;
-using Brewtal2.Models;
+using Brewtal2.Infrastructure.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

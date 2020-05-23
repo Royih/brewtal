@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Brewtal2.BLL.Users.Commands;
-using Brewtal2.BLL.Users.Queries;
+using Brewtal2.Infrastructure.Commands;
+using Brewtal2.Infrastructure.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 using System;
-using Brewtal2.BLL.Pid.Commands;
-using Brewtal2.Models;
+using Brewtal2.Infrastructure.Models;
+using Brewtal2.Pid.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;

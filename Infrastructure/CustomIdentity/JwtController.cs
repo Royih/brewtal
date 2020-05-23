@@ -5,7 +5,7 @@ using System.Security;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Brewtal2.DataAccess;
-using Brewtal2.Models;
+using Brewtal2.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
@@ -25,9 +25,9 @@ namespace Brewtal2.Infrastructure.CustomIdentity
 
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IRepository _repository;
+        private readonly IAppRepository _repository;
 
-        public JwtController(IOptions<JwtIssuerOptions> jwtOptions, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IRepository repository)
+        public JwtController(IOptions<JwtIssuerOptions> jwtOptions, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IAppRepository repository)
         {
             _signInManager = signInManager;
             _userManager = userManager;

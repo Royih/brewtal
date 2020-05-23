@@ -13,52 +13,49 @@ export type PidInput = {
 };
 
 export const Pid = (props: PidInput) => {
+    const id = props.id;
     const signalr = useContext(SignalrContext);
 
-    const [pid, setPid] = useState<PidStatus>();
+    const [pidStatus, setPidStatus] = useState<PidStatus>();
     const [newTarget, setNewTarget] = useState<number>();
-    const [pendingChange, setPendingChange] = useState(false);
-    const [ready, setReady] = useState(false);
+    const [pendingChange, setPendingChange] = useState(true);
 
     useEffect(() => {
-        setPid(signalr.hwStatus?.pids[props.id]);
-    }, [signalr.hwStatus]);
-
-    useEffect(() => {
-        setReady(true);
-    }, []);
-
-    useEffect(() => {
-        if (ready) {
-            const timer = setTimeout(() => {
-                signalr.invoke("UpdateTarget", { PidId: props.id, NewTargetTemp: newTarget });
+        const newPidStatus = signalr.hwStatus?.pids[id];
+        setPidStatus((currentValue) => {
+            if (!currentValue) {
                 setPendingChange(false);
-            }, 3000);
-            setPendingChange(true);
-            return () => clearTimeout(timer);
-        }
-    }, [newTarget]);
+                setNewTarget(newPidStatus?.targetTemp);
+            }
+            return newPidStatus;
+        });
+    }, [signalr, id]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            signalr.invoke("UpdateTarget", { PidId: id, NewTargetTemp: newTarget });
+            setPendingChange(false);
+        }, 3000);
+        setPendingChange(true);
+        return () => clearTimeout(timer);
+    }, [newTarget, id]);
 
     const addNewTarget = (increment: number) => {
-        let newValue = (newTarget || pid?.targetTemp || 0) + increment;
-        if (newValue < 0) {
-            newValue = 0;
-        }
-        if (newValue > 100) {
-            newValue = 100;
-        }
-        setNewTarget(newValue);
+        setNewTarget((currentValue) => {
+            const newVal = (currentValue || pidStatus?.targetTemp || 0) + increment;
+            return newVal >= 0 && newVal <= 100 ? newVal : currentValue;
+        });
     };
 
     return (
         <Container>
             <Card elevation={3}>
                 <CardContent>
-                    <Typography>Name: {pid?.pidName}</Typography>
-                    <Typography>Actual temp: {Math.round(((pid?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC</Typography>
-                    <Typography>Target temp: {Math.round(((pid?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC</Typography>
-                    <Typography>Output level: {Math.round(((pid?.outputValue || 0) + Number.EPSILON) * 100) / 100}%</Typography>
-                    <Typography>Output pin: {pid?.output ? "Yes" : "No"}</Typography>
+                    <Typography>Name: {pidStatus?.pidName}</Typography>
+                    <Typography>Actual temp: {Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC</Typography>
+                    <Typography>Target temp: {Math.round(((pidStatus?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC</Typography>
+                    <Typography>Output level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}%</Typography>
+                    <Typography>Output pin: {pidStatus?.output ? "Yes" : "No"}</Typography>
 
                     <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
                         <Button onClick={() => addNewTarget(-5)}>
@@ -71,8 +68,8 @@ export const Pid = (props: PidInput) => {
                             <FastRewindIcon />
                         </Button>
                         <Button color="default">
-                            {Math.round(((newTarget || pid?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC
-                            {pendingChange ? <CircularProgress color='primary' size={20}></CircularProgress> : ""}
+                            {Math.round(((newTarget || pidStatus?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC
+                            {pendingChange ? <CircularProgress color="primary" size={20}></CircularProgress> : ""}
                         </Button>
                         <Button onClick={() => addNewTarget(0.1)}>
                             <FastForwardIcon />

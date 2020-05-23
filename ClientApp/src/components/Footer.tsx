@@ -2,12 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import { createStyles, Theme, makeStyles, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MoreIcon from "@material-ui/icons/MoreVert";
 import { LeftMenu } from "./LeftMenu";
-import { Menu, MenuItem, ListItemIcon, Fab } from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import { useLocation } from "react-router";
 import DarkModeIcon from "@material-ui/icons/Brightness4";
 import LightModeIcon from "@material-ui/icons/Brightness5";
@@ -16,7 +13,6 @@ import HeartIcon from "@material-ui/icons/Favorite";
 import HeartEmptyIcon from "@material-ui/icons/FavoriteBorder";
 import { ThemeContext } from "src/infrastructure/ThemeContextProvider";
 import { NavLink } from "react-router-dom";
-import { UserContext } from "src/infrastructure/UserContextProvider";
 import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,35 +59,12 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export const Footer = (props: any) => {
+export const Footer = () => {
     const classes = useStyles();
     const theme = useTheme();
     const themeContext = useContext(ThemeContext);
     const signalr = useContext(SignalrContext);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
-    const currentUser = useContext(UserContext);
     const [beat, setBeat] = useState(false);
-
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
-
-    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
 
     useEffect(() => {
         const fetchData = async () => {};

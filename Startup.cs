@@ -1,15 +1,15 @@
 using System;
 using System.Reflection;
-using Brewtal2.BLL.Pid;
+using Brewtal2.Brews;
 using Brewtal2.DataAccess;
 using Brewtal2.Infrastructure;
 using Brewtal2.Infrastructure.CustomIdentity;
+using Brewtal2.Infrastructure.Models;
 using Brewtal2.Infrastructure.SignalR;
-using Brewtal2.Models;
+using Brewtal2.Pid;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,7 +42,8 @@ namespace Brewtal2
 
             // Add DI Implementations
             services.AddScoped<IDb, Db>();
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IAppRepository, AppRepository>();
+            services.AddScoped<IBrewRepository, BrewRepository>();
             services.AddScoped<ICurrentUser, CurrentUser>();
 
             // if (IsDevelopment)

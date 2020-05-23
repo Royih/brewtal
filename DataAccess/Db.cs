@@ -1,7 +1,7 @@
 using System.Security.Authentication;
+using Brewtal2.Brews.Models;
 using Brewtal2.Infrastructure;
-using Brewtal2.Models;
-using Brewtal2.Models.Brews;
+using Brewtal2.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
