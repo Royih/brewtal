@@ -1,7 +1,7 @@
 
 
 
-using Brewtal2.Brews.Models;
+using Brewtal2.Pid.Models;
 
 namespace Brewtal2.Pid
 {

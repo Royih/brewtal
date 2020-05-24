@@ -1,6 +1,4 @@
-
-
-using Brewtal2.Brews.Models;
+using Brewtal2.Pid.Models;
 using MediatR;
 
 namespace Brewtal2.Pid.Commands
@@ -25,7 +23,6 @@ namespace Brewtal2.Pid.Commands
             _brewIO.Set(command.Output, command.Value);
         }
 
-        
     }
 
 }

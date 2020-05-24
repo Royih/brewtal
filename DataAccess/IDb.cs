@@ -1,6 +1,7 @@
 
 using Brewtal2.Brews.Models;
 using Brewtal2.Infrastructure.Models;
+using Brewtal2.Pid.Models;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 

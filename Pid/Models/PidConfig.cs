@@ -1,8 +1,7 @@
-using System;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 
-namespace Brewtal2.Brews.Models
+namespace Brewtal2.Pid.Models
 {
     public class PidConfig
     {
@@ -12,7 +11,6 @@ namespace Brewtal2.Brews.Models
         public double PIDKp { get; set; }
         public double PIDKi { get; set; }
         public double PIDKd { get; set; }
-
 
     }
 }

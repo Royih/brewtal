@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Brewtal2.Brews.Models;
 using Brewtal2.DataAccess;
 using Brewtal2.Infrastructure.SignalR;
+using Brewtal2.Pid.Models;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 using Serilog;
@@ -15,7 +15,7 @@ namespace Brewtal2.Pid
         private readonly ITempReader _tempReader;
         private readonly IHubContext<ComHub> _hubContext;
         private readonly BrewIO _brewIO;
-        private IDb _db;
+        private IPidRepository _pidRepo;
         private PID _pid0;
         private PID _pid1;
 
@@ -60,28 +60,28 @@ namespace Brewtal2.Pid
         public void UpdatePidConfig(int pidId, double newPIDKp, double newPIDKi, double newPIDKd)
         {
 
-            var pidConfig = _db.PidConfigs.Find(x => x.PidId == pidId).Single();
+            var pidConfig = _pidRepo.GetPidConfig(pidId);
             pidConfig.PIDKp = newPIDKp;
             pidConfig.PIDKi = newPIDKi;
             pidConfig.PIDKd = newPIDKd;
-            _db.PidConfigs.ReplaceOne(x => x.PidId == pidId, pidConfig);
+            _pidRepo.UpdateExistingPidConfig(pidConfig);
 
             if (pidId == 0)
             {
-                _pid0 = new PID(0, "Pid 1", _brewIO, Outputs.Pid1Output, _db);
+                _pid0 = new PID(0, "Pid 1", _brewIO, Outputs.Pid1Output, _pidRepo);
             }
             else
             {
-                _pid1 = new PID(1, "Pid 2", _brewIO, Outputs.Pid2Output, _db);
+                _pid1 = new PID(1, "Pid 2", _brewIO, Outputs.Pid2Output, _pidRepo);
             }
         }
 
-        public async void Start(IDb db)
+        public async void Start(IPidRepository pidRepo)
         {
-            _db = db;
+            _pidRepo = pidRepo;
             Log.Debug($"{DateTime.Now}: Starting Worker");
-            _pid0 = new PID(0, "Pid 1", _brewIO, Outputs.Pid1Output, _db);
-            _pid1 = new PID(1, "Pid 2", _brewIO, Outputs.Pid2Output, _db);
+            _pid0 = new PID(0, "Pid 1", _brewIO, Outputs.Pid1Output, _pidRepo);
+            _pid1 = new PID(1, "Pid 2", _brewIO, Outputs.Pid2Output, _pidRepo);
             while (true)
             {
                 await Task.Run(() =>

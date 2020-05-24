@@ -1,6 +1,6 @@
 using System;
 
-namespace Brewtal2.Brews.Models
+namespace Brewtal2.Pid.Models
 {
     public enum Outputs
     {

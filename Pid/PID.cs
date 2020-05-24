@@ -1,6 +1,6 @@
 using System.Linq;
-using Brewtal2.Brews.Models;
 using Brewtal2.DataAccess;
+using Brewtal2.Pid.Models;
 using MongoDB.Driver;
 
 namespace Brewtal2.Pid
@@ -25,7 +25,7 @@ namespace Brewtal2.Pid
         private readonly Outputs _output;
         private readonly HeaterController _heater;
 
-        public PID(int pidId, string pidName, BrewIO brewIO, Outputs output, IDb db)
+        public PID(int pidId, string pidName, BrewIO brewIO, Outputs output, IPidRepository pidRepo)
         {
             _pidId = pidId;
             _pidName = pidName;
@@ -34,7 +34,7 @@ namespace Brewtal2.Pid
             _heater = new HeaterController(_brewIO, output);
             _heater.Start();
 
-            PidConfig = db.PidConfigs.Find(x => x.PidId == pidId).SingleOrDefault();
+            PidConfig = pidRepo.GetPidConfig(pidId);
             if (PidConfig == null)
             {
                 PidConfig = new PidConfig
@@ -44,7 +44,7 @@ namespace Brewtal2.Pid
                 PIDKi = DefaultPIDKi,
                 PIDKd = DefaultPIDKd
                 };
-                db.PidConfigs.InsertOne(PidConfig);
+                pidRepo.AddPidConfig(PidConfig);
             }
 
             _pidRegulator = new PIDRegulator3(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd);

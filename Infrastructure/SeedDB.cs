@@ -57,8 +57,8 @@ namespace Brewtal2.Infrastructure
         public static void StartBackgroundWorker(this IServiceProvider serviceProvider)
         {
             var worker = serviceProvider.GetRequiredService<BackgroundWorker>();
-            var db = serviceProvider.GetRequiredService<IDb>();
-            worker.Start(db);
+            var pidRepo = serviceProvider.GetRequiredService<IPidRepository>();
+            worker.Start(pidRepo);
         }
     }
 }

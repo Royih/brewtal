@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Brewtal2.Brews.Models;
+using Brewtal2.Pid.Models;
 
 namespace Brewtal2.Pid
 {

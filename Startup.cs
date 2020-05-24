@@ -44,6 +44,7 @@ namespace Brewtal2
             services.AddScoped<IDb, Db>();
             services.AddScoped<IAppRepository, AppRepository>();
             services.AddScoped<IBrewRepository, BrewRepository>();
+            services.AddScoped<IPidRepository, PidRepository>();
             services.AddScoped<ICurrentUser, CurrentUser>();
 
             // if (IsDevelopment)

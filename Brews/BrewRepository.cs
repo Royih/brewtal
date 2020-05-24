@@ -2,14 +2,12 @@ using System.Collections.Generic;
 using Brewtal2.Brews.Models;
 using Brewtal2.DataAccess;
 using Brewtal2.Infrastructure.Models;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
 namespace Brewtal2.Brews
 {
     public class BrewRepository : IBrewRepository
     {
-        private readonly IConfiguration _configuration;
         private readonly IDb _db;
         private readonly ICurrentUser _currentUser;
 
