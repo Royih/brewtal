@@ -7,6 +7,7 @@ import FastRewindIcon from "@material-ui/icons/FastRewind";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { SignalrContext, PidStatus } from "src/infrastructure/SignalrContextProvider";
+import { SignalrHubContext } from "src/infrastructure/SignalrHubContextProvider";
 
 export type PidInput = {
     id: number;
@@ -14,6 +15,7 @@ export type PidInput = {
 
 export const Pid = (props: PidInput) => {
     const id = props.id;
+    const hubConnection = useContext(SignalrHubContext);
     const signalr = useContext(SignalrContext);
 
     const [pidStatus, setPidStatus] = useState<PidStatus>();
@@ -33,12 +35,12 @@ export const Pid = (props: PidInput) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            signalr.invoke("UpdateTarget", { PidId: id, NewTargetTemp: newTarget });
+            hubConnection?.invoke("UpdateTarget", { PidId: id, NewTargetTemp: newTarget });
             setPendingChange(false);
         }, 3000);
         setPendingChange(true);
         return () => clearTimeout(timer);
-    }, [newTarget, id]);
+    }, [newTarget, id, hubConnection]);
 
     const addNewTarget = (increment: number) => {
         setNewTarget((currentValue) => {

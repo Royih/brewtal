@@ -17,32 +17,35 @@ import { ThrowExceptions } from "./components/functionDemo/TestExceptions";
 import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider";
 import { TestSignalR } from "./components/functionDemo/TestSignalR";
 import { Brews } from "./components/brews/Brews";
+import { SignalrHubContextProvider } from "./infrastructure/SignalrHubContextProvider";
 
 function App() {
     return (
         <ApiContextProvider>
             <UserContextProvider>
-                <SignalrContextProvider>
-                    <ThemeContextProvider>
-                        <CssBaseline />
-                        <SnackbarProvider maxSnack={10}>
-                            <div>
-                                <Layout>
-                                    <Route exact path="/" component={Home} />
-                                    <Route exact path="/counter" component={Counter} />
-                                    <Route exact path="/fetch-data" component={FetchData} />
-                                    <Route exact path="/throw-exceptions" component={ThrowExceptions} />
-                                    <Route exact path="/users" component={Users} />
-                                    <Route path="/user/create" component={EditUserProfile} />
-                                    <Route path="/users/:id" component={EditUserProfile} />
-                                    <Route path="/test-signalr" component={TestSignalR} />
-                                    <Route exact path="/brews" component={Brews} />
-                                </Layout>
-                                <Footer />
-                            </div>
-                        </SnackbarProvider>
-                    </ThemeContextProvider>
-                </SignalrContextProvider>
+                <SignalrHubContextProvider>
+                    <SignalrContextProvider>
+                        <ThemeContextProvider>
+                            <CssBaseline />
+                            <SnackbarProvider maxSnack={10}>
+                                <div>
+                                    <Layout>
+                                        <Route exact path="/" component={Home} />
+                                        <Route exact path="/counter" component={Counter} />
+                                        <Route exact path="/fetch-data" component={FetchData} />
+                                        <Route exact path="/throw-exceptions" component={ThrowExceptions} />
+                                        <Route exact path="/users" component={Users} />
+                                        <Route path="/user/create" component={EditUserProfile} />
+                                        <Route path="/users/:id" component={EditUserProfile} />
+                                        <Route path="/test-signalr" component={TestSignalR} />
+                                        <Route exact path="/brews" component={Brews} />
+                                    </Layout>
+                                    <Footer />
+                                </div>
+                            </SnackbarProvider>
+                        </ThemeContextProvider>
+                    </SignalrContextProvider>
+                </SignalrHubContextProvider>
             </UserContextProvider>
         </ApiContextProvider>
     );

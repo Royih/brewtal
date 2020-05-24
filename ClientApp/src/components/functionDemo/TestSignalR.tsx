@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Paper, ButtonGroup, Button, Card, CardHeader, CardContent, TextField, makeStyles, createStyles, Theme, Container, Box } from "@material-ui/core";
-import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
+import { SignalrHubContext } from "src/infrastructure/SignalrHubContextProvider";
+import { UserContext } from "src/infrastructure/UserContextProvider";
 
 interface IMessage {
     timeStamp: Date;
@@ -35,18 +36,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const TestSignalR = () => {
     const classes = useStyles();
-    const signalR = useContext(SignalrContext);
+    const hubConnection = useContext(SignalrHubContext);
+    const currentUser = useContext(UserContext);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([] as IMessage[]);
 
     useEffect(() => {
-        if (signalR.hubConnection) {
-            signalR.hubConnection.on("SendMessage", (msg: IMessage) => {
+        if (hubConnection) {
+            hubConnection.on("SendMessage", (msg: IMessage) => {
                 setMessages((oldArray) => [...oldArray, msg]);
-                console.log("Her..", msg);
             });
         }
-    }, [signalR.hubConnection]);
+    }, [hubConnection]);
 
     return (
         <Container>
@@ -71,7 +72,7 @@ export const TestSignalR = () => {
                                     color="secondary"
                                     disabled={!message.trim()}
                                     onClick={() => {
-                                        signalR.invoke("SendMessage", { message: message });
+                                        hubConnection?.invoke("SendMessage", { message: message, userName: currentUser.user.name, timeStamp: new Date() });
                                         setMessage("");
                                     }}
                                 >
