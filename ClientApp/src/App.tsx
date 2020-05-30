@@ -18,6 +18,7 @@ import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider"
 import { TestSignalR } from "./components/functionDemo/TestSignalR";
 import { Brews } from "./components/brews/Brews";
 import { SignalrHubContextProvider } from "./infrastructure/SignalrHubContextProvider";
+import { EditBrew } from "./components/brews/EditBrew";
 
 function App() {
     return (
@@ -39,6 +40,8 @@ function App() {
                                         <Route path="/users/:id" component={EditUserProfile} />
                                         <Route path="/test-signalr" component={TestSignalR} />
                                         <Route exact path="/brews" component={Brews} />
+                                        <Route path="/brew/create" component={EditBrew} />
+                                        <Route path="/brews/:id" component={EditBrew} />
                                     </Layout>
                                     <Footer />
                                 </div>

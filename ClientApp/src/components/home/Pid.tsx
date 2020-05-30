@@ -20,7 +20,7 @@ export const Pid = (props: PidInput) => {
 
     const [pidStatus, setPidStatus] = useState<PidStatus>();
     const [newTarget, setNewTarget] = useState<number>();
-    const [pendingChange, setPendingChange] = useState(true);
+    const [pendingChange, setPendingChange] = useState(false);
 
     useEffect(() => {
         const newPidStatus = signalr.hwStatus?.pids[id];
@@ -37,14 +37,14 @@ export const Pid = (props: PidInput) => {
         const timer = setTimeout(() => {
             hubConnection?.invoke("UpdateTarget", { PidId: id, NewTargetTemp: newTarget });
             setPendingChange(false);
-        }, 3000);
-        setPendingChange(true);
+        }, 1300);
         return () => clearTimeout(timer);
     }, [newTarget, id, hubConnection]);
 
     const addNewTarget = (increment: number) => {
         setNewTarget((currentValue) => {
             const newVal = (currentValue || pidStatus?.targetTemp || 0) + increment;
+            setPendingChange(true);
             return newVal >= 0 && newVal <= 100 ? newVal : currentValue;
         });
     };
@@ -59,8 +59,8 @@ export const Pid = (props: PidInput) => {
                     <Typography>Output level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}%</Typography>
                     <Typography>Output pin: {pidStatus?.output ? "Yes" : "No"}</Typography>
 
-                    <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-                        <Button onClick={() => addNewTarget(-5)}>
+                    <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
+                        <Button size="small" onClick={() => addNewTarget(-5)}>
                             <FirstPageIcon />
                         </Button>
                         <Button onClick={() => addNewTarget(-1)}>

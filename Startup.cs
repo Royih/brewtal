@@ -14,16 +14,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Unosquare.RaspberryIO;
+using Unosquare.WiringPi;
 
 namespace Brewtal2
 {
     public class Startup
     {
         readonly string MyCorsPolicy = "MyCorsPolicy";
+        private bool IsDevelopment { get; set; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            IsDevelopment = env.IsDevelopment();
         }
 
         public IConfiguration Configuration { get; }
@@ -47,16 +51,17 @@ namespace Brewtal2
             services.AddScoped<IPidRepository, PidRepository>();
             services.AddScoped<ICurrentUser, CurrentUser>();
 
-            // if (IsDevelopment)
-            // {
-            services.AddSingleton(typeof(ITempReader), typeof(FakeTempReader));
-            services.AddSingleton(typeof(IGPIO), typeof(FakeGPIO));
-            //}
-            // else
-            // {
-            //     services.AddSingleton(typeof(ITempReader), typeof(TempReader));
-            //     services.AddSingleton(typeof(IGPIO), typeof(GPIO));
-            // }
+            if (IsDevelopment)
+            {
+                services.AddSingleton(typeof(ITempReader), typeof(FakeTempReader));
+                services.AddSingleton(typeof(IGPIO), typeof(FakeGPIO));
+            }
+            else
+            {
+                Pi.Init<BootstrapWiringPi>();
+                services.AddSingleton(typeof(ITempReader), typeof(TempReader));
+                services.AddSingleton(typeof(IGPIO), typeof(GPIO));
+            }
             services.AddSingleton<BrewIO>();
             services.AddSingleton<BackgroundWorker>();
 
@@ -69,7 +74,7 @@ namespace Brewtal2
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:3000");
+                    .WithOrigins("http://localhost:3000", "https://192.168.1.12");
             }));
 
             //https://github.com/jbogard/MediatR/wiki

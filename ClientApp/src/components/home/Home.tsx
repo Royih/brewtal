@@ -2,6 +2,7 @@ import React from "react";
 import { Grid, makeStyles, createStyles, Theme } from "@material-ui/core";
 
 import { Pid } from "./Pid";
+import { Outputs } from "./Outputs";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,6 +29,7 @@ export const Home = () => {
                 <Grid item xs={12} sm={6}>
                     <Pid id={1}></Pid>
                 </Grid>
+                <Outputs></Outputs>
             </Grid>
         </div>
     );

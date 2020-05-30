@@ -8,6 +8,7 @@
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <UserSecretsId>aspnet-y-5400ba18-f6dd-4ac5-8fd9-73cced62916b</UserSecretsId>
+    <RuntimeIdentifiers>linux-arm</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
     <PackageReference Include="Quartz" Version="3.0.7" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Unosquare.Raspberry.IO" Version="0.27.0" />
+    <PackageReference Include="Unosquare.WiringPi" Version="0.5.0" />
   </ItemGroup>
 
   <ItemGroup>
