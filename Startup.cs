@@ -74,7 +74,7 @@ namespace Brewtal2
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:3000", "https://192.168.1.12");
+                    .WithOrigins("http://localhost:3000", "https://192.168.1.12:8080");
             }));
 
             //https://github.com/jbogard/MediatR/wiki
@@ -100,7 +100,7 @@ namespace Brewtal2
 
             app.UseSerilogRequestLogging();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

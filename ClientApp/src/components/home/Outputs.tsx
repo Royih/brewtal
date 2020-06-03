@@ -40,7 +40,7 @@ export const Outputs = (props: IOutputsProps) => {
                                 <Switch checked={output.value} onChange={() => toggle(output)} value={output.value} inputProps={{ "aria-label": "secondary checkbox" }} />
                             </div>
                         ))}
-                        <div>{JSON.stringify(manualOutputs,null,2)}</div>
+                        {/* <div>{JSON.stringify(manualOutputs,null,2)}</div> */}
                 </CardContent>
             </Card>
         </Container>

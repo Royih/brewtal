@@ -29,7 +29,9 @@ export const Home = () => {
                 <Grid item xs={12} sm={6}>
                     <Pid id={1}></Pid>
                 </Grid>
-                <Outputs></Outputs>
+                <Grid item xs={12} sm={12}>
+                    <Outputs></Outputs>
+                </Grid>
             </Grid>
         </div>
     );
