@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Loading } from "../common/Loading";
-import { UserContext } from "src/infrastructure/UserContextProvider";
 import { ApiContext } from "src/infrastructure/ApiContextProvider";
 import { ButtonGroup, Table, TableBody, TableHead, TableRow, TableCell, Paper, Box, Button, Typography, TableContainer } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -11,7 +10,6 @@ import { Brew } from "./Models";
 export const Brews = () => {
     const [brews, setBrews] = useState<Brew[] | undefined>();
     const [loading, setLoading] = useState<boolean>(true);
-    const userContext = React.useContext(UserContext);
     const api = React.useContext(ApiContext);
     const history = useHistory();
 

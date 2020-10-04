@@ -1,7 +1,7 @@
 Raspberry PI Setup:
 * Enable SSH & VNC
 * Enabled SPI & I2C
-* Installed Samba and configured /share with a folder "brewtal" where new veresion are Robo-copied in
+* Installed Samba and configured /share with a folder "brewtal" where new veresion are to be Robo-copied in
 * Installed MongoDB
 * 
 Dotnet core-app is hosted behind nginx with auto-restart feature:

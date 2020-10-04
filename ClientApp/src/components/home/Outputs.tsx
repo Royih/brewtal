@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Card, CardContent, ButtonGroup, Switch } from "@material-ui/core";
+import { Container, Card, CardContent, Switch } from "@material-ui/core";
 import { SignalrContext, ManualOutput } from "src/infrastructure/SignalrContextProvider";
 import { SignalrHubContext } from "src/infrastructure/SignalrHubContextProvider";
 

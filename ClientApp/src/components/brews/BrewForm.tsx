@@ -9,27 +9,14 @@ import {
     Button,
     CardActions,
     Paper,
-    Box,
     TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
     makeStyles,
     createStyles,
     Theme,
-    FormGroup,
-    Checkbox,
-    FormControlLabel,
-    IconButton,
 } from "@material-ui/core";
-import clsx from "clsx";
 import { Brew } from "./Models";
 import { useSnackbar } from "notistack";
 import { FormValidator, ValidationElement } from "src/infrastructure/validator";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import { CommandResultDto, IDropdownValue } from "src/infrastructure/models";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
