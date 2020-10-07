@@ -47,7 +47,7 @@ export const Brews = () => {
                                     </TableHead>
                                     <TableBody>
                                         {brews.map((brew: Brew) => (
-                                            <TableRow key={brew.id} hover onClick={() => history.push("/brews/" + brew.id)}>
+                                            <TableRow key={brew.id} hover onClick={() => history.push("/brew/edit/" + brew.id)}>
                                                 <TableCell>{brew.batchNumber}</TableCell>
                                                 <TableCell>{brew.name}</TableCell>
                                                 <TableCell>{brew.beginMash}</TableCell>

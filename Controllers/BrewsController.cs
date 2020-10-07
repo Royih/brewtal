@@ -26,8 +26,14 @@ namespace Brewtal2.Controllers
             return Ok(await _mediator.Send(new ListBrewsQuery()));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostSaveUser(SaveBrewCommand command)
+        [HttpPost("{Action}")]
+        public async Task<IActionResult> Save(SaveBrewCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpPost("{Action}")]
+        public async Task<IActionResult> Delete(DeleteBrewCommand command)
         {
             return Ok(await _mediator.Send(command));
         }
@@ -38,8 +44,8 @@ namespace Brewtal2.Controllers
             return Ok(await _mediator.Send(new GetBrewQuery()));
         }
 
-        [Route("get/{id}")]
-        public async Task<IActionResult> GetUser(Guid id)
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> GetUser(string id)
         {
             return Ok(await _mediator.Send(new GetBrewQuery() { Id = id }));
         }

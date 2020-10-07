@@ -21,37 +21,35 @@ import { SignalrHubContextProvider } from "./infrastructure/SignalrHubContextPro
 import { EditBrew } from "./components/brews/EditBrew";
 
 function App() {
-    return (
-        <ApiContextProvider>
-            <UserContextProvider>
-                <SignalrHubContextProvider>
-                    <SignalrContextProvider>
-                        <ThemeContextProvider>
-                            <CssBaseline />
-                            <SnackbarProvider maxSnack={10}>
-                                <div>
-                                    <Layout>
-                                        <Route exact path="/" component={Home} />
-                                        <Route exact path="/counter" component={Counter} />
-                                        <Route exact path="/fetch-data" component={FetchData} />
-                                        <Route exact path="/throw-exceptions" component={ThrowExceptions} />
-                                        <Route exact path="/users" component={Users} />
-                                        <Route path="/user/create" component={EditUserProfile} />
-                                        <Route path="/users/:id" component={EditUserProfile} />
-                                        <Route path="/test-signalr" component={TestSignalR} />
-                                        <Route exact path="/brews" component={Brews} />
-                                        <Route path="/brew/create" component={EditBrew} />
-                                        <Route path="/brews/:id" component={EditBrew} />
-                                    </Layout>
-                                    <Footer />
-                                </div>
-                            </SnackbarProvider>
-                        </ThemeContextProvider>
-                    </SignalrContextProvider>
-                </SignalrHubContextProvider>
-            </UserContextProvider>
-        </ApiContextProvider>
-    );
+  return (
+    <ApiContextProvider>
+      <UserContextProvider>
+        <SignalrHubContextProvider>
+          <SignalrContextProvider>
+            <ThemeContextProvider>
+              <CssBaseline />
+              <SnackbarProvider maxSnack={10}>
+                <Layout>
+                  <Route exact path="/" component={Home} />
+                  <Route exact path="/counter" component={Counter} />
+                  <Route exact path="/fetch-data" component={FetchData} />
+                  <Route exact path="/throw-exceptions" component={ThrowExceptions} />
+                  <Route exact path="/users" component={Users} />
+                  <Route path="/user/create" component={EditUserProfile} />
+                  <Route path="/users/:id" component={EditUserProfile} />
+                  <Route path="/test-signalr" component={TestSignalR} />
+                  <Route exact path="/brews" component={Brews} />
+                  <Route path="/brew/create" component={EditBrew} />
+                  <Route path="/brew/edit/:id" component={EditBrew} />
+                </Layout>
+                <Footer />
+              </SnackbarProvider>
+            </ThemeContextProvider>
+          </SignalrContextProvider>
+        </SignalrHubContextProvider>
+      </UserContextProvider>
+    </ApiContextProvider>
+  );
 }
 
 export default App;

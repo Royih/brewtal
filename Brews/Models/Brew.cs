@@ -9,18 +9,19 @@ namespace Brewtal2.Brews.Models
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         public string Id { get; set; }
         public int BatchNumber { get; set; }
+        public DateTime CreatedDate { get; set; }
         public DateTime Initiated { get; set; }
         public DateTime BeginMash { get; set; }
         public string Name { get; set; }
-        public float MashTemp { get; set; }
-        public float StrikeTemp { get; set; }
-        public float SpargeTemp { get; set; }
-        public float MashOutTemp { get; set; }
+        public decimal MashTemp { get; set; }
+        public decimal StrikeTemp { get; set; }
+        public decimal SpargeTemp { get; set; }
+        public decimal MashOutTemp { get; set; }
         public int MashTimeInMinutes { get; set; }
         public int BoilTimeInMinutes { get; set; }
         public int BatchSize { get; set; }
-        public float MashWaterAmount { get; set; }
-        public float SpargeWaterAmount { get; set; }
+        public decimal MashWaterAmount { get; set; }
+        public decimal SpargeWaterAmount { get; set; }
         public string Notes { get; set; }
         public string ShoppingList { get; set; }
         public string OptimisticConcurrencyKey { get; set; }
