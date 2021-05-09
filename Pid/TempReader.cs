@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Threading; 
 using Brewtal2.Pid.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Unosquare.RaspberryIO;
 using Unosquare.RaspberryIO.Abstractions;
@@ -53,8 +49,7 @@ namespace Brewtal2.Pid
         {
             return new TempReaderResultDto
             {
-                Temp1 = ReadTemp(0),
-                    Temp2 = ReadTemp(1)
+                Temp1 = ReadTemp(0)
             };
         }
 

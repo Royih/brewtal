@@ -1,0 +1,23 @@
+::: Initial setup
+.Complete Raspberry Pi Setup (w/update system)
+.Enable ssh, vnc, spi, i2c
+.
+:::Network
+>sudo nano /etc/dhcpcd.conf
+Paste the following after section "#interface eth0"
+interface wlan0
+static ip_address=192.168.1.12
+static routers=192.168.1.1
+static domain_name_servers=192.168.1.1, 8.8.8.8
+>sudo reboot 0
+
+:::Other
+.Install .Net5 runtime (https://darryldias.me/2021/install-and-setup-net-5-on-raspberry-pi/)
+
+:::Dotnet core-app is hosted behind nginx with auto-restart feature:
+https://edi.wang/post/2019/9/29/setup-net-core-30-runtime-and-sdk-on-raspberry-pi-4
+
+
+
+
+

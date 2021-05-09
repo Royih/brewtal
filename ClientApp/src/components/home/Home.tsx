@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, makeStyles, createStyles, Theme } from "@material-ui/core";
 
 import { Pid } from "./Pid";
-import { Outputs } from "./Outputs";
+//import { Outputs } from "./Outputs";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,15 +23,15 @@ export const Home = () => {
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={12}>
                     <Pid id={0}></Pid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                     <Pid id={1}></Pid>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                     <Outputs></Outputs>
-                </Grid>
+                </Grid> */}
             </Grid>
         </div>
     );

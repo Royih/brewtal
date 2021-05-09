@@ -75,7 +75,7 @@ export const Pid = (props: PidInput) => {
       const newVal = (currentValue || pidStatus?.targetTemp || 0) + increment;
       const newValAdjusted = newVal < 0 ? 0 : newVal > 100 ? 100 : newVal;
       setPendingChange(newValAdjusted !== currentValue);
-      console.log("test", newValAdjusted);
+      //console.log("test", newValAdjusted);
       return newValAdjusted;
     });
   };
@@ -89,7 +89,7 @@ export const Pid = (props: PidInput) => {
             Temp Target: {Math.round(((pidStatus?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC. Actual: {Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
           </Typography>
           <Typography>
-            Output Level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}% Pin: {pidStatus?.output ? "Yes" : "No"}
+            Output Level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}% Output: {pidStatus?.output ? "On" : "Off"}
           </Typography>
 
           <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">

@@ -1,10 +1,6 @@
 using System;
 using System.Reflection;
-using Brewtal2.Brews;
-using Brewtal2.DataAccess;
 using Brewtal2.Infrastructure;
-using Brewtal2.Infrastructure.CustomIdentity;
-using Brewtal2.Infrastructure.Models;
 using Brewtal2.Infrastructure.SignalR;
 using Brewtal2.Pid;
 using MediatR;
@@ -45,11 +41,7 @@ namespace Brewtal2
             });
 
             // Add DI Implementations
-            services.AddScoped<IDb, Db>();
-            services.AddScoped<IAppRepository, AppRepository>();
-            services.AddScoped<IBrewRepository, BrewRepository>();
             services.AddScoped<IPidRepository, PidRepository>();
-            services.AddScoped<ICurrentUser, CurrentUser>();
 
             if (IsDevelopment)
             {
@@ -65,8 +57,6 @@ namespace Brewtal2
             services.AddSingleton<BrewIO>();
             services.AddSingleton<BackgroundWorker>();
 
-            services.AddCustomIdentity(Configuration);
-
             // Add Cors support
             services.AddCors(o => o.AddPolicy(MyCorsPolicy, builder =>
             {
@@ -74,7 +64,7 @@ namespace Brewtal2
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:3000", "https://192.168.1.12:8080");
+                    .WithOrigins("http://localhost:3000", "https://192.168.1.12:8080", "http://192.168.1.12");
             }));
 
             //https://github.com/jbogard/MediatR/wiki
@@ -130,8 +120,6 @@ namespace Brewtal2
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
-
-            serviceProvider.SeedDb(Configuration);
 
             serviceProvider.StartBackgroundWorker();
 

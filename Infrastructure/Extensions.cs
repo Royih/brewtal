@@ -1,30 +1,17 @@
 using System;
-using Microsoft.Extensions.Configuration;
+using Brewtal2.Pid;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Brewtal2.Infrastructure
 {
-
     public static class Extensions
     {
-        public static Guid? AsGuid(this string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return null;
-            if (Guid.TryParse(input, out var guid))
-            {
-                return guid;
-            }
-            return null;
-        }
 
-        public static string GetMongoConnectionString(this IConfiguration config)
+        public static void StartBackgroundWorker(this IServiceProvider serviceProvider)
         {
-            return config.GetValue<string>("ConnectionString");
-        }
-
-        public static string GetMongoDatabaseName(this IConfiguration config)
-        {
-            return config.GetValue<string>("Database");
+            var worker = serviceProvider.GetRequiredService<BackgroundWorker>();
+            var pidRepo = serviceProvider.GetRequiredService<IPidRepository>();
+            worker.Start(pidRepo);
         }
     }
 }

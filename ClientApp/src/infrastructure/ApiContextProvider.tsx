@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { ILoginResult } from "src/components/Login";
 import { Container } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { UserDto } from "./UserContextProvider";
 
 export type ApiContextState = {
     get<T>(url: string): Promise<T>;
     post<T>(url: string, payload?: any): Promise<T>;
-    getUserFromExistingToken(): UserDto | null;
-    login(loginResult: ILoginResult): UserDto;
     logout(): void;
 };
 
@@ -20,7 +17,6 @@ const BaseApiPath = process.env.REACT_APP_API_PATH + "/api";
 const RefreshAccessTokenUrl = "jwt/RefreshAccessToken";
 const AccessTokenLocalStorageKey = "access_token";
 const RefreshTokenLocalStorageKey = "refresh_token";
-const jwtDecode = require("jwt-decode");
 
 export const ApiContextProvider = (props: any) => {
     //const [lastCall, setLastCall] = useState<string>("N/A");
@@ -85,44 +81,12 @@ export const ApiContextProvider = (props: any) => {
                 return true;
             }
         }
-        logout();
         return false;
-    };
-
-    const getUserFromToken = (accessToken: string): UserDto => {
-        var decodedToken = jwtDecode(accessToken);
-        return JSON.parse(decodedToken.user) as UserDto;
-    };
-
-    const getUserFromExistingToken = (): UserDto | null => {
-        var token = localStorage.getItem(AccessTokenLocalStorageKey);
-        if (token) {
-            return getUserFromToken(token);
-        }
-        return null;
-    };
-
-    const login = (loginResult: ILoginResult): UserDto => {
-        localStorage.setItem(AccessTokenLocalStorageKey, loginResult.access_token);
-        localStorage.setItem(RefreshTokenLocalStorageKey, loginResult.refresh_token);
-        var user = getUserFromToken(loginResult.access_token);
-        if (user && exception) {
-            setException("");
-        }
-        return user;
-    };
-
-    const logout = (): void => {
-        localStorage.removeItem(AccessTokenLocalStorageKey);
-        localStorage.removeItem(RefreshTokenLocalStorageKey);
     };
 
     const contextState = {
         get: get,
         post: post,
-        getUserFromExistingToken: getUserFromExistingToken,
-        login: login,
-        logout: logout,
     } as ApiContextState;
 
     const resetException = () => {

@@ -9,10 +9,7 @@ import { Home } from "./components/home/Home";
 import { Route } from "react-router";
 import { Footer } from "./components/Footer";
 import { ApiContextProvider } from "./infrastructure/ApiContextProvider";
-import { UserContextProvider } from "./infrastructure/UserContextProvider";
 import { FetchData } from "./components/functionDemo/FetchData";
-import { Users } from "./components/users/Users";
-import { EditUserProfile } from "./components/users/EditUserProfile";
 import { ThrowExceptions } from "./components/functionDemo/TestExceptions";
 import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider";
 import { TestSignalR } from "./components/functionDemo/TestSignalR";
@@ -23,7 +20,6 @@ import { EditBrew } from "./components/brews/EditBrew";
 function App() {
   return (
     <ApiContextProvider>
-      <UserContextProvider>
         <SignalrHubContextProvider>
           <SignalrContextProvider>
             <ThemeContextProvider>
@@ -34,9 +30,6 @@ function App() {
                   <Route exact path="/counter" component={Counter} />
                   <Route exact path="/fetch-data" component={FetchData} />
                   <Route exact path="/throw-exceptions" component={ThrowExceptions} />
-                  <Route exact path="/users" component={Users} />
-                  <Route path="/user/create" component={EditUserProfile} />
-                  <Route path="/users/:id" component={EditUserProfile} />
                   <Route path="/test-signalr" component={TestSignalR} />
                   <Route exact path="/brews" component={Brews} />
                   <Route path="/brew/create" component={EditBrew} />
@@ -47,7 +40,6 @@ function App() {
             </ThemeContextProvider>
           </SignalrContextProvider>
         </SignalrHubContextProvider>
-      </UserContextProvider>
     </ApiContextProvider>
   );
 }

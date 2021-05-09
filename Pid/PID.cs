@@ -1,13 +1,8 @@
-using System.Linq;
-using Brewtal2.DataAccess;
 using Brewtal2.Pid.Models;
-using MongoDB.Driver;
-
 namespace Brewtal2.Pid
 {
     public class PID
     {
-        private readonly int _pidId;
         private readonly string _pidName;
         public readonly PidConfig PidConfig;
         private const double DefaultPIDKp = 200;
@@ -25,24 +20,22 @@ namespace Brewtal2.Pid
         private readonly Outputs _output;
         private readonly HeaterController _heater;
 
-        public PID(int pidId, string pidName, BrewIO brewIO, Outputs output, IPidRepository pidRepo)
+        public PID(string pidName, BrewIO brewIO, Outputs output, IPidRepository pidRepo)
         {
-            _pidId = pidId;
             _pidName = pidName;
             _brewIO = brewIO;
             _output = output;
             _heater = new HeaterController(_brewIO, output);
             _heater.Start();
 
-            PidConfig = pidRepo.GetPidConfig(pidId);
+            PidConfig = pidRepo.GetPidConfig();
             if (PidConfig == null)
             {
                 PidConfig = new PidConfig
                 {
-                PidId = pidId,
-                PIDKp = DefaultPIDKp,
-                PIDKi = DefaultPIDKi,
-                PIDKd = DefaultPIDKd
+                    PIDKp = DefaultPIDKp,
+                    PIDKi = DefaultPIDKi,
+                    PIDKd = DefaultPIDKd
                 };
                 pidRepo.AddPidConfig(PidConfig);
             }
@@ -50,7 +43,6 @@ namespace Brewtal2.Pid
             _pidRegulator = new PIDRegulator3(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd);
             Status = new PidStatusDto
             {
-                PidId = _pidId,
                 PidName = _pidName
             };
 
@@ -58,7 +50,7 @@ namespace Brewtal2.Pid
 
         public void Calculate(TempReaderResultDto currentTempResult)
         {
-            var currentTemp = _pidId == 0 ? currentTempResult.Temp1 : currentTempResult.Temp2;
+            var currentTemp = currentTempResult.Temp1;
             var outputValue = _pidRegulator.Calculate(currentTemp, Status.TargetTemp);
             _heater.UpdateNextCyclePercentage(outputValue);
 

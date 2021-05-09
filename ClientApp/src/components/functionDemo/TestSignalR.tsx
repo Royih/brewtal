@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Paper, ButtonGroup, Button, Card, CardHeader, CardContent, TextField, makeStyles, createStyles, Theme, Container, Box } from "@material-ui/core";
 import { SignalrHubContext } from "src/infrastructure/SignalrHubContextProvider";
-import { UserContext } from "src/infrastructure/UserContextProvider";
 
 interface IMessage {
     timeStamp: Date;
@@ -37,7 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const TestSignalR = () => {
     const classes = useStyles();
     const hubConnection = useContext(SignalrHubContext);
-    const currentUser = useContext(UserContext);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([] as IMessage[]);
 
@@ -72,7 +70,7 @@ export const TestSignalR = () => {
                                     color="secondary"
                                     disabled={!message.trim()}
                                     onClick={() => {
-                                        hubConnection?.invoke("SendMessage", { message: message, userName: currentUser.user.name, timeStamp: new Date() });
+                                        hubConnection?.invoke("SendMessage", { message: message, userName: "ke?", timeStamp: new Date() });
                                         setMessage("");
                                     }}
                                 >
