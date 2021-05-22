@@ -12,6 +12,11 @@ namespace Brewtal2.Pid.Models
         public bool Output { get; set; }
         public double OutputValue { get; set; }
         public double ErrorSum { get; set; }
+        public bool FridgeMode { get; set; }
+        public double? MinTemp { get; set; }
+        public DateTime? MinTempTimeStamp { get; set; }
+        public double? MaxTemp { get; set; }
+        public DateTime? MaxTempTimeStamp { get; set; }
     }
 
 }

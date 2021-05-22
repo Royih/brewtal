@@ -1,23 +1,21 @@
-using System;
-using System.Threading;
 
 
 namespace Brewtal2.Pid
 {
-    
+
     // Source: http://playground.arduino.cc/Main/BarebonesPIDForEspresso#pid
     // Credits and lots of gratitude to Tim Hirzel for sharing his code (December 2007). 
     // Tim Hirzels Arduino code was ported to .Net Microframework by Roy Ingar Hansen (July 2014)
     // Then ported to .net core to run on Linux on i.e. a Raspberry PI by Roy Ingar Hansen (May 2018)
     // PID tuning help: http://en.wikipedia.org/wiki/PID_controller
-    public class PIDRegulator3
+    public class PIDRegulator3 : IPIDRegulator
     {
         private const double WindupGuardGain = 1.0;
 
         //Gains
         private readonly double _kp;
         private readonly double _ki;
-        private readonly double _kd;        
+        private readonly double _kd;
 
         private double _pTerm;
         private double _iTerm;
@@ -38,7 +36,7 @@ namespace Brewtal2.Pid
             ErrorSum = 0;
         }
 
-        public double Calculate(double pv, double sp)
+        public double Compute(double pv, double sp)
         {
 
             // determine how badly we are doing

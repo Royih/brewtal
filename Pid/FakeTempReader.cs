@@ -30,6 +30,9 @@ namespace Brewtal2.Pid
                 var secondsSinceLastRead = DateTime.Now.Subtract(_lastRead1).TotalSeconds;
                 var percentage = worker.Status.OutputValue;
                 double increase = ((secondsSinceLastRead * degreesRisesPerSecondAtMaxPercentage * percentage) / 100) - degreesLostPerSecond;
+                if(worker.Status.FridgeMode){
+                    increase=(-1)*increase;
+                }
 
                 temparature1 += increase;
                 if (temparature1 > 100)

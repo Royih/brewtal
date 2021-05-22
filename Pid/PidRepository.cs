@@ -12,7 +12,7 @@ namespace Brewtal2.Pid
 
         public PidConfig GetPidConfig()
         {
-            return new PidConfig { PIDKi = 200, PIDKd = 10, PIDKp = 200 };
+            return new PidConfig { PIDKi = 0.12, PIDKd = 0, PIDKp = 48.6 };
         }
 
         public void UpdateExistingPidConfig(PidConfig pidConfig)

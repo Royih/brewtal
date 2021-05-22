@@ -31,10 +31,22 @@ namespace Brewtal2.Pid
             _brewIO = brewIO;
         }
 
-        public void UpdateTargetTemp(int pidId, double newTargetTemp)
+        public void UpdateTargetTemp(double newTargetTemp)
         {
             _pid.UpdateTargetTemp(newTargetTemp);
             Log.Debug($"Updated PID Target 1:{_pid.Status.TargetTemp}");
+        }
+
+        public void SetFridgeMode()
+        {
+            _pid.UpdatePIDMode(true);
+            Log.Debug($"Changed to Fridge mode");
+        }
+
+        public void SetPidMode()
+        {
+            _pid.UpdatePIDMode(false);
+            Log.Debug($"Changed to Fridge mode");
         }
 
         public PidConfig GetConfig()
@@ -67,9 +79,10 @@ namespace Brewtal2.Pid
 
                     _hubContext.Clients.All.SendAsync("HarwareStatus", new HardwareStatusDto
                     {
-                        Pids = new[] { _pid.Status }.ToArray(),
+                        Pid = _pid.Status,
                         ComputedTime = DateTime.Now,
-                        ManualOutputs = _brewIO.SupportedOutputs.Where(x => !x.Automatic).ToArray()
+                        ManualOutputs = _brewIO.SupportedOutputs.Where(x => !x.Automatic).ToArray(),
+                        PidConfig = _pidRepo.GetPidConfig()
                     });
                     System.Threading.Thread.Sleep(500);
                 });

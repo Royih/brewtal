@@ -4,7 +4,6 @@ namespace Brewtal2.Pid.Commands
 {
     public class UpdatePidTargetCommand : IRequest
     {
-        public int PIDId { get; set; }
         public double NewTargetTemp { get; set; }
     }
 
@@ -18,7 +17,7 @@ namespace Brewtal2.Pid.Commands
         }
         protected override void Handle(UpdatePidTargetCommand command)
         {
-            _pidWorker.UpdateTargetTemp(command.PIDId, command.NewTargetTemp);
+            _pidWorker.UpdateTargetTemp(command.NewTargetTemp);
         }
     }
 

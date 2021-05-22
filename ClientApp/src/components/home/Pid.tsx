@@ -1,17 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Typography, Card, CardContent, ButtonGroup, Button, CircularProgress, makeStyles, createStyles, Theme } from "@material-ui/core";
+import { Container, Typography, Card, CardContent, ButtonGroup, Button, CircularProgress, makeStyles, createStyles, Theme, Switch } from "@material-ui/core";
 import SkipPrevIcon from "@material-ui/icons/SkipPrevious";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import FastForwardIcon from "@material-ui/icons/FastForward";
 import FastRewindIcon from "@material-ui/icons/FastRewind";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
 import LastPageIcon from "@material-ui/icons/LastPage";
-import { SignalrContext, PidStatus } from "src/infrastructure/SignalrContextProvider";
-import { SignalrHubContext } from "src/infrastructure/SignalrHubContextProvider";
+import { SignalrContext, PidStatus, PidConfig } from "src/infrastructure/SignalrContextProvider";
 
-export type PidInput = {
-  id: number;
-};
+export type PidInput = {};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,18 +38,17 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const Pid = (props: PidInput) => {
-  const id = props.id;
-  const hubConnection = useContext(SignalrHubContext);
   const signalr = useContext(SignalrContext);
 
   const [pidStatus, setPidStatus] = useState<PidStatus>();
+  const [pidConfig, setPidConfig] = useState<PidConfig | undefined>();
   const [newTarget, setNewTarget] = useState<number>();
   const [pendingChange, setPendingChange] = useState(false);
 
   const classes = useStyles();
 
   useEffect(() => {
-    const newPidStatus = signalr.hwStatus?.pids[id];
+    const newPidStatus = signalr.hwStatus?.pid;
     setPidStatus((currentValue) => {
       if (!currentValue) {
         setPendingChange(false);
@@ -60,15 +56,16 @@ export const Pid = (props: PidInput) => {
       }
       return newPidStatus;
     });
-  }, [signalr, id]);
+    setPidConfig(signalr.hwStatus?.pidConfig);
+  }, [signalr.hwStatus]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      hubConnection?.invoke("UpdateTarget", { PidId: id, NewTargetTemp: newTarget });
+      signalr.hubConnection?.invoke("UpdateTarget", { NewTargetTemp: newTarget });
       setPendingChange(false);
     }, 1300);
     return () => clearTimeout(timer);
-  }, [newTarget, id, hubConnection]);
+  }, [newTarget, signalr.hubConnection]);
 
   const addNewTarget = (increment: number) => {
     setNewTarget((currentValue) => {
@@ -78,6 +75,10 @@ export const Pid = (props: PidInput) => {
       //console.log("test", newValAdjusted);
       return newValAdjusted;
     });
+  };
+
+  const updatePidMode = () => {
+    signalr.hubConnection?.invoke("UpdatePidMode", { FridgeMode: !pidStatus?.fridgeMode });
   };
 
   return (
@@ -118,6 +119,23 @@ export const Pid = (props: PidInput) => {
               <LastPageIcon />
             </Button>
           </ButtonGroup>
+
+          <br />
+          <Switch checked={pidStatus?.fridgeMode || false} onChange={() => updatePidMode()} value={1} inputProps={{ "aria-label": "secondary checkbox" }} />
+          <b>FridgeMode: {pidStatus?.fridgeMode || false ? "ON" : "OFF"}</b>
+          {!(pidStatus?.fridgeMode || false) && <pre>{JSON.stringify(pidConfig, null, 5)}</pre>}
+          {(pidStatus?.fridgeMode || false) && (
+            <div>
+              <p>
+                <b>Min: </b>
+                {Math.round(((pidStatus?.minTemp || 0) + Number.EPSILON) * 100) / 100}ºC ({pidStatus?.minTempTimeStamp.toLocaleString()})
+              </p>
+              <p>
+                <b>Max: </b>
+                {Math.round(((pidStatus?.maxTemp || 0) + Number.EPSILON) * 100) / 100}ºC ({pidStatus?.maxTempTimeStamp.toLocaleString()})
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </Container>

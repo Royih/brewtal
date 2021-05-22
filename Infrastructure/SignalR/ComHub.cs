@@ -1,7 +1,6 @@
 using System;
 using Brewtal2.Pid.Commands;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -42,6 +41,11 @@ namespace Brewtal2.Infrastructure.SignalR
         }
 
         public void UpdateTarget(UpdatePidTargetCommand command)
+        {
+            _mediator.Send(command);
+        }
+
+        public void UpdatePIDMode(UpdatePidModeCommand command)
         {
             _mediator.Send(command);
         }

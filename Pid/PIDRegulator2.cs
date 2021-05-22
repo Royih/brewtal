@@ -146,7 +146,7 @@ namespace Brewtal2.Pid
             double partialSum = 0.0f;
             DateTime nowTime = DateTime.Now;
 
-            if (lastUpdate != null)
+            if (lastUpdate != DateTime.MinValue)
             {
                 double dT = (nowTime - lastUpdate).TotalSeconds;
 

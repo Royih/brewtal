@@ -11,8 +11,6 @@ import BugReportIcon from "@material-ui/icons/BugReport";
 import HomeIcon from "@material-ui/icons/Home";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import BeerIcon from "@material-ui/icons/LocalDrink";
-import PeopleIcon from "@material-ui/icons/People";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -88,14 +86,10 @@ export const LeftMenu = () => {
       <List>
         {[
           { type: "ListItem", key: "home", label: "Home", url: "/", icon: <HomeIcon />, display: true, onClick: null },
-          { type: "ListItem", key: "brews", label: "Brews", url: "/brews", icon: <BeerIcon />, display: true, onClick: null },
-          { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
-          { type: "ListItem", key: "users", label: "Users", url: "/users", icon: <PeopleIcon />, display: currentUserIsAdmin, onClick: null },
           { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
           { type: "Title", key: "functionDemo", label: "Function demo", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "counter", label: "Counter", url: "/counter", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "fetchData", label: "Fetch data", url: "/fetch-data", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
-          { type: "ListItem", key: "testSignalR", label: "Test signalR", url: "/test-signalr", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "throwExceptions", label: "Throw exceptions", url: "/throw-exceptions", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
           { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "reload", label: "Reload app", url: "", icon: <RefreshIcon />, display: true, onClick: () => window.location.reload() },

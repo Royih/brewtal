@@ -24,7 +24,7 @@ export const Home = () => {
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={12}>
-                    <Pid id={0}></Pid>
+                    <Pid></Pid>
                 </Grid>
                 {/* <Grid item xs={12} sm={6}>
                     <Pid id={1}></Pid>

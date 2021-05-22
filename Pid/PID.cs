@@ -1,3 +1,4 @@
+using System;
 using Brewtal2.Pid.Models;
 namespace Brewtal2.Pid
 {
@@ -15,7 +16,7 @@ namespace Brewtal2.Pid
 
         private double target = 0;
 
-        private readonly PIDRegulator3 _pidRegulator;
+        private IPIDRegulator _pidRegulator;
         private readonly BrewIO _brewIO;
         private readonly Outputs _output;
         private readonly HeaterController _heater;
@@ -43,7 +44,7 @@ namespace Brewtal2.Pid
             _pidRegulator = new PIDRegulator3(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd);
             Status = new PidStatusDto
             {
-                PidName = _pidName
+                PidName = _pidName,
             };
 
         }
@@ -51,13 +52,23 @@ namespace Brewtal2.Pid
         public void Calculate(TempReaderResultDto currentTempResult)
         {
             var currentTemp = currentTempResult.Temp1;
-            var outputValue = _pidRegulator.Calculate(currentTemp, Status.TargetTemp);
+            var outputValue = _pidRegulator.Compute(currentTemp, Status.TargetTemp);
             _heater.UpdateNextCyclePercentage(outputValue);
 
             Status.CurrentTemp = currentTemp;
             Status.OutputValue = outputValue;
             Status.Output = _heater.CurrentStatus;
             Status.ErrorSum = _pidRegulator.ErrorSum;
+            if (!Status.MaxTemp.HasValue || currentTemp > Status.MaxTemp)
+            {
+                Status.MaxTemp = currentTemp;
+                Status.MaxTempTimeStamp = DateTime.Now;
+            }
+            if (!Status.MinTemp.HasValue || currentTemp < Status.MinTemp)
+            {
+                Status.MinTemp = currentTemp;
+                Status.MinTempTimeStamp = DateTime.Now;
+            }
         }
 
         public void UpdateTargetTemp(double newTargetTemp)
@@ -65,6 +76,29 @@ namespace Brewtal2.Pid
             this.target = newTargetTemp;
             Status.TargetTemp = newTargetTemp;
             _pidRegulator.Reset();
+            Status.MaxTemp = null;
+            Status.MinTemp = null;
+            Status.MaxTempTimeStamp = null;
+            Status.MinTempTimeStamp = null;
+        }
+
+        public void UpdatePIDMode(bool fridgeMode)
+        {
+            if (fridgeMode)
+            {
+                _pidRegulator = new PIDRegulatorFridge();
+                Status.FridgeMode = true;
+            }
+            else
+            {
+                _pidRegulator = new PIDRegulator3(PidConfig.PIDKp, PidConfig.PIDKi, PidConfig.PIDKd);
+                Status.FridgeMode = false;
+            }
+            _pidRegulator.Reset();
+            Status.MaxTemp = null;
+            Status.MinTemp = null;
+            Status.MaxTempTimeStamp = null;
+            Status.MinTempTimeStamp = null;
         }
 
     }
