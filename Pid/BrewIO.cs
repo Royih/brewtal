@@ -7,10 +7,10 @@ namespace Brewtal2.Pid
     {
 
         private readonly IGPIO _gpio;
-        private const int _outputPinPid1 = 4;
-        private const int _outputPinPid2 = 26;
-        private const int _outputPinOutput1 = 22;
-        private const int _outputPinOutput2 = 6;
+        private const int _outputPinPid1 = 21;
+        private const int _outputPinPid2 = 20;
+        private const int _outputPinOutput1 = 26;
+        private const int _outputPinOutput2 = 19;
 
         public readonly OutputDto[] SupportedOutputs;
 
