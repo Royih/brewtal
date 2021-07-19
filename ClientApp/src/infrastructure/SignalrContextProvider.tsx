@@ -20,6 +20,8 @@ export interface PidStatus {
   maxTemp: number;
   minTempTimeStamp: Date;
   maxTempTimeStamp: Date;
+  errorSum: number;
+  rpiCoreTemp: string;
 }
 export interface PidConfig {
   pIDKp: number;

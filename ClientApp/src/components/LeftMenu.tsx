@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -12,6 +12,8 @@ import HomeIcon from "@material-ui/icons/Home";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { useHistory } from "react-router-dom";
+import { Confirm } from "./common/Confirm";
+import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,7 +39,8 @@ export const LeftMenu = () => {
     bottom: false,
     right: false,
   });
-
+  const signalr = useContext(SignalrContext);
+  const [confirmShutdown, setConfirmShutdown] = useState(false);
   const iOS = (process as any).browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   type DrawerSide = "top" | "left" | "bottom" | "right";
@@ -53,11 +56,11 @@ export const LeftMenu = () => {
     <ListItem
       button
       key={key}
-      onClick={() => {
+      onClick={(e: any) => {
         if (url) {
           history.push(url);
         } else {
-          onClick();
+          onClick(e);
         }
       }}
     >
@@ -93,8 +96,33 @@ export const LeftMenu = () => {
           { type: "ListItem", key: "throwExceptions", label: "Throw exceptions", url: "/throw-exceptions", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
           { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "reload", label: "Reload app", url: "", icon: <RefreshIcon />, display: true, onClick: () => window.location.reload() },
+          {
+            type: "ListItem",
+            key: "shutdown",
+            label: "Shutdown RPI",
+            url: "",
+            icon: <RefreshIcon />,
+            display: true,
+            onClick: (e: any) => {
+              setConfirmShutdown(true);
+              e.stopPropagation();
+            },
+          },
         ].map(({ type, key, label, url, icon, display, onClick }, index) => GetLeftMenuItem(index, type, key, label, url, icon, display, onClick))}
       </List>
+
+      <Confirm
+        title="Are you sure?"
+        body="This will shut-down the RPI, and it will need to be powered on manually."
+        show={confirmShutdown}
+        onCancelClick={() => {
+          setConfirmShutdown(false);
+        }}
+        onProceedClick={() => {
+          signalr.hubConnection?.invoke("Shutdown");
+          setConfirmShutdown(false);
+        }}
+      ></Confirm>
     </div>
   );
 

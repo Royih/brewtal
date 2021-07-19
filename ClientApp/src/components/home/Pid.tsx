@@ -92,6 +92,7 @@ export const Pid = (props: PidInput) => {
           <Typography>
             Output Level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}% Output: {pidStatus?.output ? "On" : "Off"}
           </Typography>
+          {!(pidStatus?.fridgeMode || false) && <Typography>Error-sum: {Math.round(((pidStatus?.errorSum || 0) + Number.EPSILON) * 100) / 100}</Typography>}
 
           <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
             <Button size="small" onClick={() => addNewTarget(-5)} className={classes.button} disabled={newTarget !== undefined && newTarget <= 0}>
@@ -136,6 +137,8 @@ export const Pid = (props: PidInput) => {
               </p>
             </div>
           )}
+          <hr />
+          <Typography>RPI-Core-Temp: {pidStatus?.rpiCoreTemp}</Typography>
         </CardContent>
       </Card>
     </Container>

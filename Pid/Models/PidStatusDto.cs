@@ -17,6 +17,7 @@ namespace Brewtal2.Pid.Models
         public DateTime? MinTempTimeStamp { get; set; }
         public double? MaxTemp { get; set; }
         public DateTime? MaxTempTimeStamp { get; set; }
+        public string RPICoreTemp { get; set; }
     }
 
 }

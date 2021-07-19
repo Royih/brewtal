@@ -1,4 +1,5 @@
 using System;
+using Brewtal2.Infrastructure;
 using Brewtal2.Pid.Models;
 namespace Brewtal2.Pid
 {
@@ -59,6 +60,7 @@ namespace Brewtal2.Pid
             Status.OutputValue = outputValue;
             Status.Output = _heater.CurrentStatus;
             Status.ErrorSum = _pidRegulator.ErrorSum;
+            
             if (!Status.MaxTemp.HasValue || currentTemp > Status.MaxTemp)
             {
                 Status.MaxTemp = currentTemp;
@@ -69,6 +71,9 @@ namespace Brewtal2.Pid
                 Status.MinTemp = currentTemp;
                 Status.MinTempTimeStamp = DateTime.Now;
             }
+
+            Status.RPICoreTemp = "vcgencmd measure_temp".Bash();
+
         }
 
         public void UpdateTargetTemp(double newTargetTemp)

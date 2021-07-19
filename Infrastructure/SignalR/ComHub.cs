@@ -60,5 +60,11 @@ namespace Brewtal2.Infrastructure.SignalR
             Clients.All.SendAsync("BrewUpdated", brewId);
         }
 
+        public void Shutdown()
+        {
+            Log.Information("Initiating shutdown now");
+            "sudo shutdown 0".Bash();
+        }
+
     }
 }

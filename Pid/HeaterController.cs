@@ -6,7 +6,7 @@ namespace Brewtal2.Pid
 {
     public class HeaterController
     {
-        private TimeSpan _cycleTime = TimeSpan.FromSeconds(10);
+        private TimeSpan _cycleTime = TimeSpan.FromSeconds(1);
         public double Percentage { get; private set; } = 0;
         private readonly BrewIO _brewIO;
         private readonly Outputs _output;
