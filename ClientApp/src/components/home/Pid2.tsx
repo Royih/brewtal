@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Typography, Card, CardContent, makeStyles, createStyles, Theme, Switch, Slider, Box, Avatar, Collapse, Chip } from "@material-ui/core";
+import { Container, Typography, Card, CardContent, makeStyles, createStyles, Theme, Switch, Slider, Box, Avatar, Collapse, Chip, Grid } from "@material-ui/core";
 import { SignalrContext, PidStatus, PidConfig } from "src/infrastructure/SignalrContextProvider";
 import { blue, deepOrange, green } from "@material-ui/core/colors";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "auto",
       height: "auto",
     },
+    defaultAvatar: {
+      width: "auto",
+      height: "auto",
+    },
   })
 );
 
@@ -64,12 +68,24 @@ export const Pid2 = () => {
     }
   };
 
+  const getClassName = (): string => {
+    const currentTemp = pidStatus?.currentTemp || 0;
+    const targetTemp = pidStatus?.targetTemp || 0;
+    if (currentTemp - targetTemp > 1) {
+      return classes.orange;
+    }
+    if (currentTemp - targetTemp < -1) {
+      return classes.blue;
+    }
+    return classes.green;
+  };
+
   return (
     <Container>
       <Card elevation={3}>
         <CardContent>
           <Typography id="discrete-slider" gutterBottom>
-            Select target temperature
+            Select desired temperature
           </Typography>
           <Box mt={5}>
             <Slider
@@ -86,14 +102,50 @@ export const Pid2 = () => {
             />
           </Box>
 
-          <Avatar variant="square" className={classes.orange}>
-            <Box p={3}>{Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC</Box>
-          </Avatar>
-
-          <Typography>
-            Output Level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}% Output: {pidStatus?.output ? "On" : "Off"}
-          </Typography>
-          {!(pidStatus?.fridgeMode || false) && <Typography>Error-sum: {Math.round(((pidStatus?.errorSum || 0) + Number.EPSILON) * 100) / 100}</Typography>}
+          <Grid container spacing={0}>
+            <Grid item xs={12}>
+              <Avatar variant="square" className={getClassName()}>
+                <Box p={1}>
+                  <Typography variant="h6" style={{ fontSize: "10px" }}>
+                    Temp
+                  </Typography>
+                  {Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
+                </Box>
+              </Avatar>
+            </Grid>
+            <Grid item xs={6}>
+              <Avatar variant="square" className={classes.defaultAvatar}>
+                <Box p={1}>
+                  <Typography variant="h6" style={{ fontSize: "10px" }}>
+                    Output Level
+                  </Typography>
+                  {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}%
+                </Box>
+              </Avatar>
+            </Grid>
+            <Grid item xs={6}>
+              <Avatar variant="square" className={classes.defaultAvatar}>
+                <Box p={1}>
+                  <Typography variant="h6" style={{ fontSize: "10px" }}>
+                    Output
+                  </Typography>
+                  {pidStatus?.output ? "On" : "Off"}
+                </Box>
+              </Avatar>
+            </Grid>
+            {!(pidStatus?.fridgeMode || false) && (
+              <Grid item xs={12}>
+                <Avatar variant="square" className={classes.defaultAvatar}>
+                  <Box p={1}>
+                    <Typography variant="h6" style={{ fontSize: "10px" }}>
+                      Error sum
+                    </Typography>
+                    {Math.round(((pidStatus?.errorSum || 0) + Number.EPSILON) * 100) / 100}
+                  </Box>
+                </Avatar>
+              </Grid>
+            )}
+          </Grid>
 
           <br />
           <Switch checked={pidStatus?.fridgeMode || false} onChange={() => updatePidMode()} value={1} inputProps={{ "aria-label": "secondary checkbox" }} />
@@ -101,26 +153,6 @@ export const Pid2 = () => {
 
           <hr />
           <Typography>RPI-Core-Temp: {pidStatus?.rpiCoreTemp}</Typography>
-
-          <hr />
-          <Chip
-            icon={showDebug ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            label="Show debug info"
-            clickable
-            color="primary"
-            onClick={() =>
-              setShowDebug((curr) => {
-                return !curr;
-              })
-            }
-          />
-
-          <Collapse in={showDebug} timeout="auto" unmountOnExit>
-            <Box margin={1}>{!(pidStatus?.fridgeMode || false) && <pre>{JSON.stringify(pidConfig, null, 5)}</pre>}</Box>
-            <Typography>
-              Temp Target: {Math.round(((pidStatus?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC. Actual: {Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
-            </Typography>
-          </Collapse>
 
           {(pidStatus?.fridgeMode || false) && (
             <div>
@@ -136,6 +168,26 @@ export const Pid2 = () => {
           )}
         </CardContent>
       </Card>
+      <hr />
+      <Box mt={3}>
+        <Chip
+          icon={showDebug ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          label="Show debug info"
+          clickable
+          color="default"
+          onClick={() =>
+            setShowDebug((curr) => {
+              return !curr;
+            })
+          }
+        />
+      </Box>
+      <Collapse in={showDebug} timeout="auto" unmountOnExit>
+        <Box margin={1}>{!(pidStatus?.fridgeMode || false) && <pre>{JSON.stringify(pidConfig, null, 5)}</pre>}</Box>
+        <Typography>
+          Temp Target: {Math.round(((pidStatus?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC. Actual: {Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
+        </Typography>
+      </Collapse>
     </Container>
   );
 };
