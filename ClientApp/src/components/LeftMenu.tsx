@@ -119,7 +119,9 @@ export const LeftMenu = () => {
           setConfirmShutdown(false);
         }}
         onProceedClick={() => {
-          signalr.hubConnection?.invoke("Shutdown");
+          if (signalr.hubConnection?.state === "Connected") {
+            signalr.hubConnection?.invoke("Shutdown");
+          }
           setConfirmShutdown(false);
         }}
       ></Confirm>

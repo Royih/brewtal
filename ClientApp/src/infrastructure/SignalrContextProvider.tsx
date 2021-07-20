@@ -91,6 +91,7 @@ export const SignalrContextProvider = (props: any) => {
 
       hubConnection.on("HarwareStatus", (hws: HardwareStatus) => {
         setHWStatus(hws);
+        setStatus(SignalRStatus.Ok);
         setBeat((curr) => {
           return !curr;
         });
@@ -150,7 +151,7 @@ export const SignalrContextProvider = (props: any) => {
         reconnect: reconnect,
         hubConnection: hubConnection,
         connectedSince: connectedSince,
-        disconnectedSince: disconnectedSince,
+        disconnectedSince: disconnectedSince
       }}
     >
       {props.children}

@@ -1,6 +1,8 @@
 using System;
 using Brewtal2.Infrastructure;
 using Brewtal2.Pid.Models;
+using Serilog;
+
 namespace Brewtal2.Pid
 {
     public class PID
@@ -21,6 +23,7 @@ namespace Brewtal2.Pid
         private readonly BrewIO _brewIO;
         private readonly Outputs _output;
         private readonly HeaterController _heater;
+        private bool _reportCoreTemp = true;
 
         public PID(string pidName, BrewIO brewIO, Outputs output, IPidRepository pidRepo)
         {
@@ -60,7 +63,7 @@ namespace Brewtal2.Pid
             Status.OutputValue = outputValue;
             Status.Output = _heater.CurrentStatus;
             Status.ErrorSum = _pidRegulator.ErrorSum;
-            
+
             if (!Status.MaxTemp.HasValue || currentTemp > Status.MaxTemp)
             {
                 Status.MaxTemp = currentTemp;
@@ -71,8 +74,21 @@ namespace Brewtal2.Pid
                 Status.MinTemp = currentTemp;
                 Status.MinTempTimeStamp = DateTime.Now;
             }
+            if (_reportCoreTemp)
+            {
+                var coreTempResult = "vcgencmd measure_temp".Bash();
+                if (coreTempResult.Success)
+                {
+                    Status.RPICoreTemp = coreTempResult.Result;
+                }
+                else
+                {
+                    Log.Warning("Fetching RPI Core-Temp failed. Will not continue to pull this");
+                    _reportCoreTemp = false;
+                }
+            }
 
-            Status.RPICoreTemp = "vcgencmd measure_temp".Bash();
+
 
         }
 

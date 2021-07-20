@@ -7,11 +7,68 @@ import { SnackbarProvider } from "notistack";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/home/Home";
 import { Route } from "react-router";
-import { Footer } from "./components/Footer";
+import { Footer } from "./components/footer/Footer";
 import { ApiContextProvider } from "./infrastructure/ApiContextProvider";
 import { FetchData } from "./components/functionDemo/FetchData";
 import { ThrowExceptions } from "./components/functionDemo/TestExceptions";
-import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider"
+import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faBug,
+  faCaretSquareDown,
+  faChevronCircleRight,
+  faClipboardList,
+  faCog,
+  faHeartbeat,
+  faHome,
+  faLightbulb,
+  faMehBlank,
+  faQuestionCircle,
+  fas,
+  faSatelliteDish,
+  faSun,
+  faTemperatureLow,
+  faThermometerEmpty,
+  faToggleOff,
+  faToggleOn,
+  faTrash,
+  faUserLock,
+  faUsers,
+  faVolumeDown,
+  faVolumeUp,
+  faSyncAlt,
+  faHeartBroken,
+  faUnlink,
+} from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+  fas,
+  faTemperatureLow,
+  faSatelliteDish,
+  faClipboardList,
+  faHome,
+  faUsers,
+  faChevronCircleRight,
+  faVolumeUp,
+  faVolumeDown,
+  faThermometerEmpty,
+  faSun,
+  faToggleOn,
+  faToggleOff,
+  faLightbulb,
+  faQuestionCircle,
+  faMehBlank,
+  faBug,
+  faTrash,
+  faCog,
+  faUserLock,
+  faHeartbeat,
+  faCaretSquareDown,
+  faSyncAlt,
+  faHeartbeat,
+  faHeartBroken,
+  faUnlink
+);
 
 function App() {
   return (

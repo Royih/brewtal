@@ -8,8 +8,6 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { SignalrContext, PidStatus, PidConfig } from "src/infrastructure/SignalrContextProvider";
 
-export type PidInput = {};
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -37,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Pid = (props: PidInput) => {
+export const Pid = () => {
   const signalr = useContext(SignalrContext);
 
   const [pidStatus, setPidStatus] = useState<PidStatus>();
@@ -61,7 +59,10 @@ export const Pid = (props: PidInput) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      signalr.hubConnection?.invoke("UpdateTarget", { NewTargetTemp: newTarget });
+      if (signalr.hubConnection && signalr.hubConnection.state === "Connected") {
+        signalr.hubConnection?.invoke("UpdateTarget", { NewTargetTemp: newTarget });
+      }
+
       setPendingChange(false);
     }, 1300);
     return () => clearTimeout(timer);

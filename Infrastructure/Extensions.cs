@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Brewtal2.Pid;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace Brewtal2.Infrastructure
 {
@@ -15,9 +16,9 @@ namespace Brewtal2.Infrastructure
             worker.Start(pidRepo);
         }
 
-
-        public static string Bash(this string cmd)
+        public static BashResult Bash(this string cmd)
         {
+
             var escapedArgs = cmd.Replace("\"", "\\\"");
 
             var process = new Process()
@@ -34,8 +35,13 @@ namespace Brewtal2.Infrastructure
             process.Start();
             string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
+            if (process.ExitCode == 0)
+            {
+                return new BashResult { Success = true, Result = result };
+            }
+            Log.Warning($"Error executing bash. Exit Code = {process.ExitCode}");
+            return new BashResult { Success = false, Result = result };
 
-            return result;
         }
     }
 }
