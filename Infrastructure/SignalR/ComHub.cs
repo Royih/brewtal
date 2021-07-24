@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using Brewtal2.Pid.Commands;
+using Brewtal2.Storage;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
@@ -64,6 +66,11 @@ namespace Brewtal2.Infrastructure.SignalR
         {
             Log.Information("Initiating shutdown now");
             "sudo shutdown 0".Bash();
+        }
+
+        public async Task<SessionDto> GetSession(GetSessionQuery query)
+        {
+            return await _mediator.Send(query);
         }
 
     }

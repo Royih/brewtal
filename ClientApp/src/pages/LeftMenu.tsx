@@ -8,6 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { useHistory } from "react-router-dom";
@@ -88,6 +89,7 @@ export const LeftMenu = () => {
       <List>
         {[
           { type: "ListItem", key: "home", label: "Home", url: "/", icon: <HomeIcon />, display: true, onClick: null },
+          { type: "ListItem", key: "sessions", label: "Sessions", url: "/sessions", icon: <FormatListBulletedIcon />, display: true, onClick: null },
           { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "reload", label: "Reload app", url: "", icon: <RefreshIcon />, display: true, onClick: () => window.location.reload() },
           {

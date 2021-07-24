@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -19,6 +21,16 @@ namespace Brewtal2.Storage
             return runtime.CurrentSession;
         }
 
+        public async Task<Session> GetSessionAsync(int sessionId)
+        {
+            if (sessionId == 0)
+            {
+                return await _db.Sessions.OrderByDescending(x => x.Id).Include(x => x.Logs).FirstOrDefaultAsync();
+
+            }
+            return await _db.Sessions.Include(x => x.Logs).FirstAsync(x => x.Id == sessionId);
+        }
+
         public void InitializeDb()
         {
             _db.Add(new Runtime() { Startup = DateTime.Now });
@@ -26,16 +38,23 @@ namespace Brewtal2.Storage
             Log.Information("DB initialized");
         }
 
-        public void LogTemp(double newTemp)
+        public async Task<IEnumerable<Session>> ListSessions()
+        {
+            return await _db.Sessions.OrderByDescending(x => x.Id).ToArrayAsync();
+        }
+
+        public Templog LogTemp(double newTemp)
         {
             var runtime = _db.Runtime.Include(x => x.CurrentSession).Single();
             var currentSession = runtime.CurrentSession;
-            _db.Add(new Templog
+
+            var newLog = new Templog
             {
                 TimeStamp = DateTime.Now,
                 ActualTemperature = newTemp,
                 SessionId = currentSession.Id
-            });
+            };
+
             if (newTemp < currentSession.MinTemp)
             {
                 currentSession.MinTemp = newTemp;
@@ -48,7 +67,9 @@ namespace Brewtal2.Storage
             {
                 currentSession.TimeToReachTarget = DateTime.Now.Subtract(currentSession.StartTime);
             }
+            _db.Add(newLog);
             _db.SaveChanges();
+            return newLog;
         }
 
         public void RegisterStartup()

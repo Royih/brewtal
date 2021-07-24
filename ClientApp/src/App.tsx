@@ -36,6 +36,7 @@ import {
   faUnlink,
 } from "@fortawesome/free-solid-svg-icons";
 import { Layout } from "./pages/Layout";
+import { Sessions } from "./pages/sessions/Sessions";
 
 library.add(
   fas,
@@ -75,6 +76,7 @@ function App() {
           <SnackbarProvider maxSnack={10}>
             <Layout>
               <Route exact path="/" component={Home} />
+              <Route exact path="/sessions/:id?" component={Sessions} />
             </Layout>
             <Footer />
           </SnackbarProvider>

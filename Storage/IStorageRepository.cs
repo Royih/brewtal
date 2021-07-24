@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace Brewtal2.Storage
 {
     public interface IStorageRepository
@@ -6,6 +9,8 @@ namespace Brewtal2.Storage
         void RegisterStartup();
         Session GetCurrentSession();
         Session SetNewTargetTemp(double newTargetTemp, double actualTemp);
-        void LogTemp(double newTemp);
+        Templog LogTemp(double newTemp);
+        Task<Session> GetSessionAsync(int sessionId);
+        Task<IEnumerable<Session>> ListSessions();
     }
 }

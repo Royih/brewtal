@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Serialization;
+using AutoMapper;
 using Brewtal2.Infrastructure;
 using Brewtal2.Infrastructure.SignalR;
 using Brewtal2.Pid;
@@ -36,7 +38,9 @@ namespace Brewtal2
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllersWithViews();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddControllersWithViews().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
             services.AddEntityFrameworkSqlite().AddDbContext<StorageContext>();
 
@@ -79,6 +83,8 @@ namespace Brewtal2
             services.AddMediatR(Assembly.GetEntryAssembly());
 
             services.AddSignalR();
+
+
 
         }
 
@@ -128,6 +134,7 @@ namespace Brewtal2
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
+
 
             var storageRepo = serviceProvider.GetRequiredService<IStorageRepository>();
 

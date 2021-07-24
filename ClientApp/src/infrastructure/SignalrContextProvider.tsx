@@ -1,5 +1,6 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import React, { useState, useEffect } from "react";
+import { TemplogDto } from "src/pages/sessions/models";
 
 export interface ManualOutput {
   output: number;
@@ -44,6 +45,7 @@ export type SignalRState = {
   hubConnection: HubConnection | undefined;
   connectedSince: Date | null;
   disconnectedSince: Date | null;
+  newTempLog: TemplogDto | undefined;
 };
 export enum SignalRStatus {
   Pending = "Pending",
@@ -59,6 +61,7 @@ export { SignalrContext }; // Export it so it can be used by other Components
 export const SignalrContextProvider = (props: any) => {
   const [status, setStatus] = useState<SignalRStatus>(SignalRStatus.Pending);
   const [hwStatus, setHWStatus] = useState<HardwareStatus | undefined>();
+  const [newTempLog, setNewTempLog] = useState<TemplogDto | undefined>();
   const [beat, setBeat] = useState(false);
   const [hubConnection, setHubConnection] = useState<HubConnection>();
   const [connectedSince, setConnectedSince] = useState<Date | null>(null);
@@ -95,6 +98,10 @@ export const SignalrContextProvider = (props: any) => {
         setBeat((curr) => {
           return !curr;
         });
+      });
+
+      hubConnection.on("NewTempLog", (newTempLog: TemplogDto) => {
+        setNewTempLog(newTempLog);
       });
 
       hubConnection.onclose(() => {
@@ -134,6 +141,7 @@ export const SignalrContextProvider = (props: any) => {
         if (hubConnection) {
           hubConnection.off("Heartbeat");
           hubConnection.off("DeviceChanged");
+          hubConnection.off("NewTempLog");
           hubConnection.stop();
         }
       };
@@ -151,7 +159,8 @@ export const SignalrContextProvider = (props: any) => {
         reconnect: reconnect,
         hubConnection: hubConnection,
         connectedSince: connectedSince,
-        disconnectedSince: disconnectedSince
+        disconnectedSince: disconnectedSince,
+        newTempLog: newTempLog,
       }}
     >
       {props.children}

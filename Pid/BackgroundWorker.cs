@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Brewtal2.Infrastructure.SignalR;
 using Brewtal2.Pid.Models;
 using Brewtal2.Storage;
@@ -14,6 +15,7 @@ namespace Brewtal2.Pid
         private readonly ITempReader _tempReader;
         private readonly IHubContext<ComHub> _hubContext;
         private readonly IStorageRepository _storageRepository;
+        private readonly IMapper _mapper;
         private readonly BrewIO _brewIO;
         private IPidRepository _pidRepo;
         private PID _pid;
@@ -30,13 +32,14 @@ namespace Brewtal2.Pid
         private Session _currentSession;
         private DateTime? _nextTempLog = null;
 
-        public BackgroundWorker(ITempReader tempReader, IHubContext<ComHub> hubContext, IStorageRepository storageRepository, BrewIO brewIO)
+        public BackgroundWorker(ITempReader tempReader, IHubContext<ComHub> hubContext, IStorageRepository storageRepository, BrewIO brewIO, IMapper mapper)
         {
             _tempReader = tempReader;
             _hubContext = hubContext;
             _storageRepository = storageRepository;
             _currentSession = storageRepository.GetCurrentSession();
             _brewIO = brewIO;
+            _mapper = mapper;
         }
 
         public void UpdateTargetTemp(double newTargetTemp)
@@ -79,7 +82,7 @@ namespace Brewtal2.Pid
         {
             _pidRepo = pidRepo;
 
-            Log.Debug($"{DateTime.Now}: Starting Worker");
+            Log.Debug($"Starting Worker");
             _pid = new PID("Pid 1", _brewIO, Outputs.Pid1Output, _pidRepo, _currentSession?.TargetTemp ?? 0);
             while (true)
             {
@@ -99,7 +102,10 @@ namespace Brewtal2.Pid
 
                     if (_currentSession != null && (!_nextTempLog.HasValue || DateTime.Now > _nextTempLog.Value))
                     {
-                        _storageRepository.LogTemp(newTemp.Temp1);
+                        var newLog = _storageRepository.LogTemp(newTemp.Temp1);
+                        var newLogDto = _mapper.Map<TemplogDto>(newLog);
+                        _hubContext.Clients.All.SendAsync("NewTempLog", newLogDto);
+                        Log.Debug($"Temperature {newTemp.Temp1}°C logged");
                         _nextTempLog = DateTime.Now.Add(TempLogSampleRate);
                     }
                     System.Threading.Thread.Sleep(500);
