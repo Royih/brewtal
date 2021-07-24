@@ -17,15 +17,13 @@ namespace Brewtal2.Pid
 
         public PidStatusDto Status { get; private set; }
 
-        private double target = 0;
-
         private IPIDRegulator _pidRegulator;
         private readonly BrewIO _brewIO;
         private readonly Outputs _output;
         private readonly HeaterController _heater;
         private bool _reportCoreTemp = true;
 
-        public PID(string pidName, BrewIO brewIO, Outputs output, IPidRepository pidRepo)
+        public PID(string pidName, BrewIO brewIO, Outputs output, IPidRepository pidRepo, double initialTargetTemp)
         {
             _pidName = pidName;
             _brewIO = brewIO;
@@ -49,6 +47,7 @@ namespace Brewtal2.Pid
             Status = new PidStatusDto
             {
                 PidName = _pidName,
+                TargetTemp = initialTargetTemp
             };
 
         }
@@ -94,7 +93,6 @@ namespace Brewtal2.Pid
 
         public void UpdateTargetTemp(double newTargetTemp)
         {
-            this.target = newTargetTemp;
             Status.TargetTemp = newTargetTemp;
             _pidRegulator.Reset();
             Status.MaxTemp = null;

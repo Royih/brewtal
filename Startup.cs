@@ -1,11 +1,15 @@
 using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using Brewtal2.Infrastructure;
 using Brewtal2.Infrastructure.SignalR;
 using Brewtal2.Pid;
+using Brewtal2.Storage;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +38,9 @@ namespace Brewtal2
 
             services.AddControllersWithViews();
 
+            services.AddEntityFrameworkSqlite().AddDbContext<StorageContext>();
+
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -56,6 +63,7 @@ namespace Brewtal2
             }
             services.AddSingleton<BrewIO>();
             services.AddSingleton<BackgroundWorker>();
+            services.AddSingleton<IStorageRepository, StorageRepository>();
 
             // Add Cors support
             services.AddCors(o => o.AddPolicy(MyCorsPolicy, builder =>
@@ -120,6 +128,25 @@ namespace Brewtal2
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
+
+            var storageRepo = serviceProvider.GetRequiredService<IStorageRepository>();
+
+            using (var client = new StorageContext())
+            {
+                if (!new DirectoryInfo("Data").Exists)
+                {
+                    new DirectoryInfo("Data").Create();
+                }
+                client.Database.Migrate();
+                if (!client.Runtime.Any())
+                {
+                    storageRepo.InitializeDb();
+                }
+                else
+                {
+                    storageRepo.RegisterStartup();
+                }
+            }
 
             serviceProvider.StartBackgroundWorker();
 

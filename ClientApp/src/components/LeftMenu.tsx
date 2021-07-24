@@ -7,7 +7,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import BugReportIcon from "@material-ui/icons/BugReport";
 import HomeIcon from "@material-ui/icons/Home";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
@@ -89,11 +88,6 @@ export const LeftMenu = () => {
       <List>
         {[
           { type: "ListItem", key: "home", label: "Home", url: "/", icon: <HomeIcon />, display: true, onClick: null },
-          { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
-          { type: "Title", key: "functionDemo", label: "Function demo", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
-          { type: "ListItem", key: "counter", label: "Counter", url: "/counter", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
-          { type: "ListItem", key: "fetchData", label: "Fetch data", url: "/fetch-data", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
-          { type: "ListItem", key: "throwExceptions", label: "Throw exceptions", url: "/throw-exceptions", icon: <BugReportIcon />, display: currentUserIsAdmin, onClick: null },
           { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
           { type: "ListItem", key: "reload", label: "Reload app", url: "", icon: <RefreshIcon />, display: true, onClick: () => window.location.reload() },
           {
