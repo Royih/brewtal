@@ -11,7 +11,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { useHistory } from "react-router-dom";
-import { Confirm } from "./common/Confirm";
+import { Confirm } from "src/components/Confirm";
 import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
 
 const useStyles = makeStyles((theme: Theme) =>

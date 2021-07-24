@@ -1,12 +1,10 @@
-import React from "react";
 import "./App.css";
 import { ThemeContextProvider } from "./infrastructure/ThemeContextProvider";
 import { CssBaseline } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
-import { Layout } from "./components/Layout";
-import { Home } from "./components/home/Home";
+import { Home } from "./pages/home/Home";
 import { Route } from "react-router";
-import { Footer } from "./components/footer/Footer";
+import { Footer } from "./pages/footer/Footer";
 import { ApiContextProvider } from "./infrastructure/ApiContextProvider";
 import { SignalrContextProvider } from "./infrastructure/SignalrContextProvider";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -37,6 +35,7 @@ import {
   faHeartBroken,
   faUnlink,
 } from "@fortawesome/free-solid-svg-icons";
+import { Layout } from "./pages/Layout";
 
 library.add(
   fas,
