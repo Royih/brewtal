@@ -21,6 +21,11 @@ namespace Brewtal2.Storage
             return runtime.CurrentSession;
         }
 
+        public Templog GetLatestTempLog(int sessionId)
+        {
+            return _db.Templogs.Where(x => x.SessionId == sessionId).OrderByDescending(x => x.Id).FirstOrDefault();
+        }
+
         public async Task<Session> GetSessionAsync(int sessionId)
         {
             if (sessionId == 0)

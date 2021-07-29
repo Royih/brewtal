@@ -9,7 +9,7 @@ namespace Brewtal2.Infrastructure
 
         public AutoMapperProfileConfiguration()
         {
-            CreateMap<Session, SessionDto>().ForMember(dest => dest.Logs, opt => opt.MapFrom(src => src.Logs.OrderBy(x => x.Id)));
+            CreateMap<Session, SessionDto>().ForMember(dest => dest.Logs, opt => opt.MapFrom(src => src.Logs.OrderByDescending(x => x.Id)));
             CreateMap<Session, SessionLightDto>();
             CreateMap<Runtime, RuntimeDto>();
             CreateMap<Templog, TemplogDto>();

@@ -50,6 +50,10 @@ export const Pid2 = () => {
   const [showDebug, setShowDebug] = useState(false);
 
   useEffect(() => {
+    console.log("Component rerender");
+  });
+
+  useEffect(() => {
     setPidStatus(signalr.hwStatus?.pid);
     setPidConfig(signalr.hwStatus?.pidConfig);
   }, [signalr.hwStatus]);

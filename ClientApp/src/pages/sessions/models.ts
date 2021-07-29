@@ -11,6 +11,7 @@ export interface TemplogDto {
   timeStamp: string;
   timeStampAsTicks: number;
   actualTemperature: number;
+  targetTemp: number;
   session: SessionDto;
 }
 
@@ -22,6 +23,7 @@ export interface SessionDto {
   maxTemp: number;
   timeToReachTarget: string | null;
   logs: TemplogDto[];
+  allSessions: SessionLightDto[];
 }
 
 export interface SessionLightDto {

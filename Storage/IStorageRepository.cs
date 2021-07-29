@@ -8,6 +8,7 @@ namespace Brewtal2.Storage
         void InitializeDb();
         void RegisterStartup();
         Session GetCurrentSession();
+        Templog GetLatestTempLog(int sessionId);
         Session SetNewTargetTemp(double newTargetTemp, double actualTemp);
         Templog LogTemp(double newTemp);
         Task<Session> GetSessionAsync(int sessionId);
