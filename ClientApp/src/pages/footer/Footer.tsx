@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import { createStyles, Theme, makeStyles, useTheme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -10,7 +10,7 @@ import LightModeIcon from "@material-ui/icons/Brightness5";
 import HomeIcon from "@material-ui/icons/Home";
 import { ThemeContext } from "src/infrastructure/ThemeContextProvider";
 import { NavLink } from "react-router-dom";
-import { SignalrContext, SignalRStatus } from "src/infrastructure/SignalrContextProvider";
+import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
 import { LeftMenu } from "../LeftMenu";
 import { ReconnectSignalr } from "./ReconnectSignalr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -63,18 +63,28 @@ export const Footer = () => {
   const classes = useStyles();
   const theme = useTheme();
   const themeContext = useContext(ThemeContext);
-  const signalR = useContext(SignalrContext);
+  const signalr = useContext(SignalrContext);
+  const [beat, setBeat] = useState(false);
+  const location = useLocation();
 
+  
   useEffect(() => {
-    const fetchData = async () => {};
-    fetchData();
-  }, []);
-
-  let location = useLocation();
+    let mounted = true;
+    signalr.hubConnection?.on("HarwareStatus", () => {
+      if (mounted) {
+        setBeat((curr) => {
+          return !curr;
+        });
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [signalr.hubConnection]);
 
   const Displayheart = () => {
-    if (signalR.status === SignalRStatus.Connected || signalR.status === SignalRStatus.Ok) {
-      if (signalR.beat) {
+    if (signalr.hubConnection?.state === "Connected") {
+      if (beat) {
         return <FontAwesomeIcon icon="heartbeat" style={{ color: "#dc004e" }} size="lg" fixedWidth />;
       }
       return <FontAwesomeIcon icon="heartbeat" size="lg" fixedWidth />;
@@ -90,7 +100,7 @@ export const Footer = () => {
           <LeftMenu />
           <Displayheart />
           <Box ml={2}>
-            <Typography>{signalR.status !== SignalRStatus.Ok ? signalR.status.toString() : ""}</Typography>
+            <Typography>{signalr.hubConnection?.state !== "Connected" ? signalr.hubConnection?.state : ""}</Typography>
           </Box>
           <div className={classes.grow} />
 

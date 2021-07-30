@@ -37,6 +37,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Layout } from "./pages/Layout";
 import { Sessions } from "./pages/sessions/Sessions";
+import { Testo } from "./pages/home/Testo";
 
 library.add(
   fas,
@@ -77,6 +78,7 @@ function App() {
             <Layout>
               <Route exact path="/" component={Home} />
               <Route exact path="/sessions/:id?" component={Sessions} />
+              <Route exact path="/testo" component={Testo} />
             </Layout>
             <Footer />
           </SnackbarProvider>

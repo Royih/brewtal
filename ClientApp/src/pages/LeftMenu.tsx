@@ -6,7 +6,9 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import TwoWheelerIcon from "@material-ui/icons/TwoWheeler";
 import ListItemText from "@material-ui/core/ListItemText";
+
 import HomeIcon from "@material-ui/icons/Home";
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import IconButton from "@material-ui/core/IconButton";
@@ -91,6 +93,7 @@ export const LeftMenu = () => {
           { type: "ListItem", key: "home", label: "Home", url: "/", icon: <HomeIcon />, display: true, onClick: null },
           { type: "ListItem", key: "sessions", label: "Sessions", url: "/sessions", icon: <FormatListBulletedIcon />, display: true, onClick: null },
           { type: "Divder", key: "", label: "", url: "", icon: null, display: currentUserIsAdmin, onClick: null },
+          { type: "ListItem", key: "testo", label: "Test-o", url: "/testo", icon: <TwoWheelerIcon />, display: true, onClick: null },
           { type: "ListItem", key: "reload", label: "Reload app", url: "", icon: <RefreshIcon />, display: true, onClick: () => window.location.reload() },
           {
             type: "ListItem",

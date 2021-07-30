@@ -1,8 +1,6 @@
-import React from "react";
 import { Grid, makeStyles, createStyles, Theme } from "@material-ui/core";
 
-import { Pid2 } from "./Pid2";
-//import { Outputs } from "./Outputs";
+import { Pid } from "./Pid";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,7 +22,7 @@ export const Home = () => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
-          <Pid2></Pid2>
+          <Pid></Pid>
         </Grid>
         {/* <Grid item xs={12} sm={6}>
                     <Pid id={1}></Pid>

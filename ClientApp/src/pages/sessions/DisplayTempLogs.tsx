@@ -21,7 +21,9 @@ function DisplayTempLogs(props: { logs: TemplogDto[] }) {
     },
   ];
 
-  // const [sortModel, setSortModel] = React.useState<GridSortModel>([
+  // const [logs, setLogs] = useState(props.logs);
+
+  // const [sortModel, setSortModel] = useState<GridSortModel>([
   //   {
   //     field: "id",
   //     sort: "desc",
@@ -29,14 +31,16 @@ function DisplayTempLogs(props: { logs: TemplogDto[] }) {
   // ]);
 
   return (
-    <div style={{ height: 300, width: "100%" }}>
+    <div style={{ height: "300px", width: "100%" }}>
       <DataGrid
         rows={props.logs}
         columns={columns}
+        pageSize={100}
         // sortModel={sortModel}
         // onSortModelChange={(model) => {
-        //setSortModel(model);
-        //}}
+        //   console.log("Her...");
+        //   setSortModel(model);
+        // }}
       />
     </div>
   );

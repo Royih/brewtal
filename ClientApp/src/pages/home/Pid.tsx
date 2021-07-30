@@ -1,147 +1,200 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Container, Typography, Card, CardContent, ButtonGroup, Button, CircularProgress, makeStyles, createStyles, Theme, Switch } from "@material-ui/core";
-import SkipPrevIcon from "@material-ui/icons/SkipPrevious";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import FastForwardIcon from "@material-ui/icons/FastForward";
-import FastRewindIcon from "@material-ui/icons/FastRewind";
-import FirstPageIcon from "@material-ui/icons/FirstPage";
-import LastPageIcon from "@material-ui/icons/LastPage";
-import { SignalrContext, PidStatus, PidConfig } from "src/infrastructure/SignalrContextProvider";
+import { useContext, useState, useEffect } from "react";
+import { Container, Typography, Card, CardContent, makeStyles, createStyles, Theme, Switch, Slider, Box, Avatar, Collapse, Chip, Grid } from "@material-ui/core";
+import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
+import { blue, deepOrange, green } from "@material-ui/core/colors";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import { HardwareStatus } from "./models";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
+      display: "flex",
+      "& > *": {
+        margin: theme.spacing(1),
+      },
     },
-    button: {
-      paddingLeft: 0,
-      paddingRight: 0,
+    orange: {
+      color: theme.palette.getContrastText(deepOrange[500]),
+      backgroundColor: deepOrange[500],
+      fontSize: "50px",
+      width: "auto",
+      height: "auto",
     },
-    wrapper: {
-      margin: theme.spacing(0.5),
-      position: "relative",
+    green: {
+      color: theme.palette.getContrastText(green[500]),
+      backgroundColor: green[500],
+      fontSize: "50px",
+      width: "auto",
+      height: "auto",
     },
-    buttonProgress: {
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      marginTop: -10,
-      marginLeft: -10,
+    blue: {
+      color: theme.palette.getContrastText(blue[500]),
+      backgroundColor: blue[500],
+      fontSize: "50px",
+      width: "auto",
+      height: "auto",
     },
-    buttonWrapper: {
-      margin: theme.spacing(1),
-      position: "relative",
+    defaultAvatar: {
+      width: "auto",
+      height: "auto",
     },
   })
 );
 
 export const Pid = () => {
   const signalr = useContext(SignalrContext);
-
-  const [pidStatus, setPidStatus] = useState<PidStatus>();
-  const [pidConfig, setPidConfig] = useState<PidConfig | undefined>();
-  const [newTarget, setNewTarget] = useState<number>();
-  const [pendingChange, setPendingChange] = useState(false);
-
   const classes = useStyles();
 
-  useEffect(() => {
-    const newPidStatus = signalr.hwStatus?.pid;
-    setPidStatus((currentValue) => {
-      if (!currentValue) {
-        setPendingChange(false);
-        setNewTarget(newPidStatus?.targetTemp);
-      }
-      return newPidStatus;
-    });
-    setPidConfig(signalr.hwStatus?.pidConfig);
-  }, [signalr.hwStatus]);
+  const [showDebug, setShowDebug] = useState(false);
+  const [hwStatus, setHWStatus] = useState<HardwareStatus>();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (signalr.hubConnection && signalr.hubConnection.state === "Connected") {
-        signalr.hubConnection?.invoke("UpdateTarget", { NewTargetTemp: newTarget });
+    let mounted = true;
+    signalr.hubConnection?.on("HarwareStatus", (hws: HardwareStatus) => {
+      if (mounted) {
+        setHWStatus(hws);
       }
-
-      setPendingChange(false);
-    }, 1300);
-    return () => clearTimeout(timer);
-  }, [newTarget, signalr.hubConnection]);
-
-  const addNewTarget = (increment: number) => {
-    setNewTarget((currentValue) => {
-      const newVal = (currentValue || pidStatus?.targetTemp || 0) + increment;
-      const newValAdjusted = newVal < 0 ? 0 : newVal > 100 ? 100 : newVal;
-      setPendingChange(newValAdjusted !== currentValue);
-      //console.log("test", newValAdjusted);
-      return newValAdjusted;
     });
-  };
+    return () => {
+      mounted = false;
+    };
+  }, [signalr.hubConnection]);
 
   const updatePidMode = () => {
-    signalr.hubConnection?.invoke("UpdatePidMode", { FridgeMode: !pidStatus?.fridgeMode });
+    signalr.hubConnection?.invoke("UpdatePidMode", { FridgeMode: !hwStatus?.pid?.fridgeMode });
+  };
+
+  function valuetext(value: number) {
+    return `${value}°C`;
+  }
+
+  const updateValue = (event: object, value: number | number[]): void => {
+    if (signalr.hubConnection && signalr.hubConnection.state === "Connected") {
+      signalr.hubConnection?.invoke("UpdateTarget", { NewTargetTemp: value });
+    }
+  };
+
+  const getClassName = (): string => {
+    const currentTemp = hwStatus?.pid?.currentTemp || 0;
+    const targetTemp = hwStatus?.pid?.targetTemp || 0;
+    if (currentTemp - targetTemp > 1) {
+      return classes.orange;
+    }
+    if (currentTemp - targetTemp < -1) {
+      return classes.blue;
+    }
+    return classes.green;
   };
 
   return (
     <Container>
       <Card elevation={3}>
         <CardContent>
-          <Typography variant="h4">{pidStatus?.pidName}</Typography>
-          <Typography>
-            Temp Target: {Math.round(((pidStatus?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC. Actual: {Math.round(((pidStatus?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
+          <Typography id="discrete-slider" gutterBottom>
+            Select desired temperature
           </Typography>
-          <Typography>
-            Output Level: {Math.round(((pidStatus?.outputValue || 0) + Number.EPSILON) * 100) / 100}% Output: {pidStatus?.output ? "On" : "Off"}
-          </Typography>
-          {!(pidStatus?.fridgeMode || false) && <Typography>Error-sum: {Math.round(((pidStatus?.errorSum || 0) + Number.EPSILON) * 100) / 100}</Typography>}
+          <Box mt={5}>
+            <Slider
+              key={`slider-${hwStatus?.pid?.targetTemp || 0}`}
+              defaultValue={hwStatus?.pid?.targetTemp || 0}
+              getAriaValueText={valuetext}
+              aria-labelledby="discrete-slider"
+              valueLabelDisplay="on"
+              step={1}
+              marks
+              min={0}
+              max={100}
+              onChangeCommitted={updateValue}
+            />
+          </Box>
 
-          <ButtonGroup size="small" variant="contained" color="primary" aria-label="contained primary button group">
-            <Button size="small" onClick={() => addNewTarget(-5)} className={classes.button} disabled={newTarget !== undefined && newTarget <= 0}>
-              <FirstPageIcon />
-            </Button>
-            <Button onClick={() => addNewTarget(-1)} className={classes.button} disabled={newTarget !== undefined && newTarget <= 0}>
-              <SkipPrevIcon />
-            </Button>
-            <Button onClick={() => addNewTarget(-0.1)} className={classes.button} disabled={newTarget !== undefined && newTarget <= 0}>
-              <FastRewindIcon />
-            </Button>
-
-            <Button color="default">
-              {Math.round(((newTarget || 0) + Number.EPSILON) * 100) / 100}ºC
-              {pendingChange ? <CircularProgress color="primary" className={classes.buttonProgress} size={20}></CircularProgress> : ""}
-            </Button>
-
-            <Button onClick={() => addNewTarget(0.1)} className={classes.button} disabled={newTarget !== undefined && newTarget >= 100}>
-              <FastForwardIcon />
-            </Button>
-            <Button onClick={() => addNewTarget(1)} className={classes.button} disabled={newTarget !== undefined && newTarget >= 100}>
-              <SkipNextIcon />
-            </Button>
-            <Button onClick={() => addNewTarget(5)} className={classes.button} disabled={newTarget !== undefined && newTarget >= 100}>
-              <LastPageIcon />
-            </Button>
-          </ButtonGroup>
+          <Grid container spacing={0}>
+            <Grid item xs={12}>
+              <Avatar variant="square" className={getClassName()}>
+                <Box p={1}>
+                  <Typography variant="h6" style={{ fontSize: "10px" }}>
+                    Temp
+                  </Typography>
+                  {Math.round(((hwStatus?.pid?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
+                </Box>
+              </Avatar>
+            </Grid>
+            <Grid item xs={6}>
+              <Avatar variant="square" className={classes.defaultAvatar}>
+                <Box p={1}>
+                  <Typography variant="h6" style={{ fontSize: "10px" }}>
+                    Output Level
+                  </Typography>
+                  {Math.round(((hwStatus?.pid?.outputValue || 0) + Number.EPSILON) * 100) / 100}%
+                </Box>
+              </Avatar>
+            </Grid>
+            <Grid item xs={6}>
+              <Avatar variant="square" className={classes.defaultAvatar}>
+                <Box p={1}>
+                  <Typography variant="h6" style={{ fontSize: "10px" }}>
+                    Output
+                  </Typography>
+                  {hwStatus?.pid?.output ? "On" : "Off"}
+                </Box>
+              </Avatar>
+            </Grid>
+            {!(hwStatus?.pid?.fridgeMode || false) && (
+              <Grid item xs={12}>
+                <Avatar variant="square" className={classes.defaultAvatar}>
+                  <Box p={1}>
+                    <Typography variant="h6" style={{ fontSize: "10px" }}>
+                      Error sum
+                    </Typography>
+                    {Math.round(((hwStatus?.pid?.errorSum || 0) + Number.EPSILON) * 100) / 100}
+                  </Box>
+                </Avatar>
+              </Grid>
+            )}
+          </Grid>
 
           <br />
-          <Switch checked={pidStatus?.fridgeMode || false} onChange={() => updatePidMode()} value={1} inputProps={{ "aria-label": "secondary checkbox" }} />
-          <b>FridgeMode: {pidStatus?.fridgeMode || false ? "ON" : "OFF"}</b>
-          {!(pidStatus?.fridgeMode || false) && <pre>{JSON.stringify(pidConfig, null, 5)}</pre>}
-          {(pidStatus?.fridgeMode || false) && (
+          <Switch checked={hwStatus?.pid?.fridgeMode || false} onChange={() => updatePidMode()} value={1} inputProps={{ "aria-label": "secondary checkbox" }} />
+          <b>FridgeMode: {hwStatus?.pid?.fridgeMode || false ? "ON" : "OFF"}</b>
+
+          <hr />
+          <Typography>RPI-Core-Temp: {hwStatus?.pid?.rpiCoreTemp}</Typography>
+
+          {(hwStatus?.pid?.fridgeMode || false) && (
             <div>
               <p>
                 <b>Min: </b>
-                {Math.round(((pidStatus?.minTemp || 0) + Number.EPSILON) * 100) / 100}ºC ({pidStatus?.minTempTimeStamp.toLocaleString()})
+                {Math.round(((hwStatus?.pid?.minTemp || 0) + Number.EPSILON) * 100) / 100}ºC ({hwStatus?.pid?.minTempTimeStamp.toLocaleString()})
               </p>
               <p>
                 <b>Max: </b>
-                {Math.round(((pidStatus?.maxTemp || 0) + Number.EPSILON) * 100) / 100}ºC ({pidStatus?.maxTempTimeStamp.toLocaleString()})
+                {Math.round(((hwStatus?.pid?.maxTemp || 0) + Number.EPSILON) * 100) / 100}ºC ({hwStatus?.pid?.maxTempTimeStamp.toLocaleString()})
               </p>
             </div>
           )}
-          <hr />
-          <Typography>RPI-Core-Temp: {pidStatus?.rpiCoreTemp}</Typography>
         </CardContent>
       </Card>
+      <hr />
+      <Box mt={3}>
+        <Chip
+          icon={showDebug ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          label="Show debug info"
+          clickable
+          color="default"
+          onClick={() =>
+            setShowDebug((curr) => {
+              return !curr;
+            })
+          }
+        />
+      </Box>
+      <Collapse in={showDebug} timeout="auto" unmountOnExit>
+        <Box margin={1}>{!(hwStatus?.pid?.fridgeMode || false) && <pre>{JSON.stringify(hwStatus?.pidConfig, null, 5)}</pre>}</Box>
+        <Typography>
+          Temp Target: {Math.round(((hwStatus?.pid?.targetTemp || 0) + Number.EPSILON) * 100) / 100}ºC. Actual: {Math.round(((hwStatus?.pid?.currentTemp || 0) + Number.EPSILON) * 100) / 100}ºC
+        </Typography>
+      </Collapse>
     </Container>
   );
 };

@@ -28,10 +28,22 @@ export const Sessions = () => {
   const signalr = useContext(SignalrContext);
   const [data, setData] = useState<SessionDto>();
   const [gridData, setGridData] = useState<TemplogDto[]>();
-
+  const [newTempLog, setNewTempLog] = useState<TemplogDto | undefined>();
   const history = useHistory();
 
   let { id } = useParams<{ id?: string }>();
+
+  useEffect(() => {
+    let mounted = true;
+    signalr.hubConnection?.on("NewTempLog", (newTempLog: TemplogDto) => {
+      if (mounted) {
+        setNewTempLog(newTempLog);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [signalr.hubConnection]);
 
   useEffect(() => {
     const getData = async () => {
@@ -45,13 +57,13 @@ export const Sessions = () => {
 
   useEffect(() => {
     setData((curr) => {
-      if (signalr.newTempLog && curr && curr.id === signalr.newTempLog.sessionId) {
-        const newLogs = [signalr.newTempLog, ...curr.logs];
+      if (newTempLog && curr && curr.id === newTempLog.sessionId) {
+        const newLogs = [newTempLog, ...curr.logs];
         return { ...curr, logs: newLogs } as SessionDto;
       }
       return curr;
     });
-  }, [signalr.newTempLog]);
+  }, [newTempLog]);
 
   useEffect(() => {
     setGridData((curr) => {

@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import { SignalrContext, SignalRStatus } from "src/infrastructure/SignalrContextProvider";
+import { SignalrContext } from "src/infrastructure/SignalrContextProvider";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { Button, ButtonGroup } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,7 +21,7 @@ export const ReconnectSignalr = () => {
   const signalR = useContext(SignalrContext);
   const classes = useStyles();
 
-  return [SignalRStatus.Error].indexOf(signalR.status) > -1 ? (
+  return signalR.hubConnection?.state !== "Connected" ? (
     <ButtonGroup fullWidth aria-label="fullwidth button group" style={{ height: "60px" }} className={classes.redCard}>
       <Button variant="contained" color="secondary" size={"small"} onClick={signalR.reconnect}>
         <FontAwesomeIcon icon="unlink" fixedWidth size="lg" style={{ marginRight: "10px" }} />
